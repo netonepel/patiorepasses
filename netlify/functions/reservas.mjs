@@ -28,7 +28,7 @@ export default async (req, context) => {
     const t = await taxaAgora(cfg);
     const reserva = repetida || {
       id: crypto.randomUUID(), codigo: codigo(), repasseId: carro.id, lojistaId: carro.lojistaId,
-      carro: `${carro.marca} ${carro.modelo} ${carro.ano}`, placa: carro.placa, preco: carro.preco,
+      carro: `${carro.marca} ${carro.modelo} ${carro.ano}`, placa: carro.placa, preco: carro.preco, precoVitrine: (carro.preco || 0) + t.valor,
       nome, whatsapp, documento, obs: String(b.obs || "").trim().slice(0, 500),
       valor: t.valor, promo: t.promo, status: "aguardando", criadoEm: new Date().toISOString(),
     };

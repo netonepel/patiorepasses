@@ -4,7 +4,7 @@
 //   POST   /api/repasses           cria   (lojista: na própria loja | admin: informa lojistaId)
 //   PUT    /api/repasses/:id       edita  (dono ou admin)
 //   DELETE /api/repasses/:id       apaga  (dono ou admin)
-import { store, todos, json, corpo, sessao, pode } from "../lib/core.mjs";
+import { store, todos, json, corpo, sessao, pode, taxaAgora } from "../lib/core.mjs";
 import { apagarFotos, fotosPermitidas } from "./fotos.mjs";
 
 const CAMPOS = ["placa","marca","modelo","versao","ano","km","cambio","combustivel","cor","preco","fipe","obs","status","chaveCopia","manual","cautelar"];
@@ -18,9 +18,9 @@ export default async (req, context) => {
   const url = new URL(req.url);
 
   if (req.method === "GET" && url.searchParams.get("meus") !== "1") {
-    const [rs, lojas] = await Promise.all([todos(st), mapaLojas()]);
+    const [rs, lojas, t] = await Promise.all([todos(st), mapaLojas(), taxaAgora()]);
     return json(rs.filter(r => r.status !== "vendido" && lojas[r.lojistaId]?.ativo)
-      .sort(porData).map(r => publico(juntar(r, lojas))));
+      .sort(porData).map(r => publico(juntar(r, lojas), t.valor)));
   }
 
   const s = await sessao(req);
@@ -29,8 +29,9 @@ export default async (req, context) => {
   const dono = r => s.role === "admin" || r.lojistaId === s.lojista.id;
 
   if (req.method === "GET") {
-    const [rs, lojas] = await Promise.all([todos(st), mapaLojas()]);
-    return json(rs.filter(dono).sort(porData).map(r => juntar(r, lojas)));
+    const [rs, lojas, t] = await Promise.all([todos(st), mapaLojas(), taxaAgora()]);
+    // preco = o que a loja recebe; precoVitrine = preco + comissão do Pátio (o que o comprador vê)
+    return json(rs.filter(dono).sort(porData).map(r => ({ ...juntar(r, lojas), comissao: t.valor, precoVitrine: (r.preco || 0) + t.valor })));
   }
 
   if (req.method === "POST") {
@@ -103,7 +104,8 @@ function validar(r) {
   if (!/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/.test(r.placa)) return "Placa inválida. Use ABC1D23 ou ABC1234.";
 }
 // Vitrine: sem placa completa e sem contato da loja (a negociação passa pelo Pátio)
-function publico(r) {
-  const { placa, lojistaId, whatsapp, reservaId, ...resto } = r;
-  return { ...resto, placaFinal: placa ? placa.slice(-1) : "" };
+// Na vitrine o preço já vem somado à comissão do Pátio (o sinal que o comprador paga)
+function publico(r, comissao) {
+  const { placa, lojistaId, whatsapp, reservaId, preco, ...resto } = r;
+  return { ...resto, preco: (preco || 0) + comissao, precoLoja: preco, comissao, placaFinal: placa ? placa.slice(-1) : "" };
 }

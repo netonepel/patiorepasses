@@ -488,6 +488,86 @@ form.login{max-width:420px;margin:28px 0 56px}
   .passos li.rv-in .pn{animation:pop .5s .25s ease both}
   @media (max-width:760px){.passos.linha-on::before{animation-name:linhaV}}
 }
+
+/* ===== página para lojistas ===== */
+.lj{background:var(--bg)}
+.lj-hero{background:var(--yellow);color:var(--black);position:relative;overflow:hidden}
+.lj-hero::after{content:"";position:absolute;right:-80px;bottom:-80px;width:340px;height:340px;border-radius:50%;border:40px solid rgba(0,0,0,.06);pointer-events:none}
+.lj-hero-in{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:36px;align-items:center;padding-block:56px}
+.lj-tag{display:inline-block;background:var(--black);color:var(--yellow);font-size:12.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:5px 10px;border-radius:4px}
+.lj h2{margin:14px 0 14px;font-size:clamp(30px,4vw,50px);line-height:1.04;font-weight:800;font-style:italic;letter-spacing:-.03em;text-wrap:balance}
+.lj h2 em{font-style:inherit;background:linear-gradient(transparent 62%,rgba(0,0,0,.14) 62%)}
+.lj-copy>p{margin:0 0 22px;font-size:17px;line-height:1.55;max-width:50ch}
+.btn-lg{font-size:17px;padding:15px 24px;border-radius:8px}
+.lj-ghost{border-color:rgba(0,0,0,.35)!important;color:var(--black)!important;text-decoration:none;padding:13px 18px;border-radius:8px;display:inline-flex;align-items:center}
+.lj-live{margin:18px 0 0;font-size:14.5px;display:flex;align-items:center;gap:8px}
+.lj-live::before{content:"";width:9px;height:9px;border-radius:50%;background:#1b7a44;box-shadow:0 0 0 0 rgba(27,122,68,.6)}
+.calc{background:var(--white);border-radius:16px;padding:22px;box-shadow:0 24px 50px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:12px}
+.calc>b{font-size:18px;line-height:1.25}
+.calc input:not([type=range]){border:1px solid var(--line-2);border-radius:6px;padding:10px 12px;width:100%;color:var(--ink);background:var(--white)}
+.calc input[type=range]{width:100%;accent-color:#111}
+.calc output{font-weight:800}
+.calc-res{background:var(--black);color:#fff;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:2px}
+.calc-res span{color:#bdbcb5;font-size:13.5px}
+.calc-res strong{font-size:clamp(30px,4vw,40px);font-weight:800;color:var(--yellow);letter-spacing:-.02em;line-height:1.1}
+.calc-nota{margin:0;font-size:12px;color:var(--muted)}
+.lj-vs{padding-block:56px 24px}
+.lj-vs h3,.lj-final h3{margin:0 0 22px;font-size:clamp(24px,3vw,34px);font-weight:800;letter-spacing:-.02em;font-style:italic}
+.lj-vs h3 span{color:var(--yellow-d)}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.vs-col{border-radius:14px;padding:22px}
+.vs-col>b{display:block;font-size:17px;margin-bottom:12px}
+.vs-col ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.vs-col li{display:flex;gap:10px;font-size:15px;line-height:1.45}
+.vs-col li::before{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;margin-top:1px}
+.vs-ruim{background:#ecebe6;color:#5b5a55}
+.vs-ruim li::before{content:"✕";background:#d9d7d0;color:#7a7870}
+.vs-bom{background:var(--black);color:#f2f1ec;box-shadow:0 18px 40px rgba(0,0,0,.18)}
+.vs-bom>b{color:var(--yellow)}
+.vs-bom li::before{content:"✓";background:var(--yellow);color:var(--black)}
+.lj-ben{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding-block:24px 60px}
+.ben{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:6px}
+.ben svg{width:30px;height:30px;color:var(--black);background:var(--yellow);border-radius:9px;padding:6px;box-sizing:content-box;margin-bottom:6px}
+.ben b{font-size:16px}
+.ben p{margin:0;font-size:14px;color:var(--muted);line-height:1.5}
+.lj-final{background:#0c0c0d;color:#fff}
+.lj-final-in{display:grid;grid-template-columns:auto minmax(0,1fr);gap:32px;align-items:center;padding-block:52px}
+.lj-final h3{margin-bottom:10px}
+.lj-final h3 em{font-style:inherit;color:var(--yellow)}
+.lj-final p{margin:0 0 20px;color:#b9b8b1;max-width:56ch}
+.lj-ghost2{color:#fff!important;border-color:#3a3a37!important;text-decoration:none;padding:13px 18px;border-radius:8px;display:inline-flex;align-items:center}
+.selo-big{position:relative;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,#1d1d1e 55%,#0c0c0d 56%);border:2px solid var(--yellow);display:grid;place-items:center;box-shadow:0 0 0 8px rgba(255,198,0,.12),0 0 40px rgba(255,198,0,.25)}
+.selo-big img{width:88px;height:88px}
+.selo-big span{position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--yellow);color:var(--black);font-size:12px;font-weight:800;padding:4px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:.06em}
+.parceira{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--ok);background:var(--ok-bg);border-radius:10px;padding:2px 7px 2px 5px;margin-left:4px;vertical-align:1px;white-space:nowrap}
+.parceira svg{width:12px;height:12px}
+@media (max-width:980px){.lj-ben{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:860px){.lj-hero-in{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.vs{grid-template-columns:minmax(0,1fr)}.lj-final-in{grid-template-columns:minmax(0,1fr);justify-items:start}.lj-ben{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:no-preference){
+  @keyframes pulso{0%{box-shadow:0 0 0 0 rgba(27,122,68,.55)}70%{box-shadow:0 0 0 10px rgba(27,122,68,0)}100%{box-shadow:0 0 0 0 rgba(27,122,68,0)}}
+  @keyframes gira{to{transform:rotate(360deg)}}
+  .lj-live::before{animation:pulso 1.8s infinite}
+  .ben{transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+  .ben:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,.08);border-color:var(--yellow)}
+  .ben svg{transition:transform .35s cubic-bezier(.2,.8,.2,1.4)}
+  .ben:hover svg{transform:rotate(-8deg) scale(1.08)}
+  .calc-res strong{transition:color .2s}
+  .calc-res strong.bump{animation:pop .35s ease}
+  .selo-big::before{content:"";position:absolute;inset:-10px;border-radius:50%;border:2px dashed rgba(255,198,0,.45);animation:gira 18s linear infinite}
+  .lj-ben .ben.rv-in:nth-child(4n+2){transition-delay:.08s}.lj-ben .ben.rv-in:nth-child(4n+3){transition-delay:.16s}.lj-ben .ben.rv-in:nth-child(4n+4){transition-delay:.24s}
+}
+
+footer .legal{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px}
+footer .assin{white-space:nowrap}
+footer .assin b{color:var(--yellow);font-weight:700}
+
+.vitrine-preco{grid-column:1/-1;background:#fff8d6;border:1px solid #f0d77a;border-radius:8px;padding:10px 12px;font-size:13.5px;line-height:1.45}
+.vitrine-preco b{font-weight:800}
+.row .pr small+small{margin-top:0}
+.conta{display:grid;grid-template-columns:1fr auto;gap:4px 12px;margin-top:10px;padding-top:10px;border-top:1px dashed #e6c34d;font-size:14px}
+.conta b{text-align:right;font-weight:700}
+.conta span:last-of-type,.conta b:last-of-type{font-weight:800;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -574,21 +654,90 @@ form.login{max-width:420px;margin:28px 0 56px}
     </div>
   </section>
 
-  <section class="lojistas" id="lojistas">
-    <div class="wrap">
-      <div>
-        <h2 class="reveal">É lojista? Seja parceiro do Pátio</h2>
-        <p>O cadastro das lojas é feito pela nossa equipe. Chame no WhatsApp, liberamos seu acesso e você já começa a anunciar seus repasses para lojas de todo o Sul.</p>
-        <div class="btns">
-          <a href="#" class="btn btn-dark" id="btnParceiro" target="_blank" rel="noopener" hidden>Quero ser parceiro</a>
-          <a href="#anunciar" class="btn-ghost">Já sou parceiro: entrar</a>
+  <section class="lj" id="lojistas">
+    <!-- abertura: ira + ganância + curiosidade -->
+    <div class="lj-hero">
+      <div class="wrap lj-hero-in">
+        <div class="lj-copy">
+          <span class="lj-tag reveal">Para lojistas</span>
+          <h2 class="reveal">Carro parado no pátio é <em>dinheiro indo embora</em> todo dia.</h2>
+          <p class="reveal">Anuncie seus repasses para compradores e lojas do Paraná, Santa Catarina e Rio Grande do Sul. <b>Para a loja é grátis:</b> quem paga a comissão é o comprador, quando reserva o carro.</p>
+          <div class="btns reveal">
+            <a href="#" class="btn btn-dark btn-lg" id="btnParceiro" target="_blank" rel="noopener" hidden>Quero anunciar meus carros</a>
+            <a href="#anunciar" class="btn-ghost lj-ghost">Já sou parceiro: entrar</a>
+          </div>
+          <p class="lj-live reveal" id="ljLive" hidden></p>
+        </div>
+        <form class="calc reveal" id="calc" aria-labelledby="calcTit" onsubmit="return false">
+          <b id="calcTit">Quanto o seu carro parado está custando?</b>
+          <div class="f"><label for="cvValor">Valor do carro</label><input id="cvValor" inputmode="numeric" value="R$ 60.000"></div>
+          <div class="f"><label for="cvDias">Dias parado no pátio: <output id="cvDiasOut">45</output></label><input id="cvDias" type="range" min="5" max="180" step="5" value="45"></div>
+          <div class="row2">
+            <div class="f"><label for="cvJuros">Custo do dinheiro (% ao mês)</label><input id="cvJuros" inputmode="decimal" value="1,5"></div>
+            <div class="f"><label for="cvDesv">Desvalorização (% ao mês)</label><input id="cvDesv" inputmode="decimal" value="1"></div>
+          </div>
+          <div class="calc-res" aria-live="polite">
+            <span>Você já perdeu cerca de</span>
+            <strong id="cvTotal">R$ 0</strong>
+            <span id="cvDia">≈ R$ 0 por dia parado</span>
+          </div>
+          <p class="calc-nota">Estimativa simples, sem contar pátio, seguro e o espaço que poderia girar outro carro. Ajuste as taxas à realidade da sua loja.</p>
+        </form>
+      </div>
+    </div>
+
+    <!-- comparação: ira + recompensa -->
+    <div class="wrap lj-vs">
+      <h3 class="reveal">Grupo de WhatsApp <span>×</span> Pátio Repasses</h3>
+      <div class="vs reveal">
+        <div class="vs-col vs-ruim">
+          <b>No grupo</b>
+          <ul>
+            <li>Seu anúncio some em minutos no meio de outras 200 mensagens</li>
+            <li>Você calcula a FIPE e repete as mesmas informações para cada um</li>
+            <li>Curioso pergunta, pede foto, some e não volta</li>
+            <li>Foto espalhada em conversa, sem ordem e sem capa</li>
+            <li>Ninguém sabe se o carro ainda está disponível</li>
+          </ul>
+        </div>
+        <div class="vs-col vs-bom">
+          <b>No Pátio</b>
+          <ul>
+            <li>O carro fica na vitrine até você marcar como vendido</li>
+            <li>Digite a placa e o portal traz marca, modelo, ano e FIPE</li>
+            <li>O comprador chega com sinal pago: cliente decidido</li>
+            <li>Galeria com até 10 fotos e capa, como em concessionária</li>
+            <li>Disponível, reservado ou vendido, atualizado em um clique</li>
+          </ul>
         </div>
       </div>
-      <ul>
-        <li class="reveal"><div><b>Acesso da sua loja</b><span>Usuário e senha próprios. Só você mexe nos seus anúncios.</span></div></li>
-        <li class="reveal"><div><b>Placa preenche o carro</b><span>Digite a placa e o portal traz marca, modelo, ano e FIPE.</span></div></li>
-        <li class="reveal"><div><b>Comprador com sinal</b><span>O cliente reserva o carro pagando o sinal pelo Pátio. Você recebe o contato dele pronto para fechar.</span></div></li>
-      </ul>
+    </div>
+
+    <!-- benefícios: preguiça, vaidade, segurança, liberdade, gula, pertencimento -->
+    <div class="wrap lj-ben">
+      <div class="ben reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2c-.6-.8-1.6-1.2-2.8-1.2-1.7 0-2.8.9-2.8 2s1.1 1.7 2.8 2 2.8.9 2.8 2-1.1 2-2.8 2c-1.2 0-2.2-.4-2.8-1.2M12 6v2m0 8v2"/></svg><b>Grátis para a loja</b><p>Você recebe exatamente o valor que cadastrou. A comissão do Pátio é somada ao preço da vitrine e paga pelo comprador.</p></div>
+      <div class="ben reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="10" rx="2"/><path d="M2.5 9.5h19M7 13.5h1M11 13.5h6"/></svg><b>Placa e pronto</b><p>Digitou a placa, o carro aparece preenchido. Você só coloca km, preço e fotos.</p></div>
+      <div class="ben reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><b>Cliente com sinal</b><p>Você só recebe o contato depois que o comprador pagou o sinal. Nada de curioso.</p></div>
+      <div class="ben reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg><b>Vitrine de concessionária</b><p>Fotos grandes, galeria, selos de chave cópia, manual e cautelar valorizam o carro.</p></div>
+      <div class="ben reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg><b>Três estados de uma vez</b><p>Seu repasse aparece para compradores do Paraná, Santa Catarina e Rio Grande do Sul.</p></div>
+      <div class="ben reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9a3 3 0 1 0 0 6c3 0 7-6 10-6a3 3 0 1 1 0 6c-3 0-7-6-10-6z"/></svg><b>Quantos carros quiser</b><p>Sem limite de anúncios. Encheu o pátio, anuncia tudo.</p></div>
+      <div class="ben reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg><b>Só você mexe</b><p>Acesso próprio da loja. A placa completa e o seu WhatsApp não ficam expostos na vitrine.</p></div>
+      <div class="ben reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h12"/><path d="M12 6l6 6-6 6"/><path d="M20 4v16"/></svg><b>Sem amarra</b><p>Sem fidelidade. Pausa, edita ou tira o carro quando quiser.</p></div>
+    </div>
+
+    <!-- fechamento: pertencimento + vaidade + inveja -->
+    <div class="lj-final">
+      <div class="wrap lj-final-in reveal">
+        <div class="selo-big" aria-hidden="true"><img src="/logo.png" alt="" width="88" height="88"><span>Loja parceira</span></div>
+        <div>
+          <h3>Coloque o selo <em>Loja parceira</em> na sua loja</h3>
+          <p>Cada carro seu aparece na vitrine com o selo de parceiro do Pátio Repasses. Entre agora e esteja entre as primeiras lojas do portal no Sul.</p>
+          <div class="btns">
+            <a href="#" class="btn btn-y btn-lg" id="btnParceiro2" target="_blank" rel="noopener" hidden>Quero ser loja parceira</a>
+            <a href="#" class="btn-ghost lj-ghost2" id="btnGrupoLoj" target="_blank" rel="noopener" hidden>Entrar no grupo de lojistas</a>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </div>
@@ -689,9 +838,10 @@ form.login{max-width:420px;margin:28px 0 56px}
       </fieldset>
       <fieldset>
         <legend>Valores</legend>
-        <div class="f"><label for="preco">Preço do repasse *</label><input id="preco" inputmode="numeric" required placeholder="R$ 0"></div>
+        <div class="f"><label for="preco">Valor para a loja *</label><input id="preco" inputmode="numeric" required placeholder="R$ 0"></div>
         <div class="f"><label for="fipe">Tabela FIPE</label><input id="fipe" inputmode="numeric" placeholder="R$ 0"></div>
         <div class="fipe-calc" id="fipeCalc"></div>
+        <div class="vitrine-preco" id="precoVitrine" hidden></div>
         <div class="f full"><label for="obs">Observações</label><textarea id="obs" placeholder="Laudo, lataria, documentação, aceita troca…"></textarea></div>
       </fieldset>
       <div class="btns">
@@ -905,7 +1055,7 @@ form.login{max-width:420px;margin:28px 0 56px}
     <div><div class="flogo"><img src="/logo.png" alt="" width="52" height="52"><h4>Pátio Repasses</h4></div><p>Portal de repasses de veículos do Paraná, Santa Catarina e Rio Grande do Sul. O cliente reserva com sinal pelo Pátio e fecha o negócio com a loja anunciante.</p></div>
     <div><h4>Portal</h4><ul><li><a href="#inicio">Comprar repasse</a></li><li><a href="#anunciar">Área do lojista</a></li><li><a href="#lojistas">Para lojistas</a></li></ul></div>
     <div><h4>Estados</h4><ul><li>Paraná</li><li>Santa Catarina</li><li>Rio Grande do Sul</li></ul></div>
-    <div class="legal">Os preços e informações dos veículos são de responsabilidade de cada loja anunciante. O sinal pago ao Pátio Repasses é a comissão pela intermediação.</div>
+    <div class="legal"><span>Os preços e informações dos veículos são de responsabilidade de cada loja anunciante. O sinal pago ao Pátio Repasses é a comissão pela intermediação.</span><span class="assin">Site desenvolvido por <b>Neto Marketing Automotivo</b></span></div>
   </div>
 </footer>
 
@@ -999,6 +1149,8 @@ form.login{max-width:420px;margin:28px 0 56px}
     contar($('#kLojas'),new Set(items.map(i=>(i.loja||'').trim().toLowerCase()).filter(Boolean)).size,v=>Math.round(v));
     const ps=items.map(i=>pctOff(i.preco,i.fipe)).filter(p=>p!==null);
     $('#kFipeWrap').hidden=!ps.length;
+    const nC=items.length, nL=new Set(items.map(i=>(i.loja||'').trim().toLowerCase()).filter(Boolean)).size;
+    const live=$('#ljLive'); live.hidden=!nC; if(nC) live.textContent=`Agora no portal: ${nC} ${nC===1?'carro':'carros'} de ${nL} ${nL===1?'loja':'lojas'}.`;
     if(ps.length) contar($('#kFipe'),ps.reduce((a,b)=>a+b,0)/ps.length,v=>v.toLocaleString('pt-BR',{maximumFractionDigits:1})+'%');
   }
   function renderVitrine(){
@@ -1031,7 +1183,7 @@ form.login{max-width:420px;margin:28px 0 56px}
           <div class="price">${brl(i.preco)}</div>
           ${i.fipe?`<div class="fipe">FIPE ${brl(i.fipe)}${p>0?` · <b>${fmtPct(p)} abaixo</b>`:''}</div>`:''}
           ${itensChips(i)}
-          <div class="seller"><div><strong>${esc(i.loja)}</strong>${i.cidade?'<br>'+esc(i.cidade):''}</div>
+          <div class="seller"><div><strong>${esc(i.loja)}</strong><span class="parceira" title="Loja parceira do Pátio Repasses"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Parceira</span>${i.cidade?'<br>'+esc(i.cidade):''}</div>
             ${st==='reservado'?'<button type="button" class="btn-res" disabled>Reservado</button>':`<button type="button" class="btn-res" data-res="${i.id}">Reservar com sinal</button>`}</div>
         </div></article>`;
     }).join('');
@@ -1042,9 +1194,24 @@ form.login{max-width:420px;margin:28px 0 56px}
     catch(e){ loaded=true; note.hidden=false; note.textContent='Não foi possível carregar os repasses agora. Tente recarregar a página.'; }
     syncMarcaSelect(); kpis(); renderVitrine();
   }
+  /* ---------- calculadora do carro parado ---------- */
+  const numBR=v=>{ const n=parseFloat(String(v).replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')); return isFinite(n)?n:0; };
+  function calc(){
+    const valor=toInt($('#cvValor').value)||0, dias=+$('#cvDias').value, j=numBR($('#cvJuros').value)/100, d=numBR($('#cvDesv').value)/100;
+    $('#cvDiasOut').textContent=dias;
+    const meses=dias/30, perda=valor*(Math.pow(1+j,meses)-1)+valor*d*meses;
+    const el=$('#cvTotal'); el.textContent=brl(Math.round(perda)); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');
+    $('#cvDia').textContent=`≈ ${brl(Math.round(perda/Math.max(dias,1)))} por dia parado`;
+  }
+  $('#cvValor').addEventListener('input',e=>{ const n=toInt(e.target.value); e.target.value=n===null?'':brl(n); calc(); });
+  ['#cvDias','#cvJuros','#cvDesv'].forEach(id=>$(id).addEventListener('input',calc));
+  calc();
+
   /* ---------- configuração, aviso de testes ---------- */
   api('/api/config').then(c=>{ cfg=c||{};
-    if(cfg.contatoWhatsapp){ const b=$('#btnParceiro'); b.href=wa(cfg.contatoWhatsapp,'Olá! Tenho uma loja e quero anunciar meus repasses no Pátio Repasses.'); b.hidden=false; }
+    if(cfg.contatoWhatsapp){ const t='Olá! Tenho uma loja e quero anunciar meus repasses no Pátio Repasses.';
+      ['#btnParceiro','#btnParceiro2'].forEach(id=>{ const b=$(id); b.href=wa(cfg.contatoWhatsapp,t); b.hidden=false; }); }
+    const gl=waLink(cfg.grupoWhatsapp); if(gl){ $('#btnGrupoLoj').href=gl; $('#btnGrupoLoj').hidden=false; }
     const g=waLink(cfg.grupoWhatsapp)||(cfg.contatoWhatsapp?wa(cfg.contatoWhatsapp,'Olá! Quero entrar no grupo do Pátio Repasses.'):'');
     if(g){ $('#avisoGrupo').href=g; $('#avisoGrupo').hidden=false; }
     const av=cfg.aviso||{};
@@ -1085,8 +1252,10 @@ form.login{max-width:420px;margin:28px 0 56px}
   $('#vitrineGrid').addEventListener('click',e=>{ const b=e.target.closest('[data-res]'); if(!b) return;
     resCarro=items.find(x=>x.id===b.dataset.res); if(!resCarro) return;
     const i=resCarro, t=cfg.taxa||{valor:1900};
-    $('#resCar').innerHTML=`${(i.fotos||[]).length?`<img src="/api/fotos/${i.fotos[0]}?t=1" alt="">`:''}<div><b>${esc(i.marca)} ${esc(i.modelo)} ${esc(i.ano)}</b>${esc(i.versao||'')} · ${brl(i.preco)} · ${esc(i.loja)}, ${esc(i.cidade)}</div>`;
-    $('#resFee').innerHTML=`Sinal para reservar (comissão do Pátio)<strong>${brl(t.valor)}</strong>${t.promo?`<s>${brl(t.cheia)}</s> Promoção de lançamento até ${dataBR(t.promoAte)}.`:''} O restante você negocia direto com a loja.`;
+    $('#resCar').innerHTML=`${(i.fotos||[]).length?`<img src="/api/fotos/${i.fotos[0]}?t=1" alt="">`:''}<div><b>${esc(i.marca)} ${esc(i.modelo)} ${esc(i.ano)}</b>${[i.versao,brl(i.preco),[i.loja,i.cidade].filter(Boolean).join(', ')].filter(Boolean).map(esc).join(' · ')}</div>`;
+    const restante=i.precoLoja??Math.max(0,i.preco-t.valor);
+    $('#resFee').innerHTML=`Sinal para reservar (comissão do Pátio)<strong>${brl(t.valor)}</strong>${t.promo?`<s>${brl(t.cheia)}</s> Promoção de lançamento até ${dataBR(t.promoAte)}.`:''}
+      <div class="conta"><span>Valor do carro</span><b>${brl(i.preco)}</b><span>Sinal pago agora ao Pátio</span><b>− ${brl(t.valor)}</b><span>Restante pago direto à loja</span><b>${brl(restante)}</b></div>`;
     $('#resStep1').hidden=false; $('#resStep2').hidden=true; $('#rMsg').textContent=''; $('#rAceite').checked=false;
     abrir('#resModal'); setTimeout(()=>$('#rNome').focus(),50);
   });
@@ -1287,9 +1456,14 @@ form.login{max-width:420px;margin:28px 0 56px}
   function maskMoney(el){el.addEventListener('input',()=>{const n=toInt(el.value);el.value=n===null?'':brl(n);calcFipe();});}
   maskMoney($('#preco')); maskMoney($('#fipe'));
   $('#km').addEventListener('input',e=>{const n=toInt(e.target.value);e.target.value=n===null?'':n.toLocaleString('pt-BR');});
-  function calcFipe(){const p=pctOff(toInt($('#preco').value),toInt($('#fipe').value)),el=$('#fipeCalc');
+  const comissao=()=>(cfg.taxa&&cfg.taxa.valor)||0;
+  function calcFipe(){
+    const loja=toInt($('#preco').value), vit=loja?loja+comissao():null, pv=$('#precoVitrine');
+    pv.hidden=!loja;
+    if(loja) pv.innerHTML=`Na vitrine o carro aparece por <b>${brl(vit)}</b>: os ${brl(loja)} da loja + ${brl(comissao())} de comissão do Pátio, que o comprador paga como sinal. Você recebe ${brl(loja)}.`;
+    const p=pctOff(vit,toInt($('#fipe').value)),el=$('#fipeCalc');
     if(p===null){el.textContent='';return;}
-    el.innerHTML=p>=0?`<strong>${fmtPct(p)} abaixo</strong> da tabela FIPE`:`<strong class="above">${fmtPct(p)} acima</strong> da tabela FIPE`;}
+    el.innerHTML=p>=0?`Na vitrine: <strong>${fmtPct(p)} abaixo</strong> da tabela FIPE`:`Na vitrine: <strong class="above">${fmtPct(p)} acima</strong> da tabela FIPE`;}
   function lerForm(){const r={placa:normPlaca($('#placaFull').value),marca:$('#marca').value.trim(),modelo:$('#modelo').value.trim(),versao:$('#versao').value.trim(),ano:$('#ano').value.trim(),km:toInt($('#km').value),cambio:$('#cambio').value,combustivel:$('#comb').value,cor:$('#cor').value.trim(),preco:toInt($('#preco').value),fipe:toInt($('#fipe').value),obs:$('#obs').value.trim(),chaveCopia:$('#chaveCopia').value,manual:$('#manual').value,cautelar:$('#cautelar').value,fotos:fotos.filter(f=>f.status==='ok').map(f=>f.id)};
     if(me&&me.role==='admin') r.lojistaId=$('#lojaSel').value; return r;}
   function preencher(r){$('#placaFull').value=r.placa||'';$('#marca').value=r.marca||'';$('#modelo').value=r.modelo||'';$('#versao').value=r.versao||'';$('#ano').value=r.ano||'';$('#km').value=r.km!=null?r.km.toLocaleString('pt-BR'):'';$('#cambio').value=r.cambio||'Manual';$('#comb').value=r.combustivel||'Flex';$('#cor').value=r.cor||'';$('#preco').value=r.preco!=null?brl(r.preco):'';$('#fipe').value=r.fipe!=null?brl(r.fipe):'';$('#obs').value=r.obs||'';$('#chaveCopia').value=r.chaveCopia||'';$('#manual').value=r.manual||'';$('#cautelar').value=r.cautelar||'';syncModelos();fotos=(r.fotos||[]).map(id=>({id,url:'/api/fotos/'+id+'?t=1',status:'ok'}));renderFotos();if(r.lojistaId)$('#lojaSel').value=r.lojistaId;calcFipe();}
@@ -1320,11 +1494,11 @@ form.login{max-width:420px;margin:28px 0 56px}
     if(!meus.length){box.innerHTML=`<div class="empty"><h3>Nenhum repasse cadastrado</h3><p>Digite a placa no formulário. Cada carro salvo entra direto na vitrine.</p></div>`;return;}
     if(!list.length){box.innerHTML=`<div class="empty"><h3>Nada encontrado</h3><p>Nenhum repasse combina com a busca ou o filtro.</p></div>`;return;}
     box.innerHTML=list.map(i=>{
-      const p=pctOff(i.preco,i.fipe), st=i.status||'disponivel';
+      const pv=i.precoVitrine||i.preco, p=pctOff(pv,i.fipe), st=i.status||'disponivel';
       const off=p===null?'':` · <span class="off ${p<0?'above':''}">${fmtPct(p)} ${p<0?'acima':'abaixo'}</span>`;
       return `<article class="row ${st}">
         <h3>${(i.fotos||[]).length?`<img class="rthumb" src="/api/fotos/${i.fotos[0]}?t=1" alt="" loading="lazy">`:''}${esc(i.marca)} ${esc(i.modelo)} <span class="pill ${st}">${STATUS[st]}</span></h3>
-        <div class="pr">${brl(i.preco)}<small>${i.fipe?'FIPE '+brl(i.fipe):'sem FIPE'}${off}</small></div>
+        <div class="pr">${brl(i.preco)}<small>para a loja · vitrine ${brl(pv)}</small><small>${i.fipe?'FIPE '+brl(i.fipe):'sem FIPE'}${off}</small></div>
         <div class="specs"><span><b>${esc(i.placa)}</b></span>${i.versao?`<span>${esc(i.versao)}</span>`:''}<span>${esc(i.ano)}</span>${i.km!=null?`<span>${i.km.toLocaleString('pt-BR')} km</span>`:''}<span>${esc(i.cambio)}</span>${i.cor?`<span>${esc(i.cor)}</span>`:''}</div>
         ${itensChips(i)?`<div style="grid-column:1/-1">${itensChips(i)}</div>`:''}
         ${i.obs?`<p class="obs">${esc(i.obs)}</p>`:''}
@@ -1371,7 +1545,7 @@ form.login{max-width:420px;margin:28px 0 56px}
       const msgCli=`Olá, ${r.nome.split(' ')[0]}! Aqui é do Pátio Repasses, sobre a reserva ${r.codigo} do ${r.carro}.`;
       if(!admin) return `<article class="row pago">
         <h3>${esc(r.carro)} <span class="pill pago">Reservado com sinal</span></h3>
-        <div class="pr">${brl(r.preco)}<small>preço anunciado</small></div>
+        <div class="pr">${brl(r.preco)}<small>valor para a loja</small></div>
         <div class="specs"><span>Cliente: <b>${esc(r.nome)}</b></span><span>${esc(r.whatsapp)}</span><span>Placa ${esc(r.placa)}</span><span>Código ${esc(r.codigo)}</span></div>
         <div class="meta"><div>Sinal confirmado em ${quando}</div><div class="actions"><a class="okb" target="_blank" rel="noopener" href="${wa(r.whatsapp,`Olá, ${r.nome.split(' ')[0]}! Sou da ${me.loja.nome}, sobre o ${r.carro} que você reservou no Pátio Repasses (${r.codigo}).`)}">Chamar cliente</a></div></div>
       </article>`;
@@ -1478,7 +1652,7 @@ form.login{max-width:420px;margin:28px 0 56px}
   }
   $('#cProv').addEventListener('change',provUI);
   function taxaHoje(){ const hoje=new Date().toLocaleDateString('en-CA',{timeZone:'America/Sao_Paulo'}), ate=$('#cPromoAte').value, promo=ate&&hoje<=ate;
-    $('#cTaxaHoje').textContent=`Hoje o cliente paga ${brl(toInt(promo?$('#cPromo').value:$('#cTaxa').value)||0)} de sinal${promo?' (promoção)':''}.`; }
+    $('#cTaxaHoje').textContent=`Hoje o cliente paga ${brl(toInt(promo?$('#cPromo').value:$('#cTaxa').value)||0)} de sinal${promo?' (promoção)':''}. Esse valor é somado ao preço de todos os carros na vitrine.`; }
   ['#cTaxa','#cPromo','#cPromoAte'].forEach(id=>$(id).addEventListener('input',taxaHoje));
   $('#cfgForm').addEventListener('submit',async e=>{
     e.preventDefault(); const m=$('#cMsg'), b=$('#cSalvar');
