@@ -88,3 +88,15 @@ export function lojistaPublico(l) {
 }
 export const slug = s => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
   .replace(/[^a-z0-9]+/g, "").slice(0, 24);
+
+/* ---------- taxa da plataforma (sinal) ---------- */
+// TAXA_CHEIA e TAXA_PROMO em reais; PROMO_ATE = último dia da promoção (AAAA-MM-DD), horário de Brasília.
+export function hojeBR() {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+}
+export function taxaAgora() {
+  const cheia = Number(process.env.TAXA_CHEIA || 1900), promocional = Number(process.env.TAXA_PROMO || 1000);
+  const promoAte = process.env.PROMO_ATE || "2026-11-22";
+  const promo = hojeBR() <= promoAte;
+  return { valor: promo ? promocional : cheia, promo, promoAte, cheia, promocional };
+}

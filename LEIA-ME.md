@@ -35,6 +35,12 @@ No Netlify: *Site configuration → Environment variables → Add a variable*
 | `ADMIN_PASSWORD` | A **sua** senha de administrador. Você entra com o usuário `admin` e essa senha |
 | `CONTATO_WHATSAPP` | Seu WhatsApp, ex.: `(48) 99999-0000`. Aparece no botão "Quero ser parceiro" do site |
 | `SESSION_SECRET` | Opcional. Um texto longo e aleatório que protege os logins. Se não colocar, o site usa a senha de admin |
+| `PIX_CHAVE` | Sua chave Pix para receber os sinais (CNPJ, e-mail, telefone ou aleatória) |
+| `PIX_NOME` | Nome do favorecido que aparece para o cliente, ex.: `Pátio Repasses` |
+| `GRUPO_WHATSAPP` | Link de convite do seu grupo, ex.: `https://chat.whatsapp.com/...`. Aparece no aviso de boas-vindas |
+| `TAXA_CHEIA` | Opcional. Valor do sinal em reais. Padrão: `1900` |
+| `TAXA_PROMO` | Opcional. Valor do sinal na promoção. Padrão: `1000` |
+| `PROMO_ATE` | Opcional. Último dia da promoção (AAAA-MM-DD). Padrão: `2026-11-22` |
 | `PLACA_API_URL` | Endereço da consulta da sua API, com `{placa}` onde vai a placa e `{token}` onde vai a chave, se for na URL |
 | `PLACA_API_TOKEN` | Sua chave da API de placas |
 | `PLACA_API_HEADER` | Só se a sua API pede a chave num cabeçalho (ex.: `Authorization` ou `x-api-key`). Se for na URL, deixe sem |
@@ -63,6 +69,15 @@ Depois de salvar as variáveis, faça um novo deploy (*Deploys → Trigger deplo
 
 Se a consulta falhar, veja *Logs → Functions → placa* no Netlify: a resposta da API aparece lá.
 Me mande esse trecho que eu ajusto a leitura para o formato exato da sua API.
+
+## 5. Reservas com sinal (comissão do Pátio)
+
+1. Na vitrine, o cliente clica em **Reservar com sinal**, preenche nome e WhatsApp e aceita as condições.
+2. O site mostra o valor do sinal (R$ 1.000 na promoção, R$ 1.900 depois), sua chave Pix e um código da reserva (ex.: PR-Z39RV). O botão **Enviar comprovante** abre o seu WhatsApp com a mensagem pronta.
+3. No painel, aba **Reservas**, o pedido aparece em **Aguardando Pix**. Quando o Pix cair, clique em **Pix recebido** e confirme.
+4. O carro vira **Reservado** na vitrine e o lojista vê o contato do cliente na aba **Reservas** dele, para fechar o negócio.
+5. **Cancelar reserva** devolve o carro para Disponível. O lojista nunca vê o valor da comissão.
+6. A vitrine não mostra o WhatsApp das lojas, para a negociação passar pelo Pátio.
 
 ## Segurança
 

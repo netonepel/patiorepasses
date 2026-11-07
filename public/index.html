@@ -262,6 +262,51 @@ form.login{max-width:420px;margin:28px 0 56px}
 .lojistas .btns{align-items:center}
 .lojistas .btn-ghost{text-decoration:none;display:inline-flex;align-items:center}
 @media (max-width:560px){.ptabs button{padding:9px 14px}}
+
+/* ===== reservas, itens e avisos ===== */
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;line-height:1;padding:5px 8px;border-radius:5px;background:#f1f0eb;color:var(--ink);border:1px solid var(--line)}
+.chip.ok{background:var(--ok-bg);color:var(--ok);border-color:transparent}
+.chip.warn{background:var(--warn-bg);color:var(--warn);border-color:transparent}
+.chip.bad{background:#fbe4e2;color:var(--danger);border-color:transparent}
+.card .seller{flex-wrap:wrap}
+.btn-res{border:0;border-radius:6px;background:var(--yellow);color:var(--black);font-weight:700;font-size:13.5px;padding:8px 12px;white-space:nowrap}
+.btn-res:hover{background:var(--yellow-d)}
+.btn-res:disabled{background:#e6e5e0;color:var(--muted);cursor:not-allowed}
+.card .duv{font-size:12.5px;color:var(--muted);text-decoration:underline}
+.modal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.65);display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));overflow-y:auto}
+.modal-box{position:relative;background:var(--white);color:var(--ink);border-radius:14px;width:min(480px,100%);padding:26px 24px 22px;box-shadow:0 30px 80px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:14px}
+.modal-box h2{margin:0;font-size:22px;font-weight:800;line-height:1.2}
+.modal-x{position:absolute;top:10px;right:10px;width:34px;height:34px;border:0;border-radius:50%;background:#f1f0eb;color:var(--ink);font-size:15px}
+.eyebrow-s{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--warn)}
+.res-car{background:var(--bg);border-radius:8px;padding:12px 14px;font-size:14px}
+.res-car b{display:block;font-size:16px}
+.res-fee{border:2px solid var(--yellow);border-radius:10px;padding:12px 14px;font-size:14px;line-height:1.45}
+.res-fee strong{font-size:24px;font-weight:800;display:block}
+.res-fee s{color:var(--muted)}
+#resForm{display:flex;flex-direction:column;gap:12px}
+#resForm input{border:1px solid var(--line-2);border-radius:6px;padding:11px 12px;width:100%;color:var(--ink);background:var(--white)}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted);font-weight:400}
+.check input{width:18px!important;height:18px;margin-top:2px;flex:none;accent-color:#111}
+.pix{background:var(--black);color:var(--on-dark);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.pix dt{color:var(--on-dark-muted);font-size:12.5px}
+.pix dd{margin:0 0 6px;font-weight:700;font-size:16px;overflow-wrap:anywhere}
+.pix dd.big{font-size:26px;color:var(--yellow)}
+.modal .btns{display:flex;gap:10px;flex-wrap:wrap}
+.aviso{text-align:center;align-items:center}
+.aviso img{width:96px;height:96px}
+.aviso p{margin:0;color:var(--muted);max-width:40ch}
+.aviso .btns{justify-content:center;margin-top:4px}
+.tabcount{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--yellow);color:var(--black);font-size:12px;font-weight:800;margin-left:4px}
+.res-sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:24px 0 16px}
+.res-sum div{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.res-sum b{display:block;font-size:22px;font-weight:800}
+.res-sum span{font-size:13px;color:var(--muted)}
+#reservasView{padding-bottom:56px}
+.pill.aguardando{background:var(--warn-bg);color:var(--warn)} .pill.pago{background:var(--ok-bg);color:var(--ok)} .pill.cancelado{background:var(--sold-bg);color:var(--sold)}
+.actions a{font-size:13px;padding:5px 10px;border:1px solid var(--line-2);border-radius:4px;background:var(--white);color:var(--ink);text-decoration:none}
+.actions .okb{background:var(--ok);color:#fff;border-color:var(--ok)}
+@media (max-width:640px){.res-sum{grid-template-columns:minmax(0,1fr)}}
 </style>
 </head>
 <body>
@@ -342,7 +387,7 @@ form.login{max-width:420px;margin:28px 0 56px}
       <ul>
         <li><div><b>Acesso da sua loja</b><span>Usuário e senha próprios. Só você mexe nos seus anúncios.</span></div></li>
         <li><div><b>Placa preenche o carro</b><span>Digite a placa e o portal traz marca, modelo, ano e FIPE.</span></div></li>
-        <li><div><b>Contato direto</b><span>O comprador chama sua loja no WhatsApp, sem intermediário.</span></div></li>
+        <li><div><b>Comprador com sinal</b><span>O cliente reserva o carro pagando o sinal pelo Pátio. Você recebe o contato dele pronto para fechar.</span></div></li>
       </ul>
     </div>
   </section>
@@ -365,7 +410,8 @@ form.login{max-width:420px;margin:28px 0 56px}
       </div>
       <div class="ptabs" id="pTabs" role="group" aria-label="Seções" hidden>
         <button type="button" data-tab="repasses" aria-pressed="true">Repasses</button>
-        <button type="button" data-tab="lojistas" aria-pressed="false">Lojistas</button>
+        <button type="button" data-tab="reservas" aria-pressed="false">Reservas <span class="tabcount" id="resBadge" hidden></span></button>
+        <button type="button" data-tab="lojistas" aria-pressed="false" id="tabLojistas">Lojistas</button>
       </div>
     </div>
   </header>
@@ -403,14 +449,20 @@ form.login{max-width:420px;margin:28px 0 56px}
         <div class="f full"><label for="placaFull">Placa *</label>
           <div class="placa-row"><input id="placaFull" required maxlength="8" autocapitalize="characters" autocomplete="off" placeholder="ABC1D23"><button type="button" class="btn btn-dark" id="btnPlaca">Buscar dados</button></div>
           <span class="hint" id="placaHint" style="margin:0">Digite a placa e clique em Buscar dados para preencher o carro. Só o final da placa aparece na vitrine.</span></div>
-        <div class="f"><label for="marca">Marca *</label><input id="marca" list="marcas" required placeholder="Ex.: Volkswagen"></div>
-        <div class="f"><label for="modelo">Modelo *</label><input id="modelo" required placeholder="Ex.: Gol"></div>
+        <div class="f"><label for="marca">Marca *</label><input id="marca" list="marcas" required placeholder="Ex.: Volkswagen" autocomplete="off"></div>
+        <div class="f"><label for="modelo">Modelo *</label><input id="modelo" list="modelos" required placeholder="Ex.: Gol" autocomplete="off"></div>
         <div class="f full"><label for="versao">Versão</label><input id="versao" placeholder="Ex.: 1.0 MPI Flex"></div>
         <div class="f"><label for="ano">Ano fab/mod *</label><input id="ano" required placeholder="2019/2020" inputmode="numeric"></div>
         <div class="f"><label for="km">Km</label><input id="km" inputmode="numeric" placeholder="85.000"></div>
         <div class="f"><label for="cambio">Câmbio</label><select id="cambio"><option>Manual</option><option>Automático</option><option>CVT</option><option>Automatizado</option></select></div>
         <div class="f"><label for="comb">Combustível</label><select id="comb"><option>Flex</option><option>Gasolina</option><option>Diesel</option><option>Híbrido</option><option>Elétrico</option><option>GNV</option></select></div>
         <div class="f"><label for="cor">Cor</label><input id="cor" placeholder="Prata"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Itens e documentação</legend>
+        <div class="f"><label for="chaveCopia">Chave cópia</label><select id="chaveCopia"><option value="">Não informado</option><option value="sim">Tem</option><option value="nao">Não tem</option></select></div>
+        <div class="f"><label for="manual">Manual do proprietário</label><select id="manual"><option value="">Não informado</option><option value="sim">Tem</option><option value="nao">Não tem</option></select></div>
+        <div class="f full"><label for="cautelar">Laudo cautelar</label><select id="cautelar"><option value="">Não informado</option><option value="aprovada">Aprovado</option><option value="apontamento">Aprovado com apontamento</option><option value="reprovada">Reprovado</option><option value="nao">Não tem laudo</option></select></div>
       </fieldset>
       <fieldset>
         <legend>Valores</legend>
@@ -437,6 +489,21 @@ form.login{max-width:420px;margin:28px 0 56px}
       </div>
       <div class="rows" id="rows"></div>
     </section>
+  </div>
+
+  <!-- reservas -->
+  <div class="wrap" id="reservasView" hidden>
+    <div class="res-sum" id="resSum"></div>
+    <div class="listhead">
+      <input id="rBusca" type="search" placeholder="Buscar cliente, carro, loja ou código" aria-label="Buscar reserva">
+      <div class="seg" role="group" aria-label="Filtrar reservas" id="rSeg">
+        <button type="button" data-rf="aguardando" aria-pressed="true">Aguardando Pix</button>
+        <button type="button" data-rf="pago" aria-pressed="false">Pagas</button>
+        <button type="button" data-rf="cancelado" aria-pressed="false">Canceladas</button>
+        <button type="button" data-rf="todos" aria-pressed="false">Todas</button>
+      </div>
+    </div>
+    <div class="rows" id="rRows"></div>
   </div>
 
   <!-- lojistas (só administrador) -->
@@ -477,26 +544,60 @@ form.login{max-width:420px;margin:28px 0 56px}
   </div>
 </div>
 
+<div class="modal" id="resModal" hidden role="dialog" aria-modal="true" aria-labelledby="resTitle">
+  <div class="modal-box">
+    <button type="button" class="modal-x" data-close aria-label="Fechar">✕</button>
+    <div id="resStep1">
+      <span class="eyebrow-s">Reservar com sinal</span>
+      <h2 id="resTitle">Reservar este carro</h2>
+      <div class="res-car" id="resCar"></div>
+      <div class="res-fee" id="resFee"></div>
+      <form id="resForm" novalidate>
+        <div class="f"><label for="rNome">Seu nome ou da sua loja *</label><input id="rNome" autocomplete="name" required></div>
+        <div class="f"><label for="rFone">WhatsApp *</label><input id="rFone" inputmode="tel" autocomplete="tel" required placeholder="(48) 99999-0000"></div>
+        <div class="f"><label for="rDoc">CPF ou CNPJ</label><input id="rDoc" inputmode="numeric" placeholder="Opcional"></div>
+        <label class="check"><input type="checkbox" id="rAceite"> <span>Entendo que o sinal é a comissão do Pátio Repasses, que a reserva vale depois da confirmação do Pix e que o restante do valor é negociado direto com a loja.</span></label>
+        <button type="submit" class="btn btn-y" id="rEnviar">Quero reservar</button>
+        <div class="msg" id="rMsg" role="status"></div>
+      </form>
+    </div>
+    <div id="resStep2" hidden></div>
+  </div>
+</div>
+
+<div class="modal" id="avisoModal" hidden role="dialog" aria-modal="true" aria-labelledby="avisoTitle">
+  <div class="modal-box aviso">
+    <button type="button" class="modal-x" data-close aria-label="Fechar">✕</button>
+    <img src="/logo.png" alt="" width="96" height="96">
+    <span class="eyebrow-s">Fase de testes</span>
+    <h2 id="avisoTitle">Bem-vindo ao Pátio Repasses</h2>
+    <p>Estamos em fase de testes, então você pode encontrar ajustes acontecendo e poucos carros por enquanto.</p>
+    <p>Entre no nosso grupo de WhatsApp para receber os repasses em primeira mão e ajudar a construir o portal.</p>
+    <div class="btns">
+      <a class="btn btn-y" id="avisoGrupo" target="_blank" rel="noopener" href="#" hidden>Entrar no grupo</a>
+      <button type="button" class="btn-ghost" data-close>Continuar no site</button>
+    </div>
+  </div>
+</div>
+
 <footer>
   <div class="wrap">
-    <div><div class="flogo"><img src="/logo.png" alt="" width="52" height="52"><h4>Pátio Repasses</h4></div><p>Portal de repasses de veículos entre lojistas do Paraná, Santa Catarina e Rio Grande do Sul. A negociação é feita direto com a loja anunciante.</p></div>
+    <div><div class="flogo"><img src="/logo.png" alt="" width="52" height="52"><h4>Pátio Repasses</h4></div><p>Portal de repasses de veículos do Paraná, Santa Catarina e Rio Grande do Sul. O cliente reserva com sinal pelo Pátio e fecha o negócio com a loja anunciante.</p></div>
     <div><h4>Portal</h4><ul><li><a href="#inicio">Comprar repasse</a></li><li><a href="#anunciar">Área do lojista</a></li><li><a href="#lojistas">Para lojistas</a></li></ul></div>
     <div><h4>Estados</h4><ul><li>Paraná</li><li>Santa Catarina</li><li>Rio Grande do Sul</li></ul></div>
-    <div class="legal">Os preços e informações dos veículos são de responsabilidade de cada loja anunciante.</div>
+    <div class="legal">Os preços e informações dos veículos são de responsabilidade de cada loja anunciante. O sinal pago ao Pátio Repasses é a comissão pela intermediação.</div>
   </div>
 </footer>
 
-<datalist id="marcas">
-  <option>Chevrolet</option><option>Fiat</option><option>Volkswagen</option><option>Ford</option><option>Toyota</option>
-  <option>Honda</option><option>Hyundai</option><option>Renault</option><option>Jeep</option><option>Nissan</option>
-  <option>Peugeot</option><option>Citroën</option><option>Mitsubishi</option><option>BYD</option><option>Caoa Chery</option>
-</datalist>
+<datalist id="marcas"></datalist>
+<datalist id="modelos"></datalist>
 <datalist id="cidades">
   <option>Curitiba/PR</option><option>Londrina/PR</option><option>Maringá/PR</option><option>Paranaguá/PR</option><option>Matinhos/PR</option>
   <option>Joinville/SC</option><option>Florianópolis/SC</option><option>Blumenau/SC</option><option>Criciúma/SC</option><option>Chapecó/SC</option>
   <option>Porto Alegre/RS</option><option>Caxias do Sul/RS</option><option>Pelotas/RS</option><option>Passo Fundo/RS</option>
 </datalist>
 
+<script src="/modelos.js"></script>
 <script>
 (function(){
   const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
@@ -513,6 +614,24 @@ form.login{max-width:420px;margin:28px 0 56px}
   const wa=(fone,txt)=>`https://wa.me/${digits(fone).length<=11?'55':''}${digits(fone)}${txt?'?text='+encodeURIComponent(txt):''}`;
   const CAR=`<svg viewBox="0 0 120 50" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" aria-hidden="true"><path d="M8 36h8m22 0h44m22 0h8V28c0-3-2-5-5-6l-14-3-13-9c-2-1-4-2-7-2H42c-3 0-5 1-7 3l-9 9-14 3c-3 1-4 3-4 6v7z"/><circle cx="27" cy="37" r="7"/><circle cx="93" cy="37" r="7"/><path d="M38 19l7-7h12v7zM63 12h9l11 7H63z"/></svg>`;
 
+  const CAUT={aprovada:['Cautelar aprovada','ok'],apontamento:['Cautelar c/ apontamento','warn'],reprovada:['Cautelar reprovada','bad'],nao:['Sem cautelar','']};
+  function itensChips(i){
+    const c=[];
+    if(i.chaveCopia==='sim')c.push(['Chave cópia','ok']); else if(i.chaveCopia==='nao')c.push(['Sem chave cópia','']);
+    if(i.manual==='sim')c.push(['Manual','ok']); else if(i.manual==='nao')c.push(['Sem manual','']);
+    if(CAUT[i.cautelar])c.push(CAUT[i.cautelar]);
+    return c.length?`<div class="chips">${c.map(([t,k])=>`<span class="chip ${k}">${esc(t)}</span>`).join('')}</div>`:'';
+  }
+  const dataBR=d=>{const [y,m,dd]=String(d).split('-');return dd+'/'+m;};
+  const waLink=v=>/^https?:/.test(v||'')?v:(digits(v).length>=10?wa(v):'');
+
+  /* ---------- marcas e modelos ---------- */
+  const M=window.MODELOS||{};
+  $('#marcas').innerHTML=Object.keys(M).map(m=>`<option value="${esc(m)}">`).join('');
+  function syncModelos(){const k=Object.keys(M).find(m=>m.toLowerCase()===$('#marca').value.trim().toLowerCase());
+    $('#modelos').innerHTML=(k?M[k]:[]).map(m=>`<option value="${esc(m)}">`).join('');}
+  $('#marca').addEventListener('input',syncModelos);
+
   /* ---------- sessão e API ---------- */
   const LS={get:k=>{try{return localStorage.getItem(k)}catch(_){return null}},set:(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(_){}}};
   let token=LS.get('pr_token')||'', me=null; // me = {role, loja}
@@ -524,6 +643,7 @@ form.login{max-width:420px;margin:28px 0 56px}
     return j;
   }
 
+  let cfg={}, reservas=[], rFiltro='aguardando', rConfirm=null;
   let items=[], meus=[], lojistas=[], loaded=false, editId=null, confirmDel=null, lEditId=null, lConfirm=null;
   const fil={marca:'',modelo:'',max:null,uf:''}; let ordem='recentes', pFiltro='todos', lFiltro='todos', tab='repasses';
 
@@ -550,7 +670,7 @@ form.login{max-width:420px;margin:28px 0 56px}
     fil[k]=k==='max'?null:''; const map={marca:'#sMarca',modelo:'#sModelo',max:'#sMax',uf:'#sUf'}; $(map[k]).value=''; renderVitrine();});
   function syncMarcaSelect(){
     const sel=$('#sMarca'), cur=sel.value||fil.marca;
-    const marcas=[...new Set(['Chevrolet','Fiat','Volkswagen','Hyundai','Toyota','Renault','Ford','Honda','Jeep',...items.map(i=>i.marca).filter(Boolean)])].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+    const marcas=[...new Set([...Object.keys(M),...items.map(i=>i.marca).filter(Boolean)])].sort((a,b)=>a.localeCompare(b,'pt-BR'));
     sel.innerHTML='<option value="">Todas</option>'+marcas.map(m=>`<option ${m===cur?'selected':''}>${esc(m)}</option>`).join('');
   }
   function kpis(){
@@ -586,8 +706,9 @@ form.login{max-width:420px;margin:28px 0 56px}
           <div class="specs">${specs}</div>
           <div class="price">${brl(i.preco)}</div>
           ${i.fipe?`<div class="fipe">FIPE ${brl(i.fipe)}${p>0?` · <b>${fmtPct(p)} abaixo</b>`:''}</div>`:''}
+          ${itensChips(i)}
           <div class="seller"><div><strong>${esc(i.loja)}</strong>${i.cidade?'<br>'+esc(i.cidade):''}</div>
-            ${i.whatsapp?`<a class="wa" target="_blank" rel="noopener" href="${wa(i.whatsapp,`Olá! Vi o repasse do ${i.marca} ${i.modelo} ${i.ano} no Pátio Repasses.`)}">WhatsApp</a>`:''}</div>
+            ${st==='reservado'?'<button type="button" class="btn-res" disabled>Reservado</button>':`<button type="button" class="btn-res" data-res="${i.id}">Reservar com sinal</button>`}</div>
         </div></article>`;
     }).join('');
   }
@@ -597,8 +718,50 @@ form.login{max-width:420px;margin:28px 0 56px}
     catch(e){ loaded=true; note.hidden=false; note.textContent='Não foi possível carregar os repasses agora. Tente recarregar a página.'; }
     syncMarcaSelect(); kpis(); renderVitrine();
   }
-  // botão "Quero ser parceiro" usa o WhatsApp configurado no Netlify
-  api('/api/config').then(c=>{ if(c&&c.contatoWhatsapp){ const b=$('#btnParceiro'); b.href=wa(c.contatoWhatsapp,'Olá! Tenho uma loja e quero anunciar meus repasses no Pátio Repasses.'); b.hidden=false; } }).catch(()=>{});
+  /* ---------- configuração, aviso de testes ---------- */
+  api('/api/config').then(c=>{ cfg=c||{};
+    if(cfg.contatoWhatsapp){ const b=$('#btnParceiro'); b.href=wa(cfg.contatoWhatsapp,'Olá! Tenho uma loja e quero anunciar meus repasses no Pátio Repasses.'); b.hidden=false; }
+    const g=waLink(cfg.grupoWhatsapp)||(cfg.contatoWhatsapp?wa(cfg.contatoWhatsapp,'Olá! Quero entrar no grupo do Pátio Repasses.'):'');
+    if(g){ $('#avisoGrupo').href=g; $('#avisoGrupo').hidden=false; }
+  }).catch(()=>{});
+  function abrir(id){ $(id).hidden=false; document.body.style.overflow='hidden'; }
+  function fechar(m){ m.hidden=true; if(![...$$('.modal')].some(x=>!x.hidden)) document.body.style.overflow=''; }
+  $$('.modal').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m||e.target.closest('[data-close]')) fechar(m); }));
+  addEventListener('keydown',e=>{ if(e.key==='Escape') $$('.modal').forEach(m=>{ if(!m.hidden) fechar(m); }); });
+  if(location.hash.slice(1)!=='anunciar' && !LS.get('pr_aviso_v1')){ setTimeout(()=>abrir('#avisoModal'),600); LS.set('pr_aviso_v1','1'); }
+
+  /* ---------- reserva com sinal (cliente comprador) ---------- */
+  let resCarro=null;
+  $('#vitrineGrid').addEventListener('click',e=>{ const b=e.target.closest('[data-res]'); if(!b) return;
+    resCarro=items.find(x=>x.id===b.dataset.res); if(!resCarro) return;
+    const i=resCarro, t=cfg.taxa||{valor:1900};
+    $('#resCar').innerHTML=`<b>${esc(i.marca)} ${esc(i.modelo)} ${esc(i.ano)}</b>${esc(i.versao||'')} · ${brl(i.preco)} · ${esc(i.loja)}, ${esc(i.cidade)}`;
+    $('#resFee').innerHTML=`Sinal para reservar (comissão do Pátio)<strong>${brl(t.valor)}</strong>${t.promo?`<s>${brl(t.cheia)}</s> Promoção de lançamento até ${dataBR(t.promoAte)}.`:''} O restante você negocia direto com a loja.`;
+    $('#resStep1').hidden=false; $('#resStep2').hidden=true; $('#rMsg').textContent=''; $('#rAceite').checked=false;
+    abrir('#resModal'); setTimeout(()=>$('#rNome').focus(),50);
+  });
+  $('#resForm').addEventListener('submit',async e=>{
+    e.preventDefault(); const m=$('#rMsg'), b=$('#rEnviar');
+    const d={repasseId:resCarro&&resCarro.id,nome:$('#rNome').value.trim(),whatsapp:$('#rFone').value.trim(),documento:$('#rDoc').value.trim(),aceite:$('#rAceite').checked};
+    if(!d.nome||digits(d.whatsapp).length<10){m.className='msg err';m.textContent='Preencha seu nome e um WhatsApp com DDD.';return;}
+    if(!d.aceite){m.className='msg err';m.textContent='Marque a caixa confirmando que leu as condições do sinal.';return;}
+    b.disabled=true;
+    try{
+      const r=await api('/api/reservas',{method:'POST',body:JSON.stringify(d)});
+      const R=r.reserva, txt=`Olá! Fiz a reserva ${R.codigo} do ${R.carro} no Pátio Repasses e paguei o sinal de ${brl(R.valor)}. Segue o comprovante.`;
+      $('#resStep2').innerHTML=`<span class="eyebrow-s">Reserva ${esc(R.codigo)}</span>
+        <h2>Falta só o Pix do sinal</h2>
+        ${r.pix.chave?`<dl class="pix"><dt>Valor</dt><dd class="big">${brl(R.valor)}</dd><dt>Chave Pix</dt><dd>${esc(r.pix.chave)}</dd>${r.pix.nome?`<dt>Favorecido</dt><dd>${esc(r.pix.nome)}</dd>`:''}<dt>Código da reserva</dt><dd>${esc(R.codigo)}</dd></dl>`
+          :`<p>Nossa equipe vai te chamar no WhatsApp com os dados do Pix. Seu código de reserva é <b>${esc(R.codigo)}</b>.</p>`}
+        <p class="hint" style="margin:0">O carro fica reservado para você assim que confirmarmos o pagamento. Depois disso, passamos o seu contato para a loja fechar o negócio.</p>
+        <div class="btns">${r.pix.chave?`<button type="button" class="btn btn-dark" id="pixCopy">Copiar chave Pix</button>`:''}
+        ${r.contatoWhatsapp?`<a class="btn btn-y" target="_blank" rel="noopener" href="${wa(r.contatoWhatsapp,txt)}">Enviar comprovante</a>`:''}</div>`;
+      $('#resStep1').hidden=true; $('#resStep2').hidden=false;
+      const pc=$('#pixCopy'); if(pc) pc.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(r.pix.chave);pc.textContent='Chave copiada';}catch(_){pc.textContent='Copie a chave acima';}});
+      $('#resForm').reset();
+    }catch(err){ m.className='msg err'; m.textContent=err.message; }
+    finally{ b.disabled=false; }
+  });
 
   /* ---------- login / painel ---------- */
   function sair(m){ token=''; me=null; LS.set('pr_token',null); showPanel(); if(m){ $('#loginMsg').className='msg err'; $('#loginMsg').textContent=m; } }
@@ -607,24 +770,25 @@ form.login{max-width:420px;margin:28px 0 56px}
     const logado=!!token;
     $('#pActs').hidden=!logado; $('#senhaBox').hidden=true;
     if(!logado){
-      $('#loginBox').hidden=false; $('#painel').hidden=true; $('#lojistasView').hidden=true; $('#pTabs').hidden=true;
+      $('#loginBox').hidden=false; $('#painel').hidden=true; $('#lojistasView').hidden=true; $('#reservasView').hidden=true; $('#pTabs').hidden=true;
       $('#pTitle').textContent='Área do lojista'; $('#pSub').textContent='Entre com o usuário e a senha que você recebeu do Pátio Repasses.';
       return;
     }
     $('#loginBox').hidden=true;
     if(!me){ try{ me=await api('/api/me'); }catch(_){ return; } }
     const admin=me.role==='admin';
-    $('#btnSenha').hidden=admin; $('#pTabs').hidden=!admin;
+    $('#btnSenha').hidden=admin; $('#pTabs').hidden=false; $('#tabLojistas').hidden=!admin;
     $('#pTitle').textContent=admin?'Painel do administrador':me.loja.nome;
     $('#pSub').textContent=admin?'Cadastre lojistas, acompanhe e edite todos os repasses do portal.':'Cadastre os carros da loja e atualize preço e situação. O que estiver disponível ou reservado aparece na vitrine.';
     $('#lojaInfo').hidden=admin; $('#lojaSelWrap').hidden=!admin;
     if(!admin) $('#lojaInfo').innerHTML=`<b>Anunciando como ${esc(me.loja.nome)}</b><span>${esc(me.loja.cidade)} · WhatsApp ${esc(me.loja.whatsapp)}</span>`;
-    if(!admin) tab='repasses';
+    if(!admin&&tab==='lojistas') tab='repasses';
+    $('#rSeg').hidden=!admin; $('#resSum').hidden=!admin; $('#rBusca').hidden=!admin;
     showTab();
-    carregarMeus(); if(admin) carregarLojistas();
+    carregarMeus(); carregarReservas(); if(admin) carregarLojistas();
   }
   function showTab(){
-    $('#painel').hidden=tab!=='repasses'; $('#lojistasView').hidden=tab!=='lojistas';
+    $('#painel').hidden=tab!=='repasses'; $('#lojistasView').hidden=tab!=='lojistas'; $('#reservasView').hidden=tab!=='reservas';
     $$('[data-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===tab)));
   }
   $$('[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;showTab();}));
@@ -678,9 +842,9 @@ form.login{max-width:420px;margin:28px 0 56px}
   function calcFipe(){const p=pctOff(toInt($('#preco').value),toInt($('#fipe').value)),el=$('#fipeCalc');
     if(p===null){el.textContent='';return;}
     el.innerHTML=p>=0?`<strong>${fmtPct(p)} abaixo</strong> da tabela FIPE`:`<strong class="above">${fmtPct(p)} acima</strong> da tabela FIPE`;}
-  function lerForm(){const r={placa:normPlaca($('#placaFull').value),marca:$('#marca').value.trim(),modelo:$('#modelo').value.trim(),versao:$('#versao').value.trim(),ano:$('#ano').value.trim(),km:toInt($('#km').value),cambio:$('#cambio').value,combustivel:$('#comb').value,cor:$('#cor').value.trim(),preco:toInt($('#preco').value),fipe:toInt($('#fipe').value),obs:$('#obs').value.trim()};
+  function lerForm(){const r={placa:normPlaca($('#placaFull').value),marca:$('#marca').value.trim(),modelo:$('#modelo').value.trim(),versao:$('#versao').value.trim(),ano:$('#ano').value.trim(),km:toInt($('#km').value),cambio:$('#cambio').value,combustivel:$('#comb').value,cor:$('#cor').value.trim(),preco:toInt($('#preco').value),fipe:toInt($('#fipe').value),obs:$('#obs').value.trim(),chaveCopia:$('#chaveCopia').value,manual:$('#manual').value,cautelar:$('#cautelar').value};
     if(me&&me.role==='admin') r.lojistaId=$('#lojaSel').value; return r;}
-  function preencher(r){$('#placaFull').value=r.placa||'';$('#marca').value=r.marca||'';$('#modelo').value=r.modelo||'';$('#versao').value=r.versao||'';$('#ano').value=r.ano||'';$('#km').value=r.km!=null?r.km.toLocaleString('pt-BR'):'';$('#cambio').value=r.cambio||'Manual';$('#comb').value=r.combustivel||'Flex';$('#cor').value=r.cor||'';$('#preco').value=r.preco!=null?brl(r.preco):'';$('#fipe').value=r.fipe!=null?brl(r.fipe):'';$('#obs').value=r.obs||'';if(r.lojistaId)$('#lojaSel').value=r.lojistaId;calcFipe();}
+  function preencher(r){$('#placaFull').value=r.placa||'';$('#marca').value=r.marca||'';$('#modelo').value=r.modelo||'';$('#versao').value=r.versao||'';$('#ano').value=r.ano||'';$('#km').value=r.km!=null?r.km.toLocaleString('pt-BR'):'';$('#cambio').value=r.cambio||'Manual';$('#comb').value=r.combustivel||'Flex';$('#cor').value=r.cor||'';$('#preco').value=r.preco!=null?brl(r.preco):'';$('#fipe').value=r.fipe!=null?brl(r.fipe):'';$('#obs').value=r.obs||'';$('#chaveCopia').value=r.chaveCopia||'';$('#manual').value=r.manual||'';$('#cautelar').value=r.cautelar||'';syncModelos();if(r.lojistaId)$('#lojaSel').value=r.lojistaId;calcFipe();}
   function limpar(){const loja=$('#lojaSel').value;$('#form').reset();$('#lojaSel').value=loja;calcFipe();$('#placaHint').textContent=PH;$('#placaHint').style.color='';
     editId=null;$('#formTitle').textContent='Novo repasse';$('#btnSalvar').textContent='Cadastrar repasse';$('#btnCancelar').hidden=true;}
   function msg(t,c){const m=$('#formMsg');m.textContent=t;m.className='msg '+(c||'');}
@@ -714,6 +878,7 @@ form.login{max-width:420px;margin:28px 0 56px}
         <h3>${esc(i.marca)} ${esc(i.modelo)} <span class="pill ${st}">${STATUS[st]}</span></h3>
         <div class="pr">${brl(i.preco)}<small>${i.fipe?'FIPE '+brl(i.fipe):'sem FIPE'}${off}</small></div>
         <div class="specs"><span><b>${esc(i.placa)}</b></span>${i.versao?`<span>${esc(i.versao)}</span>`:''}<span>${esc(i.ano)}</span>${i.km!=null?`<span>${i.km.toLocaleString('pt-BR')} km</span>`:''}<span>${esc(i.cambio)}</span>${i.cor?`<span>${esc(i.cor)}</span>`:''}</div>
+        ${itensChips(i)?`<div style="grid-column:1/-1">${itensChips(i)}</div>`:''}
         ${i.obs?`<p class="obs">${esc(i.obs)}</p>`:''}
         <div class="meta"><div>${admin?`<strong>${esc(i.loja)}</strong> · ${esc(i.cidade)}`:`Cadastrado em ${new Date(i.criadoEm).toLocaleDateString('pt-BR')}`}</div>
           <div class="actions">
@@ -733,6 +898,62 @@ form.login{max-width:420px;margin:28px 0 56px}
     if(t.hasAttribute('data-delno')){confirmDel=null;renderRows();}
     if(t.dataset.delok){const id=t.dataset.delok;confirmDel=null;try{await api('/api/repasses/'+id,{method:'DELETE'});if(editId===id)limpar();await carregarMeus();carregarVitrine();}catch(_){renderRows();}}
   });
+
+  /* ---------- reservas ---------- */
+  async function carregarReservas(){ try{ reservas=await api('/api/reservas'); }catch(_){ return; } renderReservas(); }
+  $$('[data-rf]').forEach(b=>b.addEventListener('click',()=>{rFiltro=b.dataset.rf;$$('[data-rf]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));renderReservas();}));
+  $('#rBusca').addEventListener('input',renderReservas);
+  function renderReservas(){
+    const admin=me&&me.role==='admin', box=$('#rRows');
+    const ag=reservas.filter(r=>r.status==='aguardando'), pg=reservas.filter(r=>r.status==='pago');
+    const badge=$('#resBadge'); const n=admin?ag.length:pg.length; badge.textContent=n; badge.hidden=!n;
+    if(admin) $('#resSum').innerHTML=`<div><b>${ag.length}</b><span>aguardando Pix · ${brl(ag.reduce((a,r)=>a+r.valor,0))}</span></div>
+      <div><b>${brl(pg.reduce((a,r)=>a+r.valor,0))}</b><span>em comissões recebidas</span></div>
+      <div><b>${pg.length}</b><span>${pg.length===1?'carro reservado':'carros reservados'} com sinal</span></div>`;
+    let list=admin?reservas.filter(r=>rFiltro==='todos'||r.status===rFiltro):reservas;
+    const q=$('#rBusca').value.trim().toLowerCase();
+    if(admin&&q) list=list.filter(r=>[r.codigo,r.nome,r.whatsapp,r.carro,r.placa,r.loja].join(' ').toLowerCase().includes(q));
+    if(!list.length){ box.innerHTML=admin
+      ?`<div class="empty"><h3>Nenhuma reserva aqui</h3><p>Quando um cliente clicar em "Reservar com sinal" na vitrine, o pedido aparece em Aguardando Pix.</p></div>`
+      :`<div class="empty"><h3>Nenhuma reserva ainda</h3><p>Quando um cliente pagar o sinal de um carro seu, o contato dele aparece aqui para você fechar o negócio.</p></div>`; return; }
+    const lojaFone=id=>(lojistas.find(l=>l.id===id)||{}).whatsapp;
+    const NOME={aguardando:'Aguardando Pix',pago:'Paga',cancelado:'Cancelada'};
+    box.innerHTML=list.map(r=>{
+      const quando=new Date(r.pagoEm||r.criadoEm).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+      const msgCli=`Olá, ${r.nome.split(' ')[0]}! Aqui é do Pátio Repasses, sobre a reserva ${r.codigo} do ${r.carro}.`;
+      if(!admin) return `<article class="row pago">
+        <h3>${esc(r.carro)} <span class="pill pago">Reservado com sinal</span></h3>
+        <div class="pr">${brl(r.preco)}<small>preço anunciado</small></div>
+        <div class="specs"><span>Cliente: <b>${esc(r.nome)}</b></span><span>${esc(r.whatsapp)}</span><span>Placa ${esc(r.placa)}</span><span>Código ${esc(r.codigo)}</span></div>
+        <div class="meta"><div>Sinal confirmado em ${quando}</div><div class="actions"><a class="okb" target="_blank" rel="noopener" href="${wa(r.whatsapp,`Olá, ${r.nome.split(' ')[0]}! Sou da ${me.loja.nome}, sobre o ${r.carro} que você reservou no Pátio Repasses (${r.codigo}).`)}">Chamar cliente</a></div></div>
+      </article>`;
+      const fl=lojaFone(r.lojistaId);
+      let acoes=`<a target="_blank" rel="noopener" href="${wa(r.whatsapp,msgCli)}">WhatsApp cliente</a>`;
+      if(fl) acoes+=`<a target="_blank" rel="noopener" href="${wa(fl,`Olá! Aqui é do Pátio Repasses. O ${r.carro} (placa ${r.placa}) foi reservado com sinal pelo cliente ${r.nome}, WhatsApp ${r.whatsapp}. Reserva ${r.codigo}.`)}">WhatsApp loja</a>`;
+      if(r.status==='aguardando') acoes+=rConfirm===r.id
+        ?`<button type="button" class="okb" data-rpago="${r.id}">Confirmar: Pix recebido</button><button type="button" data-rno>Não</button>`
+        :`<button type="button" class="okb" data-rpre="${r.id}">Pix recebido</button><button type="button" class="danger" data-rset="cancelado" data-rid="${r.id}">Cancelar</button>`;
+      if(r.status==='pago') acoes+=`<button type="button" class="danger" data-rset="cancelado" data-rid="${r.id}">Cancelar reserva</button>`;
+      if(r.status==='cancelado') acoes+=`<button type="button" data-rset="aguardando" data-rid="${r.id}">Reabrir</button>`;
+      return `<article class="row ${r.status==='cancelado'?'vendido':''}">
+        <h3>${esc(r.carro)} <span class="pill ${r.status}">${NOME[r.status]}</span></h3>
+        <div class="pr">${brl(r.valor)}<small>sinal${r.promo?' · promoção':''}</small></div>
+        <div class="specs"><span><b>${esc(r.codigo)}</b></span><span>Cliente: <b>${esc(r.nome)}</b></span><span>${esc(r.whatsapp)}</span>${r.documento?`<span>${esc(r.documento)}</span>`:''}<span>Loja: ${esc(r.loja)}</span><span>Placa ${esc(r.placa)}</span></div>
+        <div class="meta"><div>${r.status==='pago'?'Pago em':'Pedido em'} ${quando}</div><div class="actions">${acoes}</div></div>
+      </article>`;
+    }).join('');
+  }
+  $('#rRows').addEventListener('click',async e=>{
+    const t=e.target.closest('button'); if(!t) return;
+    if(t.dataset.rpre){ rConfirm=t.dataset.rpre; renderReservas(); return; }
+    if(t.hasAttribute('data-rno')){ rConfirm=null; renderReservas(); return; }
+    const id=t.dataset.rpago||t.dataset.rid, status=t.dataset.rpago?'pago':t.dataset.rset; if(!id||!status) return;
+    rConfirm=null; t.disabled=true;
+    try{ await api('/api/reservas/'+id,{method:'PUT',body:JSON.stringify({status})}); }
+    catch(err){ alertMsg(err.message); }
+    await carregarReservas(); carregarMeus(); carregarVitrine();
+  });
+  function alertMsg(t){ const b=$('#rRows'); const d=document.createElement('div'); d.className='msg err'; d.textContent=t; b.prepend(d); setTimeout(()=>d.remove(),5000); }
 
   /* ---------- lojistas (administrador) ---------- */
   async function carregarLojistas(){

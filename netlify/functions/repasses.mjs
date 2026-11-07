@@ -1,13 +1,15 @@
-// Anúncios de repasse. Cada anúncio pertence a um lojista; nome, WhatsApp e cidade vêm do cadastro da loja.
-//   GET    /api/repasses           vitrine pública (só lojas ativas, sem vendidos, sem a placa completa)
+// Anúncios de repasse. Cada anúncio pertence a um lojista; nome e cidade vêm do cadastro da loja.
+//   GET    /api/repasses           vitrine pública (só lojas ativas, sem vendidos, sem placa completa e sem contato da loja)
 //   GET    /api/repasses?meus=1    lojista: os dele | admin: todos            (exige login)
 //   POST   /api/repasses           cria   (lojista: na própria loja | admin: informa lojistaId)
 //   PUT    /api/repasses/:id       edita  (dono ou admin)
 //   DELETE /api/repasses/:id       apaga  (dono ou admin)
 import { store, todos, json, corpo, sessao } from "../lib/core.mjs";
 
-const CAMPOS = ["placa","marca","modelo","versao","ano","km","cambio","combustivel","cor","preco","fipe","obs","status"];
+const CAMPOS = ["placa","marca","modelo","versao","ano","km","cambio","combustivel","cor","preco","fipe","obs","status","chaveCopia","manual","cautelar"];
 const STATUS = ["disponivel","reservado","vendido"];
+const SIM_NAO = ["sim","nao",""];
+const CAUTELAR = ["aprovada","apontamento","reprovada","nao",""];
 
 export default async (req, context) => {
   const st = store("repasses");
@@ -32,7 +34,7 @@ export default async (req, context) => {
   if (req.method === "POST") {
     const b = await corpo(req); if (!b) return json({ erro: "Dados inválidos." }, 400);
     const r = limpar(b);
-    let lojistaId = s.role === "lojista" ? s.lojista.id : String(b.lojistaId || "");
+    const lojistaId = s.role === "lojista" ? s.lojista.id : String(b.lojistaId || "");
     if (s.role === "admin") {
       const l = await store("lojistas").get(lojistaId, { type: "json" });
       if (!l) return json({ erro: "Escolha a loja dona do carro." }, 400);
@@ -81,6 +83,8 @@ function limpar(b, parcial = false) {
     o[c] = v;
   }
   if (o.placa) o.placa = o.placa.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 7);
+  for (const c of ["chaveCopia", "manual"]) if (c in o && !SIM_NAO.includes(o[c] ?? "")) o[c] = "";
+  if ("cautelar" in o && !CAUTELAR.includes(o.cautelar ?? "")) o.cautelar = "";
   if (!parcial || "status" in b) o.status = STATUS.includes(o.status) ? o.status : "disponivel";
   return o;
 }
@@ -91,7 +95,8 @@ function validar(r) {
   if (falta.length) return "Preencha: " + falta.join(", ") + ".";
   if (!/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/.test(r.placa)) return "Placa inválida. Use ABC1D23 ou ABC1234.";
 }
+// Vitrine: sem placa completa e sem contato da loja (a negociação passa pelo Pátio)
 function publico(r) {
-  const { placa, lojistaId, ...resto } = r;
+  const { placa, lojistaId, whatsapp, reservaId, ...resto } = r;
   return { ...resto, placaFinal: placa ? placa.slice(-1) : "" };
 }

@@ -2,13 +2,19 @@
 // GET  /api/me           -> { role, loja }
 // PUT  /api/me/senha     { atual, nova }     (lojista troca a própria senha)
 // GET  /api/config       -> { contatoWhatsapp }  (público)
-import { store, todos, json, corpo, confereSenha, iguais, hashSenha, criarToken, sessao, lojistaPublico } from "../lib/core.mjs";
+import { store, todos, json, corpo, confereSenha, iguais, hashSenha, criarToken, sessao, lojistaPublico, taxaAgora } from "../lib/core.mjs";
 
 export default async (req) => {
   const path = new URL(req.url).pathname;
 
   if (path === "/api/config") {
-    return json({ contatoWhatsapp: process.env.CONTATO_WHATSAPP || "" });
+    return json({
+      contatoWhatsapp: process.env.CONTATO_WHATSAPP || "",
+      grupoWhatsapp: process.env.GRUPO_WHATSAPP || "",
+      pixChave: process.env.PIX_CHAVE || "",
+      pixNome: process.env.PIX_NOME || "",
+      taxa: taxaAgora(),
+    });
   }
 
   if (path === "/api/login" && req.method === "POST") {
