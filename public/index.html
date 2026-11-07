@@ -202,7 +202,7 @@ form.login{max-width:420px;margin:28px 0 56px}
 .hero .wrap{padding-block:0 30px}
 .hero-copy{max-width:min(600px,42vw);padding-block:clamp(40px,5.2vw,72px) 34px}
 .hero h1{margin:0;font-size:clamp(34px,4.4vw,66px);line-height:1.02;font-weight:800;font-style:italic;letter-spacing:-.025em;text-shadow:0 2px 24px rgba(0,0,0,.7);max-width:none}
-.hero h1 span{display:block;color:var(--yellow);font-size:1.14em;padding-bottom:.12em;background:linear-gradient(90deg,var(--yellow),rgba(255,198,0,0)) left bottom/72% 3px no-repeat}
+.hero h1 .destaque{display:block;color:var(--yellow);font-size:1.14em;padding-bottom:.12em;background:linear-gradient(90deg,var(--yellow),rgba(255,198,0,0)) left bottom/72% 3px no-repeat}
 .hero .lead{margin:20px 0 0;color:#e2e1dc!important;font-size:clamp(15.5px,1.35vw,19px);line-height:1.45;max-width:46ch;text-shadow:0 1px 12px rgba(0,0,0,.8)}
 .perks{list-style:none;margin:28px 0 0;padding:16px 0;display:flex;flex-wrap:wrap;gap:14px 0;border-bottom:1px solid transparent;border-image:linear-gradient(90deg,rgba(255,198,0,.7),rgba(255,198,0,0)) 1}
 @media (min-width:1000px){.perks{flex-wrap:nowrap;width:max-content}}
@@ -417,6 +417,77 @@ form.login{max-width:420px;margin:28px 0 56px}
 .gal-strip button[aria-current="true"]{border-color:var(--yellow);opacity:1}
 .gal-strip img{width:100%;height:100%;object-fit:cover}
 @media (prefers-reduced-motion:no-preference){.gal-main img{animation:some .25s ease}}
+
+/* ===== visual: topo, como comprar, pista ===== */
+.hero-art{overflow:hidden}
+.hero-art img{display:block;width:100%;height:auto}
+.hero h1 .l1,.hero h1 .l2{display:inline-block;color:#fff;background:none;font-size:1em;padding:0}
+#vitrine,#como-comprar,#lojistas{scroll-margin-top:72px}
+.eyebrow-y{display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--yellow)}
+.pista{height:10px;background:#141414;position:relative;overflow:hidden}
+.pista::before{content:"";position:absolute;left:-60px;right:-60px;top:50%;height:3px;transform:translateY(-50%);background:repeating-linear-gradient(90deg,var(--yellow) 0 34px,transparent 34px 60px)}
+.como{background:#0c0c0d;color:#fff;overflow:hidden}
+.como .wrap{padding-block:56px 60px}
+.como h2{margin:8px 0 34px;font-size:clamp(26px,3.4vw,38px);font-weight:800;font-style:italic;letter-spacing:-.02em}
+.passos{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;position:relative}
+.passos::before{content:"";position:absolute;top:26px;left:30px;right:30px;height:2px;background:linear-gradient(90deg,var(--yellow),rgba(255,198,0,.15));transform-origin:left}
+.passos li{position:relative;background:#161617;border:1px solid #2a2a28;border-radius:14px;padding:66px 22px 24px;display:flex;flex-direction:column;gap:8px}
+.passos .pn{position:absolute;top:6px;left:20px;width:42px;height:42px;border-radius:50%;background:var(--yellow);color:var(--black);font-weight:800;font-size:19px;display:grid;place-items:center;box-shadow:0 0 0 6px #0c0c0d}
+.passos svg{position:absolute;top:18px;right:20px;width:30px;height:30px;color:var(--yellow);opacity:.85}
+.passos b{font-size:18px}
+.passos p{margin:0;color:#b9b8b1;font-size:14.5px;line-height:1.55}
+@media (max-width:760px){.passos{grid-template-columns:minmax(0,1fr)}.passos::before{top:30px;bottom:30px;left:40px;right:auto;width:2px;height:auto;background:linear-gradient(180deg,var(--yellow),rgba(255,198,0,.15));transform-origin:top}}
+.nav .wrap{transition:padding .25s ease}
+.nav .logo img{transition:width .25s ease,height .25s ease}
+.nav.rolou{box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.nav.rolou .wrap{padding-block:8px}
+.nav.rolou .logo img{width:40px;height:40px}
+.btn-y,.btn-res{position:relative;overflow:hidden;isolation:isolate}
+.photo{overflow:hidden}
+
+@media (prefers-reduced-motion:no-preference){
+  @keyframes deLado{from{opacity:0;transform:translateX(-28px) skewX(-6deg)}to{opacity:1;transform:none}}
+  @keyframes sobe{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  @keyframes traco{from{background-size:0 3px}to{background-size:72% 3px}}
+  @keyframes carroEntra{from{opacity:0;transform:translateX(60px) scale(1.04)}to{opacity:1;transform:none}}
+  @keyframes brilho{0%{transform:translateX(-120%)}22%,100%{transform:translateX(120%)}}
+  @keyframes pop{0%{opacity:0;transform:scale(.4)}70%{transform:scale(1.12)}100%{opacity:1;transform:none}}
+  @keyframes pistaAnda{to{transform:translate(60px,-50%)}}
+  @keyframes linha{from{transform:scaleX(0)}to{transform:none}}
+  @keyframes linhaV{from{transform:scaleY(0)}to{transform:none}}
+
+  .hero h1 .l1{animation:deLado .7s .05s cubic-bezier(.2,.8,.2,1) both}
+  .hero h1 .l2{animation:deLado .7s .18s cubic-bezier(.2,.8,.2,1) both}
+  .hero h1 .destaque{animation:deLado .75s .32s cubic-bezier(.2,.8,.2,1) both,traco .8s .9s ease-out both}
+  .hero .lead{animation:sobe .6s .55s ease both}
+  .perks li{animation:sobe .55s ease both}
+  .perks li:nth-child(1){animation-delay:.7s} .perks li:nth-child(2){animation-delay:.82s} .perks li:nth-child(3){animation-delay:.94s}
+  .perks svg{animation:pop .5s ease both}
+  .perks li:nth-child(1) svg{animation-delay:.8s} .perks li:nth-child(2) svg{animation-delay:.92s} .perks li:nth-child(3) svg{animation-delay:1.04s}
+  .hero .search{animation:sobe .65s .85s cubic-bezier(.2,.8,.2,1) both}
+  .hero .brands{animation:sobe .6s 1s ease both}
+  .hero-art{animation:carroEntra 1.1s .1s cubic-bezier(.2,.8,.2,1) both}
+  .hero-art::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;
+    background:linear-gradient(105deg,transparent 38%,rgba(255,236,190,.0) 42%,rgba(255,236,190,.32) 50%,rgba(255,236,190,0) 58%,transparent 62%);
+    transform:translateX(-120%);animation:brilho 9s 1.3s ease-in-out infinite}
+  .pista::before{animation:pistaAnda 1.6s linear infinite}
+
+  .btn-y::after,.btn-res::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);transform:translateX(-120%);transition:transform .6s ease}
+  .btn-y:hover::after,.btn-res:hover::after{transform:translateX(120%)}
+  .photo img.cover{transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+  .card:hover .photo img.cover{transform:scale(1.06)}
+  .brands button{transition:transform .18s ease,border-color .18s ease,color .18s ease}
+  .brands button:hover{transform:translateY(-2px)}
+  .counter b{display:inline-block;min-width:1ch}
+
+  .rv-wait{opacity:0;transform:translateY(26px)}
+  .rv-in{opacity:1;transform:none;transition:opacity .6s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+  .passos li.rv-in:nth-child(2){transition-delay:.12s} .passos li.rv-in:nth-child(3){transition-delay:.24s}
+  .lojistas li.rv-in:nth-child(2){transition-delay:.1s} .lojistas li.rv-in:nth-child(3){transition-delay:.2s}
+  .passos.linha-on::before{animation:linha 1.1s .2s cubic-bezier(.2,.8,.2,1) both}
+  .passos li.rv-in .pn{animation:pop .5s .25s ease both}
+  @media (max-width:760px){.passos.linha-on::before{animation-name:linhaV}}
+}
 </style>
 </head>
 <body>
@@ -436,10 +507,10 @@ form.login{max-width:420px;margin:28px 0 56px}
 <!-- INÍCIO -->
 <div id="viewHome">
   <header class="hero" id="inicio">
-    <img class="hero-art" src="/banner-topo.jpg" alt="Carro preto à frente da logo do Pátio Repasses, com o mapa do Paraná, Santa Catarina e Rio Grande do Sul" width="1030" height="576">
+    <div class="hero-art"><img src="/banner-topo.jpg" alt="Carro preto à frente da logo do Pátio Repasses, com o mapa do Paraná, Santa Catarina e Rio Grande do Sul" width="1030" height="576"></div>
     <div class="wrap">
       <div class="hero-copy">
-        <h1>O maior portal de repasses do <span>Sul do Brasil</span></h1>
+        <h1><span class="l1">O maior portal de</span> <span class="l2">repasses do</span> <span class="destaque">Sul do Brasil</span></h1>
         <p class="lead">Carros de repasse anunciados por lojas do Paraná, Santa Catarina e Rio Grande do Sul, com o valor da FIPE ao lado do preço.</p>
         <ul class="perks">
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17H3v-5l2-5h14l2 5v5h-2"/><path d="M3 12h18"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/><path d="M9.5 17h5"/></svg><span>Repasses de lojas <br>confiáveis</span></li>
@@ -484,10 +555,29 @@ form.login{max-width:420px;margin:28px 0 56px}
     </div>
   </main>
 
+  <div class="pista" aria-hidden="true"></div>
+  <section class="como" id="como-comprar">
+    <div class="wrap">
+      <span class="eyebrow-y reveal">Para quem compra</span>
+      <h2 class="reveal">Como comprar um repasse</h2>
+      <ol class="passos">
+        <li class="reveal"><span class="pn">1</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>
+          <b>Escolha o carro</b><p>Filtre por marca, preço e estado. Cada anúncio mostra o valor da FIPE ao lado do preço, com fotos e itens do carro.</p></li>
+        <li class="reveal"><span class="pn">2</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg>
+          <b>Reserve com sinal</b><p>Clique em Reservar com sinal e pague por Pix. Confirmado o pagamento, o carro fica reservado para você.</p></li>
+        <li class="reveal"><span class="pn">3</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11l3 3 7-7"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>
+          <b>Feche com a loja</b><p>Passamos o seu contato para a loja anunciante e vocês acertam o restante do negócio direto.</p></li>
+      </ol>
+    </div>
+  </section>
+
   <section class="lojistas" id="lojistas">
     <div class="wrap">
       <div>
-        <h2>É lojista? Seja parceiro do Pátio</h2>
+        <h2 class="reveal">É lojista? Seja parceiro do Pátio</h2>
         <p>O cadastro das lojas é feito pela nossa equipe. Chame no WhatsApp, liberamos seu acesso e você já começa a anunciar seus repasses para lojas de todo o Sul.</p>
         <div class="btns">
           <a href="#" class="btn btn-dark" id="btnParceiro" target="_blank" rel="noopener" hidden>Quero ser parceiro</a>
@@ -495,9 +585,9 @@ form.login{max-width:420px;margin:28px 0 56px}
         </div>
       </div>
       <ul>
-        <li><div><b>Acesso da sua loja</b><span>Usuário e senha próprios. Só você mexe nos seus anúncios.</span></div></li>
-        <li><div><b>Placa preenche o carro</b><span>Digite a placa e o portal traz marca, modelo, ano e FIPE.</span></div></li>
-        <li><div><b>Comprador com sinal</b><span>O cliente reserva o carro pagando o sinal pelo Pátio. Você recebe o contato dele pronto para fechar.</span></div></li>
+        <li class="reveal"><div><b>Acesso da sua loja</b><span>Usuário e senha próprios. Só você mexe nos seus anúncios.</span></div></li>
+        <li class="reveal"><div><b>Placa preenche o carro</b><span>Digite a placa e o portal traz marca, modelo, ano e FIPE.</span></div></li>
+        <li class="reveal"><div><b>Comprador com sinal</b><span>O cliente reserva o carro pagando o sinal pelo Pátio. Você recebe o contato dele pronto para fechar.</span></div></li>
       </ul>
     </div>
   </section>
@@ -905,11 +995,11 @@ form.login{max-width:420px;margin:28px 0 56px}
     sel.innerHTML='<option value="">Todas</option>'+marcas.map(m=>`<option ${m===cur?'selected':''}>${esc(m)}</option>`).join('');
   }
   function kpis(){
-    $('#kDisp').textContent=items.filter(i=>(i.status||'disponivel')==='disponivel').length;
-    $('#kLojas').textContent=new Set(items.map(i=>(i.loja||'').trim().toLowerCase()).filter(Boolean)).size;
+    contar($('#kDisp'),items.filter(i=>(i.status||'disponivel')==='disponivel').length,v=>Math.round(v));
+    contar($('#kLojas'),new Set(items.map(i=>(i.loja||'').trim().toLowerCase()).filter(Boolean)).size,v=>Math.round(v));
     const ps=items.map(i=>pctOff(i.preco,i.fipe)).filter(p=>p!==null);
     $('#kFipeWrap').hidden=!ps.length;
-    if(ps.length) $('#kFipe').textContent=(ps.reduce((a,b)=>a+b,0)/ps.length).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%';
+    if(ps.length) contar($('#kFipe'),ps.reduce((a,b)=>a+b,0)/ps.length,v=>v.toLocaleString('pt-BR',{maximumFractionDigits:1})+'%');
   }
   function renderVitrine(){
     const g=$('#vitrineGrid');
@@ -1024,6 +1114,21 @@ form.login{max-width:420px;margin:28px 0 56px}
   });
 
   /* ---------- animações ---------- */
+  const semMov=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // menu compacto ao rolar
+  const nav=$('.nav'); const onScroll=()=>nav.classList.toggle('rolou',scrollY>24); addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // seções aparecem ao rolar (o que já está na tela fica visível desde o início)
+  if(!semMov&&'IntersectionObserver' in window){
+    const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('rv-in'); e.target.classList.remove('rv-wait'); io.unobserve(e.target);
+      const ol=e.target.closest('.passos'); if(ol) ol.classList.add('linha-on'); } }),{threshold:.15,rootMargin:'0px 0px -40px 0px'});
+    $$('.reveal').forEach(el=>{ const r=el.getBoundingClientRect(); if(r.top>innerHeight){ el.classList.add('rv-wait'); io.observe(el); } else { el.closest('.passos')?.classList.add('linha-on'); } });
+    setTimeout(()=>$$('.rv-wait').forEach(el=>{ if(el.getBoundingClientRect().top<innerHeight){ el.classList.add('rv-in'); el.classList.remove('rv-wait'); } }),2500);
+  }
+  // números da faixa amarela contam até o valor
+  function contar(el,alvo,fmt){ const de=+el.dataset.v||0; el.dataset.v=alvo;
+    if(semMov||de===alvo){ el.textContent=fmt(alvo); return; }
+    const t0=performance.now(), dur=900; const passo=t=>{ const k=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-k,3); el.textContent=fmt(de+(alvo-de)*e); if(k<1) requestAnimationFrame(passo); };
+    requestAnimationFrame(passo); }
   function animar(el){ if(!el) return; el.classList.remove('anim-in'); void el.offsetWidth; el.classList.add('anim-in'); }
 
   /* ---------- campos de senha: olho para mostrar ---------- */
