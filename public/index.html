@@ -370,6 +370,13 @@ form.login{max-width:420px;margin:28px 0 56px}
   .esqueci:not([hidden]),#credBox:not([hidden]),#uCred:not([hidden]){animation:entra .3s ease both}
   .filled{transition:background 1.2s ease}
 }
+
+.teste-api{border-top:1px dashed var(--line);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.teste-api .placa-row input{font-size:18px!important}
+.t-ok,.t-err{border-radius:8px;padding:10px 12px;font-size:14px}
+.t-ok{background:var(--ok-bg);color:var(--ok)} .t-err{background:#fbe4e2;color:var(--danger)}
+.t-try{font-size:12.5px;border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:var(--bg)}
+.t-try pre{margin:6px 0 0;white-space:pre-wrap;word-break:break-all;max-height:180px;overflow:auto;font-size:12px;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -644,12 +651,20 @@ form.login{max-width:420px;margin:28px 0 56px}
       </section>
       <section class="form">
         <h2>Consulta de placa</h2>
-        <div class="f"><label for="cApiUrl">Endereço da API</label><input id="cApiUrl" placeholder="https://api.placafipe.com.br/getplacafipe/{placa}/{token}"><span class="hint" style="margin:0">Use {placa} onde entra a placa e {token} se a chave vai no endereço.</span></div>
-        <div class="row2">
+        <div class="f"><label for="cProv">Serviço de consulta</label><select id="cProv"><option value="apibrasil">APIBrasil (apibrasil.io)</option><option value="placafipe">Placa Fipe (placafipe.com.br)</option><option value="outro">Outro serviço</option></select>
+          <span class="hint" style="margin:0" id="cProvDica"></span></div>
+        <div class="f" id="cUrlWrap"><label for="cApiUrl">Endereço da API</label><input id="cApiUrl" placeholder="https://api.placafipe.com.br/getplacafipe/{placa}/{token}"><span class="hint" style="margin:0">Use {placa} onde entra a placa e {token} se a chave vai no endereço.</span></div>
+        <div class="row2" id="cTokRow">
           <div class="f"><label for="cApiTok">Chave (token)</label><input id="cApiTok" type="password" autocomplete="off" placeholder="Não cadastrada"></div>
-          <div class="f"><label for="cApiHead">Cabeçalho da chave</label><input id="cApiHead" placeholder="Vazio se vai no endereço"></div>
+          <div class="f" id="cHeadWrap"><label for="cApiHead">Cabeçalho da chave</label><input id="cApiHead" placeholder="Vazio se vai no endereço"></div>
         </div>
         <div class="f"><label for="cCache">Guardar consultas por (dias)</label><input id="cCache" inputmode="numeric"><span class="hint" style="margin:0">Placa já consultada nesse período não gasta crédito de novo.</span></div>
+        <div class="teste-api">
+          <b>Testar a consulta</b>
+          <span class="hint" style="margin:0">Salve as configurações antes. O teste gasta 1 consulta do seu plano.</span>
+          <div class="placa-row"><input id="tPlaca" maxlength="8" autocapitalize="characters" autocomplete="off" placeholder="ABC1D23"><button type="button" class="btn btn-dark" id="tBtn">Testar</button></div>
+          <div id="tRes"></div>
+        </div>
       </section>
       <div class="cfg-save">
         <button type="submit" class="btn btn-y" id="cSalvar">Salvar configurações</button>
@@ -1211,9 +1226,18 @@ form.login{max-width:420px;margin:28px 0 56px}
     $('#cContato').value=c.contatoWhatsapp||''; $('#cGrupo').value=c.grupoWhatsapp||''; $('#cPix').value=c.pixChave||''; $('#cPixNome').value=c.pixNome||'';
     $('#cTaxa').value=c.taxaCheia??''; $('#cPromo').value=c.taxaPromo??''; $('#cPromoAte').value=c.promoAte||'';
     $('#cAvisoAtivo').checked=c.avisoAtivo!==false; $('#cAvisoTit').value=c.avisoTitulo||''; $('#cAvisoTxt').value=c.avisoTexto||'';
-    $('#cApiUrl').value=c.placaApiUrl||''; $('#cApiHead').value=c.placaApiHeader||''; $('#cApiTok').value=''; $('#cApiTok').placeholder=c.temToken?'Salva ('+c.placaApiToken+'). Digite só para trocar':'Não cadastrada';
+    $('#cProv').value=c.placaProvedor||'apibrasil'; $('#cApiUrl').value=c.placaApiUrl||''; provUI(); $('#cApiHead').value=c.placaApiHeader||''; $('#cApiTok').value=''; $('#cApiTok').placeholder=c.temToken?'Salva ('+c.placaApiToken+'). Digite só para trocar':'Não cadastrada';
     $('#cCache').value=c.placaCacheDias??30; taxaHoje();
   }
+  const PF_URL='https://api.placafipe.com.br/getplacafipe/{placa}/{token}';
+  function provUI(){ const v=$('#cProv').value;
+    $('#cUrlWrap').hidden=v==='apibrasil'; $('#cHeadWrap').hidden=v!=='outro';
+    $('#cApiTok').closest('.f').querySelector('label').textContent=v==='apibrasil'?'Bearer Token':'Chave (token)';
+    $('#cProvDica').innerHTML=v==='apibrasil'?'Pegue o <b>Bearer Token</b> em app.apibrasil.io → Credenciais → Copiar. Cada consulta usa o seu saldo da APIBrasil.'
+      :v==='placafipe'?'Use o token do seu plano da Placa Fipe.':'Preencha o endereço com {placa} e, se precisar, {token}.';
+    if(v==='placafipe'&&!/placafipe/.test($('#cApiUrl').value)) $('#cApiUrl').value=PF_URL;
+  }
+  $('#cProv').addEventListener('change',provUI);
   function taxaHoje(){ const hoje=new Date().toLocaleDateString('en-CA',{timeZone:'America/Sao_Paulo'}), ate=$('#cPromoAte').value, promo=ate&&hoje<=ate;
     $('#cTaxaHoje').textContent=`Hoje o cliente paga ${brl(toInt(promo?$('#cPromo').value:$('#cTaxa').value)||0)} de sinal${promo?' (promoção)':''}.`; }
   ['#cTaxa','#cPromo','#cPromoAte'].forEach(id=>$(id).addEventListener('input',taxaHoje));
@@ -1222,13 +1246,31 @@ form.login{max-width:420px;margin:28px 0 56px}
     const d={contatoWhatsapp:$('#cContato').value,grupoWhatsapp:$('#cGrupo').value,pixChave:$('#cPix').value,pixNome:$('#cPixNome').value,
       taxaCheia:toInt($('#cTaxa').value)||0,taxaPromo:toInt($('#cPromo').value)||0,promoAte:$('#cPromoAte').value,
       avisoAtivo:$('#cAvisoAtivo').checked,avisoTitulo:$('#cAvisoTit').value,avisoTexto:$('#cAvisoTxt').value,
-      placaApiUrl:$('#cApiUrl').value,placaApiHeader:$('#cApiHead').value,placaCacheDias:toInt($('#cCache').value)||30};
+      placaProvedor:$('#cProv').value,placaApiUrl:$('#cApiUrl').value,placaApiHeader:$('#cApiHead').value,placaCacheDias:toInt($('#cCache').value)||30};
     if($('#cApiTok').value.trim()) d.placaApiToken=$('#cApiTok').value.trim();
     if(!d.taxaCheia){ m.className='msg err'; m.textContent='Coloque o valor normal do sinal.'; return; }
     b.disabled=true;
     try{ await api('/api/admin/config',{method:'PUT',body:JSON.stringify(d)}); m.className='msg ok'; m.textContent='Configurações salvas. Já valem no site.';
       api('/api/config').then(c=>{cfg=c||cfg;}).catch(()=>{}); carregarConfig(); }
     catch(err){ m.className='msg err'; m.textContent=err.message; } finally{ b.disabled=false; }
+  });
+
+  $('#tPlaca').addEventListener('input',e=>{e.target.value=normPlaca(e.target.value);});
+  $('#tBtn').addEventListener('click',async()=>{
+    const p=normPlaca($('#tPlaca').value), box=$('#tRes'), b=$('#tBtn');
+    if(!placaOk(p)){ box.innerHTML='<div class="t-err">Digite uma placa válida: ABC1D23 ou ABC1234.</div>'; return; }
+    b.disabled=true; b.textContent='Testando…'; box.innerHTML='';
+    try{
+      const r=await api('/api/admin/placa-teste',{method:'POST',body:JSON.stringify({placa:p})});
+      const d=r.dados;
+      let h=r.ok?`<div class="t-ok"><b>Funcionou.</b> ${esc(d.marca)} ${esc(d.modelo)} ${esc(d.versao||'')} · ${esc([d.anoFab,d.anoModelo].filter(Boolean).join('/'))} · ${esc(d.cor||'')}${d.fipe?' · FIPE '+brl(d.fipe):''}</div>`
+        :`<div class="t-err"><b>Não funcionou.</b> ${esc(r.erro||'A API respondeu, mas sem marca e modelo.')}</div>`;
+      if(!r.configurado.url) h+='<div class="t-err">O endereço da API está vazio. Preencha e salve.</div>';
+      else if(!r.configurado.temToken) h+='<div class="t-err">A chave (token) não está salva. Digite, salve e teste de novo.</div>';
+      h+=r.tentativas.map(t=>`<div class="t-try"><b>${esc(t.metodo)}</b> ${esc(t.url)} → <b>${t.status||'sem resposta'}</b> em ${t.ms} ms<pre>${esc(t.corpo||'')}</pre></div>`).join('');
+      box.innerHTML=h;
+    }catch(err){ box.innerHTML=`<div class="t-err">${esc(err.message)}</div>`; }
+    finally{ b.disabled=false; b.textContent='Testar'; }
   });
 
   /* ---------- lojistas (administrador) ---------- */

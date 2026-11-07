@@ -11,6 +11,7 @@
 //   PLACA_CACHE_DIAS   (opcional) por quantos dias guardar uma consulta já feita. Padrão: 30
 
 import { store, sessao, getConfig } from "../lib/core.mjs";
+import { chamarApi } from "../lib/placa-api.mjs";
 
 const PLACA_RE = /^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/;
 
@@ -21,9 +22,7 @@ export default async (req, context) => {
   if (!(await sessao(req))) return json({ erro: "Entre como lojista para consultar placas." }, 401);
 
   const cfg = await getConfig();
-  const urlTpl = cfg.placaApiUrl;
-  const token = cfg.placaApiToken || "";
-  if (!urlTpl) return json({ erro: "A consulta de placa ainda não foi configurada. O administrador precisa preencher em Configurações." }, 500);
+  if (!cfg.placaApiToken) return json({ erro: "A consulta de placa ainda não foi configurada. O administrador precisa colocar a chave em Configurações." }, 500);
 
   // cache: placa já consultada não gasta crédito de novo
   const cache = store("placas");
@@ -31,23 +30,12 @@ export default async (req, context) => {
   const salvo = await cache.get(placa, { type: "json" }).catch(() => null);
   if (salvo && Date.now() - salvo.em < dias * 864e5) return json({ ...salvo.dados, cache: true });
 
-  const url = urlTpl.replaceAll("{placa}", placa).replaceAll("{token}", encodeURIComponent(token));
-  const headers = { Accept: "application/json" };
-  if (cfg.placaApiHeader) headers[cfg.placaApiHeader] = token;
-
-  let bruto;
-  try {
-    const r = await fetch(url, { headers, signal: AbortSignal.timeout(15000) });
-    const txt = await r.text();
-    try { bruto = JSON.parse(txt); } catch { bruto = null; }
-    if (!r.ok || !bruto) {
-      console.error("API de placa respondeu", r.status, txt.slice(0, 300));
-      return json({ erro: "A API de placas não respondeu como esperado. Tente de novo ou preencha à mão." }, 502);
-    }
-  } catch (e) {
-    console.error("Falha ao chamar API de placa", e);
-    return json({ erro: "Não foi possível falar com a API de placas agora." }, 502);
+  const resp = await chamarApi(cfg, placa);
+  if (resp.erro) {
+    console.error("Consulta de placa falhou:", JSON.stringify(resp.tentativas).slice(0, 1200));
+    return json({ erro: resp.erro }, 502);
   }
+  const bruto = resp.bruto;
 
   if (bruto && bruto.codigo !== undefined && Number(bruto.codigo) !== 1 && !bruto.informacoes_veiculo) {
     console.error("API de placa recusou:", JSON.stringify(bruto).slice(0, 300));
@@ -145,7 +133,30 @@ function limpaMarca(m) {
   return MAP[s.toUpperCase()] ?? TITLE(s);
 }
 
+/* Formato da APIBrasil (fipe-chassi): { error:false, data: { resultados: [ { marca, modelo, anoFabricacao, anoModelo,
+   combustivel, cor, codigoFipe, valor, principal, historico } ] } } */
+function apiBrasil(b, placa) {
+  const lista = b.data?.resultados || b.resultados || b.data?.data?.resultados || [];
+  const v = lista.find(x => x?.principal) || lista[0] || {};
+  const fm = String(v.modelo || "").trim();
+  const partes = fm.split(/\s+/);
+  return {
+    placa,
+    marca: limpaMarca(v.marca),
+    modelo: TITLE(partes[0] || ""),
+    versao: partes.slice(1).join(" "),
+    anoFab: v.anoFabricacao ? String(v.anoFabricacao).slice(0, 4) : "",
+    anoModelo: v.anoModelo ? String(v.anoModelo).slice(0, 4) : "",
+    cor: TITLE(v.cor),
+    combustivel: combustivel(v.combustivel),
+    fipe: dinheiro(v.valor),
+    cidade: TITLE(v.municipio || v.cidade || ""),
+    uf: String(v.uf || "").toUpperCase().slice(0, 2),
+  };
+}
+
 export function normalizar(b, placa, interno = false) {
+  if (!interno && b && (Array.isArray(b.data?.resultados) || Array.isArray(b.resultados))) return apiBrasil(b, placa);
   if (!interno && b && (b.informacoes_veiculo || (Array.isArray(b.fipe) && b.fipe[0]?.similaridade !== undefined))) return placaFipe(b, placa);
   let marca = acha(b, ["MARCA", "marca", "brand", "fabricante"]);
   let modelo = acha(b, ["MODELO", "modelo", "model"]);

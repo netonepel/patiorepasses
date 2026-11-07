@@ -8,12 +8,14 @@
 //   GET  /api/admin/log                 histórico de atividade                                 [acessos]
 import { store, todos, json, corpo, sessao, pode, PERMS, getConfig, salvarConfig, registrar,
   hashSenha, gerarSenha, slug, usuarioEmUso } from "../lib/core.mjs";
+import { chamarApi } from "../lib/placa-api.mjs";
+import { normalizar } from "./placa.mjs";
 
 const CONFIG_CAMPOS = {
   contatoWhatsapp: "texto", grupoWhatsapp: "texto", pixChave: "texto", pixNome: "texto",
   taxaCheia: "numero", taxaPromo: "numero", promoAte: "data",
   avisoAtivo: "bool", avisoTitulo: "texto", avisoTexto: "longo",
-  placaApiUrl: "texto", placaApiHeader: "texto", placaApiToken: "segredo", placaCacheDias: "numero",
+  placaProvedor: "texto", placaApiUrl: "texto", placaApiHeader: "texto", placaApiToken: "segredo", placaCacheDias: "numero",
 };
 
 export default async (req, context) => {
@@ -50,13 +52,26 @@ export default async (req, context) => {
         m.avisoVersao = (atual.avisoVersao || 1) + 1; // aviso mudou: aparece de novo para quem já tinha visto
       const NOMES = { contatoWhatsapp: "WhatsApp do Pátio", grupoWhatsapp: "link do grupo", pixChave: "chave Pix", pixNome: "favorecido do Pix",
         taxaCheia: "valor do sinal", taxaPromo: "valor da promoção", promoAte: "fim da promoção", avisoAtivo: "aviso ligado/desligado",
-        avisoTitulo: "título do aviso", avisoTexto: "texto do aviso", placaApiUrl: "endereço da API de placa", placaApiHeader: "cabeçalho da API",
+        avisoTitulo: "título do aviso", avisoTexto: "texto do aviso", placaProvedor: "serviço de placa", placaApiUrl: "endereço da API de placa", placaApiHeader: "cabeçalho da API",
         placaApiToken: "chave da API de placa", placaCacheDias: "dias de cache da placa" };
       const mudou = Object.keys(m).filter(k => NOMES[k] && m[k] !== atual[k]);
       await salvarConfig(m);
       if (mudou.length) await registrar(s, "Alterou configurações", mudou.map(k => NOMES[k]).join(", "));
       return json({ ok: true });
     }
+  }
+
+  /* ----- diagnóstico da API de placa (gasta 1 consulta, não usa cache) ----- */
+  if (path === "/api/admin/placa-teste" && req.method === "POST") {
+    if (!pode(s, "config")) return json({ erro: "Sem permissão." }, 403);
+    const placa = String((await corpo(req))?.placa || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (!/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/.test(placa)) return json({ erro: "Digite uma placa válida para o teste." }, 400);
+    const cfg = await getConfig();
+    const r = await chamarApi(cfg, placa);
+    const dados = r.bruto ? normalizar(r.bruto, placa) : null;
+    await registrar(s, "Testou a API de placa", placa + (r.erro ? " (falhou)" : " (ok)"));
+    return json({ ok: !r.erro && !!(dados?.marca || dados?.modelo), erro: r.erro || "", dados,
+      tentativas: r.tentativas.map(({ json, ...t }) => t), configurado: { url: cfg.placaApiUrl, temToken: !!cfg.placaApiToken, cabecalho: cfg.placaApiHeader || "" } });
   }
 
   /* ----- histórico ----- */
@@ -127,6 +142,6 @@ export default async (req, context) => {
   return json({ erro: "Não encontrado." }, 404);
 };
 
-export const config = { path: ["/api/admin/config", "/api/admin/log", "/api/admin/usuarios", "/api/admin/usuarios/:id", "/api/admin/usuarios/:id/senha"] };
+export const config = { path: ["/api/admin/config", "/api/admin/log", "/api/admin/placa-teste", "/api/admin/usuarios", "/api/admin/usuarios/:id", "/api/admin/usuarios/:id/senha"] };
 
 function pub(u) { const { senhaHash, senhaVersao, ...r } = u; return r; }

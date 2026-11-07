@@ -119,6 +119,7 @@ const PADRAO = () => ({
   avisoAtivo: true,
   avisoTitulo: "Bem-vindo ao Pátio Repasses",
   avisoTexto: "Estamos em fase de testes, então você pode encontrar ajustes acontecendo e poucos carros por enquanto.\nEntre no nosso grupo de WhatsApp para receber os repasses em primeira mão e ajudar a construir o portal.",
+  placaProvedor: process.env.PLACA_PROVEDOR || "apibrasil",
   placaApiUrl: process.env.PLACA_API_URL || "",
   placaApiToken: process.env.PLACA_API_TOKEN || "",
   placaApiHeader: process.env.PLACA_API_HEADER || "",
