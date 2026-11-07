@@ -48,7 +48,12 @@ No Netlify: *Site configuration → Environment variables → Add a variable*
 | `PLACA_API_HEADER` | Só se a sua API pede a chave num cabeçalho (ex.: `Authorization` ou `x-api-key`). Se for na URL, deixe sem |
 | `PLACA_CACHE_DIAS` | Opcional. Dias que uma placa já consultada fica guardada sem gastar crédito. Padrão: 30 |
 
-Exemplos de `PLACA_API_URL`:
+Placa Fipe (placafipe.com.br), a API usada pelo Pátio. Preencha em **Configurações → Consulta de placa**:
+- Endereço da API: `https://api.placafipe.com.br/getplacafipe/{placa}/{token}`
+- Chave (token): o token do seu plano
+- Cabeçalho da chave: deixe vazio
+
+Outros exemplos de `PLACA_API_URL`:
 - WDAPI: `https://wdapi2.com.br/consulta/{placa}/{token}`
 - API que recebe a chave no cabeçalho: `https://api.exemplo.com.br/v1/placa/{placa}` + `PLACA_API_HEADER=Authorization` e `PLACA_API_TOKEN=Bearer SUA_CHAVE`
 

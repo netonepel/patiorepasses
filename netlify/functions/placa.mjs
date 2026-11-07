@@ -49,6 +49,10 @@ export default async (req, context) => {
     return json({ erro: "Não foi possível falar com a API de placas agora." }, 502);
   }
 
+  if (bruto && bruto.codigo !== undefined && Number(bruto.codigo) !== 1 && !bruto.informacoes_veiculo) {
+    console.error("API de placa recusou:", JSON.stringify(bruto).slice(0, 300));
+    return json({ erro: bruto.msg ? `A consulta não deu certo: ${bruto.msg}.` : "Placa não encontrada na base da API." }, 404);
+  }
   const dados = normalizar(bruto, placa);
   if (!dados.marca && !dados.modelo) {
     console.error("Resposta sem marca/modelo:", JSON.stringify(bruto).slice(0, 500));
@@ -111,7 +115,38 @@ function combustivel(v) {
 }
 const TITLE = s => s ? String(s).toLowerCase().replace(/(^|\s|-)\S/g, c => c.toUpperCase()) : "";
 
-export function normalizar(b, placa) {
+/* Formato da Placa Fipe (api.placafipe.com.br/getplacafipe):
+   { codigo: 1, msg, informacoes_veiculo: { marca, modelo, ano, ano_modelo, cor, combustivel, municipio, uf, ... },
+     fipe: [ { marca, modelo, ano_modelo, valor, similaridade, correspondencia, ... } ] } */
+function placaFipe(b, placa) {
+  const iv = b.informacoes_veiculo || {};
+  const lista = Array.isArray(b.fipe) ? b.fipe : [];
+  const nota = f => Number(f?.correspondencia ?? f?.similaridade ?? 0);
+  const melhor = [...lista].sort((x, y) => nota(y) - nota(x))[0];
+  const base = normalizar({ MARCA: iv.marca || melhor?.marca, MODELO: iv.modelo, ano: iv.ano, anoModelo: iv.ano_modelo || melhor?.ano_modelo,
+    cor: iv.cor, combustivel: iv.combustivel || melhor?.combustivel, municipio: iv.municipio, uf: iv.uf }, placa, true);
+  // versão: o nome da FIPE é mais completo (ex.: "Gol 1.0 Flex 12V 5p") — tira o nome do modelo do começo
+  if (melhor?.modelo) {
+    const fm = String(melhor.modelo).trim(), mod = base.modelo.toLowerCase();
+    base.versao = (mod && fm.toLowerCase().startsWith(mod) ? fm.slice(mod.length) : fm).trim() || base.versao;
+    if (!base.modelo) base.modelo = TITLE(fm.split(/\s+/)[0]);
+  }
+  if (!base.marca && melhor?.marca) base.marca = limpaMarca(melhor.marca);
+  base.fipe = dinheiro(melhor?.valor) || null;
+  return base;
+}
+
+function limpaMarca(m) {
+  let s = String(m || "").trim().replace(/^I\s*\//i, "");
+  if (s.includes(" - ")) s = s.split(" - ").pop();           // "VW - VolksWagen" -> "VolksWagen"
+  const MAP = { VW: "Volkswagen", VOLKSWAGEN: "Volkswagen", GM: "Chevrolet", CHEV: "Chevrolet", CHEVROLET: "Chevrolet",
+    "M.BENZ": "Mercedes-Benz", MBENZ: "Mercedes-Benz", "MERCEDES-BENZ": "Mercedes-Benz", "CAOA CHERY": "Caoa Chery", CHERY: "Caoa Chery",
+    "LAND ROVER": "Land Rover", LR: "Land Rover", BMW: "BMW", BYD: "BYD", GWM: "GWM", JAC: "JAC", RAM: "RAM", "CITROEN": "Citroën" };
+  return MAP[s.toUpperCase()] ?? TITLE(s);
+}
+
+export function normalizar(b, placa, interno = false) {
+  if (!interno && b && (b.informacoes_veiculo || (Array.isArray(b.fipe) && b.fipe[0]?.similaridade !== undefined))) return placaFipe(b, placa);
   let marca = acha(b, ["MARCA", "marca", "brand", "fabricante"]);
   let modelo = acha(b, ["MODELO", "modelo", "model"]);
   let versao = acha(b, ["versao", "version", "SUBMODELO", "submodelo"]);
@@ -130,9 +165,7 @@ export function normalizar(b, placa) {
   }
   const anoFab = acha(b, ["ano", "anoFabricacao", "ano_fabricacao", "anofab"]);
   const anoModelo = acha(b, ["anoModelo", "ano_modelo", "anomod"]);
-  const MARCAS = { VW: "Volkswagen", "VOLKSWAGEN": "Volkswagen", GM: "Chevrolet", CHEV: "Chevrolet", CHEVROLET: "Chevrolet", FIAT: "Fiat", FORD: "Ford", "M.BENZ": "Mercedes-Benz", MBENZ: "Mercedes-Benz", "I": "" };
-  let marcaN = String(marca || "").trim().replace(/^I\//, "");
-  marcaN = MARCAS[marcaN.toUpperCase()] ?? TITLE(marcaN);
+  const marcaN = limpaMarca(marca);
   return {
     placa,
     marca: marcaN,
