@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pátio Repasses | O maior portal de repasses do sul do Brasil</title>
+<meta name="description" content="Carros de repasse anunciados por lojas do Paraná, Santa Catarina e Rio Grande do Sul, com o valor da FIPE ao lado do preço.">
+<meta name="theme-color" content="#111111">
+<meta property="og:title" content="Pátio Repasses">
+<meta property="og:description" content="O maior portal de repasses do sul do Brasil.">
+<meta property="og:image" content="/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+/* Layout: classificado de carros — barra preta com busca, lista de anúncios em grade, rodapé com colunas. Visual único preto + amarelo. */
+:root{
+  --black:#111111; --black-2:#1c1c1c; --yellow:#ffc600; --yellow-d:#e8b400;
+  --bg:#f2f2f0; --white:#ffffff; --ink:#161616; --muted:#6b6b66; --line:#e0dfda; --line-2:#cfcec8;
+  --on-dark:#f2f2f0; --on-dark-muted:#a3a39c; --line-dark:#2e2e2b;
+  --ok:#1b7a44; --ok-bg:#e2f2e8; --warn:#955a00; --warn-bg:#fcefd3; --sold:#6b6b66; --sold-bg:#ecebe7; --danger:#b3261e;
+  --font:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5;font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:inherit}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
+h1,h2,h3{text-wrap:balance}
+
+/* topo */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--black)}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--black);color:var(--on-dark)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;font-weight:800;font-size:19px;letter-spacing:-.01em}
+.logo b{color:var(--yellow)}
+.logo img{width:44px;height:44px;flex:none}
+.hero-top{display:grid;grid-template-columns:minmax(0,560px);gap:32px;align-items:center}
+.hero-logo{width:190px;height:190px;filter:drop-shadow(0 10px 30px rgba(255,198,0,.18))}
+@media (max-width:760px){.hero-top{grid-template-columns:minmax(0,1fr)}.hero-logo{display:none}}
+footer .flogo{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+footer .flogo img{width:52px;height:52px}
+footer .flogo h4{margin:0}
+.links{display:flex;align-items:center;gap:20px;font-size:14.5px}
+.links a{text-decoration:none;color:var(--on-dark-muted)}
+.links a:hover{color:var(--on-dark)}
+.links a.btn{color:var(--black)}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:4px;font-weight:700;text-decoration:none;padding:10px 18px;font-size:15px;line-height:1.1}
+.btn-y{background:var(--yellow);color:var(--black)} .btn-y:hover{background:var(--yellow-d)}
+.btn-dark{background:var(--black);color:var(--white)} .btn-dark:hover{background:var(--black-2)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+@media (max-width:720px){.links .hide-sm{display:none}}
+
+/* hero */
+.hero .wrap{padding-block:40px 36px}
+.hero h1{margin:0;font-size:clamp(28px,4.4vw,44px);line-height:1.1;font-weight:800;letter-spacing:-.02em;max-width:22ch}
+.hero h1 span{color:var(--yellow)}
+.hero p{margin:10px 0 0;color:var(--on-dark-muted);font-size:16.5px;max-width:58ch}
+.search{margin-top:24px;background:var(--white);border-radius:6px;padding:12px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:10px;align-items:end}
+.search .f label{color:var(--muted);font-size:12.5px;font-weight:600}
+.search input,.search select{border:1px solid var(--line-2);background:var(--white);color:var(--ink);border-radius:4px;padding:10px 11px;width:100%;min-width:0}
+.search .btn{height:43px;padding-inline:26px}
+@media (max-width:900px){.search{grid-template-columns:repeat(2,minmax(0,1fr))}.search .btn{grid-column:1/-1}}
+@media (max-width:460px){.search{grid-template-columns:minmax(0,1fr)}}
+.brands{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center;font-size:13.5px;color:var(--on-dark-muted)}
+.brands button{border:1px solid var(--line-dark);background:transparent;color:var(--on-dark);border-radius:4px;padding:5px 11px;font-size:13.5px}
+.brands button:hover{border-color:var(--yellow);color:var(--yellow)}
+.counter{background:var(--yellow);color:var(--black);font-size:14.5px}
+.counter .wrap{display:flex;flex-wrap:wrap;gap:6px 28px;padding-block:10px}
+.counter b{font-weight:800}
+
+/* listagem */
+main.list{padding-block:32px 48px}
+.list-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.list-head h2{margin:0;font-size:24px;font-weight:800;letter-spacing:-.01em}
+.list-head .res{color:var(--muted);font-size:14px;margin-left:8px;font-weight:500}
+.list-head .tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.list-head select{border:1px solid var(--line-2);background:var(--white);border-radius:4px;padding:8px 10px;color:var(--ink)}
+.active-filters{display:flex;flex-wrap:wrap;gap:6px;margin:-6px 0 14px}
+.active-filters button{border:1px solid var(--line-2);background:var(--white);border-radius:4px;padding:4px 10px;font-size:13px;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:var(--white);border:1px solid var(--line);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card:hover{border-color:var(--line-2)}
+.photo{position:relative;aspect-ratio:4/3;max-width:100%;background:#e7e6e2;display:grid;place-items:center;color:#a7a69f}
+.photo svg{width:56%;max-width:170px;height:auto}
+.photo .nofoto{position:absolute;bottom:8px;right:10px;font-size:12px;color:var(--muted)}
+.badge{position:absolute;top:10px;left:10px;font-size:12.5px;font-weight:700;padding:3px 8px;border-radius:3px;background:var(--black);color:var(--yellow)}
+.badge.res{background:var(--white);color:var(--warn);border:1px solid var(--line-2)}
+.card .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
+.card h3{margin:0;font-size:16.5px;font-weight:700;line-height:1.25}
+.card h3 small{display:block;font-weight:400;font-size:13.5px;color:var(--muted);margin-top:2px}
+.card .specs{display:flex;flex-wrap:wrap;gap:2px 10px;font-size:13.5px;color:var(--muted)}
+.card .specs span+span::before{content:"·";margin-right:10px;color:var(--line-2)}
+.card .price{font-size:21px;font-weight:800;letter-spacing:-.01em;margin-top:4px}
+.card .fipe{font-size:13px;color:var(--muted)}
+.card .fipe b{color:var(--ok);font-weight:700}
+.card .seller{margin-top:auto;padding-top:10px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13.5px}
+.card .seller div{min-width:0;overflow-wrap:anywhere;color:var(--muted)}
+.card .seller strong{color:var(--ink);font-weight:600}
+.wa{border:1px solid var(--line-2);background:var(--white);border-radius:4px;padding:6px 10px;font-size:13px;font-weight:600;white-space:nowrap;color:var(--ink)}
+.wa:hover{border-color:var(--ink)}
+.empty{grid-column:1/-1;background:var(--white);border:1px solid var(--line);border-radius:6px;padding:36px 20px;text-align:center;color:var(--muted)}
+.empty h3{margin:0 0 6px;font-size:19px;color:var(--ink)}
+.empty p{margin:0 auto 16px;max-width:46ch}
+.note{font-size:13.5px;color:var(--muted);margin:0 0 14px}
+
+/* lojistas */
+.lojistas{background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.lojistas .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;padding-block:36px;align-items:center}
+@media (max-width:760px){.lojistas .wrap{grid-template-columns:minmax(0,1fr)}}
+.lojistas h2{margin:0 0 8px;font-size:24px;font-weight:800;letter-spacing:-.01em}
+.lojistas p{margin:0 0 16px;color:var(--muted);max-width:52ch}
+.lojistas ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.lojistas li{display:flex;gap:12px;align-items:flex-start}
+.lojistas li::before{content:"";flex:none;width:8px;height:8px;margin-top:8px;background:var(--yellow);border:1px solid var(--black)}
+.lojistas li b{display:block}
+.lojistas li span{color:var(--muted);font-size:14.5px}
+
+footer{background:var(--black);color:var(--on-dark-muted);font-size:14px}
+footer .wrap{padding-block:32px 24px;display:grid;grid-template-columns:2fr 1fr 1fr;gap:24px}
+@media (max-width:700px){footer .wrap{grid-template-columns:minmax(0,1fr)}}
+footer h4{margin:0 0 8px;color:var(--on-dark);font-size:14px;font-weight:700}
+footer p{margin:0;max-width:40ch}
+footer ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}
+footer a{text-decoration:none} footer a:hover{color:var(--on-dark)}
+footer .legal{grid-column:1/-1;border-top:1px solid var(--line-dark);padding-top:16px;font-size:12.5px}
+
+/* painel */
+.panel-top{background:var(--black);color:var(--on-dark);border-top:1px solid var(--line-dark)}
+.panel-top .wrap{padding-block:26px 24px}
+.crumb{font-size:13.5px;color:var(--on-dark-muted)} .crumb a{color:var(--on-dark-muted)}
+.panel-top h1{margin:6px 0 0;font-size:clamp(24px,3.4vw,32px);font-weight:800;letter-spacing:-.01em}
+.panel-top p{margin:6px 0 0;color:var(--on-dark-muted);max-width:62ch}
+.pgrid{display:grid;grid-template-columns:minmax(0,390px) minmax(0,1fr);gap:24px;align-items:start;padding-block:24px 56px}
+@media (max-width:880px){.pgrid{grid-template-columns:minmax(0,1fr)}}
+form.form{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:20px;display:flex;flex-direction:column;gap:14px}
+form.form h2{margin:0;font-size:20px;font-weight:800}
+.hint{margin:-8px 0 0;color:var(--muted);font-size:13px}
+fieldset{border:0;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+legend{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;padding:0}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0}
+.f.full{grid-column:1/-1}
+label{font-size:13px;font-weight:600}
+.form input,.form select,.form textarea{color:var(--ink);background:var(--white);border:1px solid var(--line-2);border-radius:4px;padding:9px 10px;width:100%;min-width:0}
+.form textarea{resize:vertical;min-height:64px}
+.fipe-calc{grid-column:1/-1;font-size:13px;color:var(--muted);min-height:20px}
+.fipe-calc strong{color:var(--ok)} .fipe-calc strong.above{color:var(--danger)}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn-ghost{background:transparent;border:1px solid var(--line-2);color:var(--ink);border-radius:4px;padding:9px 14px;font-weight:600}
+.msg{font-size:13.5px;min-height:18px}
+.msg.err{color:var(--danger)} .msg.ok{color:var(--ok)}
+.listhead{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.listhead input{flex:1 1 220px;min-width:0;background:var(--white);border:1px solid var(--line-2);border-radius:4px;padding:9px 12px;color:var(--ink)}
+.seg{display:flex;border:1px solid var(--line-2);border-radius:4px;overflow:hidden;background:var(--white)}
+.seg button{border:0;background:transparent;padding:8px 12px;font-size:13.5px;color:var(--ink)}
+.seg button+button{border-left:1px solid var(--line-2)}
+.seg button[aria-pressed="true"]{background:var(--black);color:var(--white)}
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:14px 16px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 16px}
+.row.vendido{opacity:.7}
+.row h3{margin:0;font-size:17px;font-weight:700;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.row .pr{text-align:right;font-size:18px;font-weight:800}
+.row .pr small{display:block;font-size:12.5px;color:var(--muted);font-weight:400}
+.row .specs{font-size:13.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:2px 12px}
+.row .meta{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:10px;margin-top:6px;font-size:13.5px}
+.row .meta>div{min-width:0;overflow-wrap:anywhere}
+.obs{grid-column:1/-1;font-size:13.5px;margin:4px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.pill{display:inline-block;border-radius:3px;padding:1px 8px;font-size:12px;font-weight:700}
+.pill.disponivel{background:var(--ok-bg);color:var(--ok)} .pill.reservado{background:var(--warn-bg);color:var(--warn)} .pill.vendido{background:var(--sold-bg);color:var(--sold)}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.actions select,.actions button{font-size:13px;padding:5px 10px;border:1px solid var(--line-2);border-radius:4px;background:var(--white);color:var(--ink)}
+.actions .danger{color:var(--danger)}
+.off{color:var(--ok);font-weight:600} .off.above{color:var(--danger)}
+@media (max-width:520px){fieldset{grid-template-columns:1fr}.row{grid-template-columns:minmax(0,1fr)}.row .pr{text-align:left}}
+.placa-row{display:flex;gap:8px}
+.placa-row input{flex:1;min-width:0;font-size:22px!important;font-weight:800;letter-spacing:.14em;text-transform:uppercase;border:2px solid var(--black)!important;padding:8px 12px!important}
+.placa-row .btn{flex:none}
+.filled{background:#fff8d6!important;transition:background 1.2s}
+form.login{max-width:420px;margin:28px 0 56px}
+.sair{margin-top:12px;color:var(--on-dark)!important;border-color:var(--line-dark)!important}
+.wa{text-decoration:none;background:#25d366!important;border-color:#1fb457!important;color:#0b2e17!important}
+
+/* ===== topo no padrão do banner ===== */
+.nav{background:#0c0c0d;border-bottom:1px solid #2a2a28}
+.nav .wrap{padding-block:14px}
+.logo{font-size:23px;font-weight:800;font-style:italic;letter-spacing:-.02em}
+.logo img{width:50px;height:50px}
+.links{gap:30px;font-size:16px}
+.links a{color:#ecebe6}
+.links a.btn{color:var(--black);font-size:16px;padding:12px 24px;border-radius:8px}
+.hero{position:relative;overflow:hidden;background:#0c0c0d;color:#fff;border-top:0;isolation:isolate}
+.hero::after{content:"";position:absolute;z-index:-1;left:-12%;bottom:-30%;width:55%;height:70%;background:radial-gradient(closest-side,rgba(255,198,0,.22),rgba(255,198,0,0));pointer-events:none}
+.hero-art{position:absolute;z-index:-1;top:0;right:-2vw;width:min(64vw,1030px);height:auto;max-width:none}
+.hero .wrap{padding-block:0 30px}
+.hero-copy{max-width:min(600px,42vw);padding-block:clamp(40px,5.2vw,72px) 34px}
+.hero h1{margin:0;font-size:clamp(34px,4.4vw,66px);line-height:1.02;font-weight:800;font-style:italic;letter-spacing:-.025em;text-shadow:0 2px 24px rgba(0,0,0,.7);max-width:none}
+.hero h1 span{display:block;color:var(--yellow);font-size:1.14em;padding-bottom:.12em;background:linear-gradient(90deg,var(--yellow),rgba(255,198,0,0)) left bottom/72% 3px no-repeat}
+.hero .lead{margin:20px 0 0;color:#e2e1dc!important;font-size:clamp(15.5px,1.35vw,19px);line-height:1.45;max-width:46ch;text-shadow:0 1px 12px rgba(0,0,0,.8)}
+.perks{list-style:none;margin:28px 0 0;padding:16px 0;display:flex;flex-wrap:wrap;gap:14px 0;border-bottom:1px solid transparent;border-image:linear-gradient(90deg,rgba(255,198,0,.7),rgba(255,198,0,0)) 1}
+@media (min-width:1000px){.perks{flex-wrap:nowrap;width:max-content}}
+.perks li{display:flex;align-items:center;gap:12px;padding-inline:22px;font-size:14.5px;line-height:1.35;color:#f2f1ec}
+.perks li:first-child{padding-left:0}
+.perks li+li{border-left:1px solid rgba(255,255,255,.18)}
+.perks svg{width:36px;height:36px;color:var(--yellow);flex:none}
+.search{margin-top:6px;border-radius:14px;padding:20px 26px 24px;gap:16px 22px;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+.search .f{gap:8px}
+.search .f label{color:var(--ink);font-size:15px;font-weight:700}
+.search input,.search select{border-radius:6px;padding:12px 14px;font-size:16px;height:50px;border-color:#c9c8c2}
+.search .btn{height:52px;border-radius:6px;font-size:18px;padding-inline:30px;gap:10px}
+.search .btn svg{width:22px;height:22px}
+.brands{margin-top:22px;gap:12px;font-size:15.5px;color:#d9d8d2}
+.brands button{border:1.5px solid rgba(255,198,0,.6);background:rgba(0,0,0,.35);color:#fff;border-radius:10px;padding:7px 20px;font-size:15px}
+.brands button:hover{border-color:var(--yellow);color:var(--yellow)}
+@media (max-width:900px){
+  .search{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:820px){
+  .hero-art{position:relative;display:block;right:auto;width:100%}
+  .hero-copy{max-width:none;padding-top:8px;margin-top:-28px}
+  .hero h1{font-size:clamp(32px,8.6vw,46px)}
+  .links{gap:16px}
+}
+@media (max-width:560px){
+  .perks{flex-direction:column;gap:12px}
+  .perks li{padding-inline:0}
+  .perks li+li{border-left:0}
+  .perks li span br{display:none}
+  .perks svg{width:28px;height:28px}
+  .search{grid-template-columns:minmax(0,1fr);padding:18px}
+  .logo{font-size:19px}.logo img{width:42px;height:42px}
+}
+
+/* ===== área do lojista ===== */
+.ptop-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px}
+.pacts{display:flex;gap:8px;flex-wrap:wrap}
+.pacts .sair{margin-top:0}
+.ptabs{display:flex;gap:4px;margin-top:20px;margin-bottom:-24px}
+.ptabs button{background:transparent;border:0;color:var(--on-dark-muted);font-weight:600;font-size:15px;padding:10px 18px;border-radius:8px 8px 0 0}
+.ptabs button[aria-pressed="true"]{background:var(--bg);color:var(--ink)}
+.lojainfo{background:var(--bg);border:1px solid var(--line);border-left:4px solid var(--yellow);border-radius:6px;padding:10px 12px;font-size:14px}
+.lojainfo b{display:block;font-size:15px}
+.lojainfo span{color:var(--muted)}
+.lcol{display:flex;flex-direction:column;gap:16px;min-width:0}
+.cred{background:var(--black);color:var(--on-dark);border-radius:10px;padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.cred h3{margin:0;font-size:17px;color:var(--yellow)}
+.cred dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:15px}
+.cred dt{color:var(--on-dark-muted)}
+.cred dd{margin:0;font-weight:700;letter-spacing:.03em;overflow-wrap:anywhere}
+.cred p{margin:0;font-size:13px;color:var(--on-dark-muted)}
+.cred .btns a,.cred .btns button{font-size:14px}
+.cred .btn-ghost{color:var(--on-dark);border-color:var(--line-dark)}
+.row.inativo{opacity:.6}
+.pill.ativo{background:var(--ok-bg);color:var(--ok)} .pill.inativo{background:var(--sold-bg);color:var(--sold)}
+.lojistas .btns{align-items:center}
+.lojistas .btn-ghost{text-decoration:none;display:inline-flex;align-items:center}
+@media (max-width:560px){.ptabs button{padding:9px 14px}}
+</style>
+</head>
+<body>
+
+
+<nav class="nav" aria-label="Principal">
+  <div class="wrap">
+    <a class="logo" href="#inicio"><img src="/logo.png" alt="" width="44" height="44"><span>Pátio <b>Repasses</b></span></a>
+    <div class="links">
+      <a href="#inicio" class="hide-sm">Comprar repasse</a>
+      <a href="#lojistas" class="hide-sm">Para lojistas</a>
+      <a href="#anunciar" class="btn btn-y">Anunciar</a>
+    </div>
+  </div>
+</nav>
+
+<!-- INÍCIO -->
+<div id="viewHome">
+  <header class="hero" id="inicio">
+    <img class="hero-art" src="/banner-topo.jpg" alt="Carro preto à frente da logo do Pátio Repasses, com o mapa do Paraná, Santa Catarina e Rio Grande do Sul" width="1030" height="576">
+    <div class="wrap">
+      <div class="hero-copy">
+        <h1>O maior portal de repasses do <span>Sul do Brasil</span></h1>
+        <p class="lead">Carros de repasse anunciados por lojas do Paraná, Santa Catarina e Rio Grande do Sul, com o valor da FIPE ao lado do preço.</p>
+        <ul class="perks">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17H3v-5l2-5h14l2 5v5h-2"/><path d="M3 12h18"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/><path d="M9.5 17h5"/></svg><span>Repasses de lojas <br>confiáveis</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><span>Preço justo <br>com base na FIPE</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg><span>Oportunidades <br>em tempo real</span></li>
+        </ul>
+      </div>
+      <form class="search" id="heroSearch" role="search">
+        <div class="f"><label for="sMarca">Marca</label><select id="sMarca"><option value="">Todas</option></select></div>
+        <div class="f"><label for="sModelo">Modelo</label><input id="sModelo" placeholder="Ex.: Onix, HB20"></div>
+        <div class="f"><label for="sMax">Preço até</label>
+          <select id="sMax"><option value="">Qualquer valor</option><option value="30000">R$ 30.000</option><option value="50000">R$ 50.000</option><option value="70000">R$ 70.000</option><option value="100000">R$ 100.000</option><option value="150000">R$ 150.000</option></select></div>
+        <div class="f"><label for="sUf">Estado</label><select id="sUf"><option value="">PR, SC e RS</option><option>PR</option><option>SC</option><option>RS</option></select></div>
+        <button class="btn btn-y" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>Buscar</button>
+      </form>
+      <div class="brands" id="brands">
+        <span>Mais procuradas:</span>
+        <button type="button" data-marca="Chevrolet">Chevrolet</button><button type="button" data-marca="Volkswagen">Volkswagen</button>
+        <button type="button" data-marca="Fiat">Fiat</button><button type="button" data-marca="Hyundai">Hyundai</button>
+        <button type="button" data-marca="Toyota">Toyota</button><button type="button" data-marca="Renault">Renault</button>
+      </div>
+    </div>
+  </header>
+  <div class="counter"><div class="wrap" aria-live="polite">
+    <span><b id="kDisp">0</b> repasses disponíveis</span>
+    <span><b id="kLojas">0</b> lojas anunciando</span>
+    <span id="kFipeWrap">Média de <b id="kFipe">0%</b> abaixo da FIPE</span>
+  </div></div>
+
+  <main class="list" id="vitrine">
+    <div class="wrap">
+      <div class="list-head">
+        <h2>Repasses recentes<span class="res" id="resCount"></span></h2>
+        <div class="tools">
+          <label for="ordem" class="hint" style="margin:0">Ordenar</label>
+          <select id="ordem"><option value="recentes">Mais recentes</option><option value="menor">Menor preço</option><option value="fipe">Maior desconto FIPE</option><option value="km">Menor km</option></select>
+        </div>
+      </div>
+      <div class="active-filters" id="activeFilters"></div>
+      <p class="note" id="loadNote">Carregando repasses…</p>
+      <div class="grid" id="vitrineGrid"></div>
+    </div>
+  </main>
+
+  <section class="lojistas" id="lojistas">
+    <div class="wrap">
+      <div>
+        <h2>É lojista? Seja parceiro do Pátio</h2>
+        <p>O cadastro das lojas é feito pela nossa equipe. Chame no WhatsApp, liberamos seu acesso e você já começa a anunciar seus repasses para lojas de todo o Sul.</p>
+        <div class="btns">
+          <a href="#" class="btn btn-dark" id="btnParceiro" target="_blank" rel="noopener" hidden>Quero ser parceiro</a>
+          <a href="#anunciar" class="btn-ghost">Já sou parceiro: entrar</a>
+        </div>
+      </div>
+      <ul>
+        <li><div><b>Acesso da sua loja</b><span>Usuário e senha próprios. Só você mexe nos seus anúncios.</span></div></li>
+        <li><div><b>Placa preenche o carro</b><span>Digite a placa e o portal traz marca, modelo, ano e FIPE.</span></div></li>
+        <li><div><b>Contato direto</b><span>O comprador chama sua loja no WhatsApp, sem intermediário.</span></div></li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<!-- PAINEL -->
+<div id="viewPanel" hidden>
+  <header class="panel-top">
+    <div class="wrap">
+      <div class="crumb"><a href="#inicio">Início</a> / Área do lojista</div>
+      <div class="ptop-row">
+        <div>
+          <h1 id="pTitle">Área do lojista</h1>
+          <p id="pSub">Entre com o usuário e a senha que você recebeu do Pátio Repasses.</p>
+        </div>
+        <div class="pacts" id="pActs" hidden>
+          <button type="button" class="btn-ghost sair" id="btnSenha">Trocar senha</button>
+          <button type="button" class="btn-ghost sair" id="btnSair">Sair</button>
+        </div>
+      </div>
+      <div class="ptabs" id="pTabs" role="group" aria-label="Seções" hidden>
+        <button type="button" data-tab="repasses" aria-pressed="true">Repasses</button>
+        <button type="button" data-tab="lojistas" aria-pressed="false">Lojistas</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap" id="loginBox" hidden>
+    <form class="form login" id="loginForm">
+      <h2>Entrar</h2>
+      <div class="f"><label for="lUsuario">Usuário</label><input id="lUsuario" autocomplete="username" autocapitalize="none" required placeholder="Ex.: autocentersul"></div>
+      <div class="f"><label for="senha">Senha</label><input id="senha" type="password" autocomplete="current-password" required></div>
+      <div class="btns"><button type="submit" class="btn btn-y">Entrar</button></div>
+      <div class="msg" id="loginMsg" role="status"></div>
+      <p class="hint" style="margin:0">Ainda não tem acesso? <a href="#lojistas">Veja como ser parceiro</a>.</p>
+    </form>
+  </div>
+
+  <div class="wrap" id="senhaBox" hidden>
+    <form class="form login" id="senhaForm">
+      <h2>Trocar senha</h2>
+      <div class="f"><label for="sAtual">Senha atual</label><input id="sAtual" type="password" autocomplete="current-password" required></div>
+      <div class="f"><label for="sNova">Nova senha</label><input id="sNova" type="password" autocomplete="new-password" minlength="6" required><span class="hint" style="margin:0">Pelo menos 6 caracteres.</span></div>
+      <div class="btns"><button type="submit" class="btn btn-y">Salvar senha</button><button type="button" class="btn-ghost" id="senhaCancel">Voltar</button></div>
+      <div class="msg" id="senhaMsg" role="status"></div>
+    </form>
+  </div>
+
+  <!-- repasses -->
+  <div class="wrap pgrid" id="painel" hidden>
+    <form class="form" id="form" novalidate>
+      <h2 id="formTitle">Novo repasse</h2>
+      <div class="lojainfo" id="lojaInfo" hidden></div>
+      <div class="f" id="lojaSelWrap" hidden><label for="lojaSel">Loja dona do carro *</label><select id="lojaSel"></select></div>
+      <p class="hint">Campos com * são obrigatórios.</p>
+      <fieldset>
+        <legend>Veículo</legend>
+        <div class="f full"><label for="placaFull">Placa *</label>
+          <div class="placa-row"><input id="placaFull" required maxlength="8" autocapitalize="characters" autocomplete="off" placeholder="ABC1D23"><button type="button" class="btn btn-dark" id="btnPlaca">Buscar dados</button></div>
+          <span class="hint" id="placaHint" style="margin:0">Digite a placa e clique em Buscar dados para preencher o carro. Só o final da placa aparece na vitrine.</span></div>
+        <div class="f"><label for="marca">Marca *</label><input id="marca" list="marcas" required placeholder="Ex.: Volkswagen"></div>
+        <div class="f"><label for="modelo">Modelo *</label><input id="modelo" required placeholder="Ex.: Gol"></div>
+        <div class="f full"><label for="versao">Versão</label><input id="versao" placeholder="Ex.: 1.0 MPI Flex"></div>
+        <div class="f"><label for="ano">Ano fab/mod *</label><input id="ano" required placeholder="2019/2020" inputmode="numeric"></div>
+        <div class="f"><label for="km">Km</label><input id="km" inputmode="numeric" placeholder="85.000"></div>
+        <div class="f"><label for="cambio">Câmbio</label><select id="cambio"><option>Manual</option><option>Automático</option><option>CVT</option><option>Automatizado</option></select></div>
+        <div class="f"><label for="comb">Combustível</label><select id="comb"><option>Flex</option><option>Gasolina</option><option>Diesel</option><option>Híbrido</option><option>Elétrico</option><option>GNV</option></select></div>
+        <div class="f"><label for="cor">Cor</label><input id="cor" placeholder="Prata"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Valores</legend>
+        <div class="f"><label for="preco">Preço do repasse *</label><input id="preco" inputmode="numeric" required placeholder="R$ 0"></div>
+        <div class="f"><label for="fipe">Tabela FIPE</label><input id="fipe" inputmode="numeric" placeholder="R$ 0"></div>
+        <div class="fipe-calc" id="fipeCalc"></div>
+        <div class="f full"><label for="obs">Observações</label><textarea id="obs" placeholder="Laudo, lataria, documentação, aceita troca…"></textarea></div>
+      </fieldset>
+      <div class="btns">
+        <button type="submit" class="btn btn-y" id="btnSalvar">Cadastrar repasse</button>
+        <button type="button" class="btn-ghost" id="btnCancelar" hidden>Cancelar edição</button>
+      </div>
+      <div class="msg" id="formMsg" role="status"></div>
+    </form>
+    <section aria-label="Repasses cadastrados">
+      <div class="listhead">
+        <input id="busca" type="search" placeholder="Buscar placa, marca, modelo, loja" aria-label="Buscar no cadastro">
+        <div class="seg" role="group" aria-label="Filtrar por situação">
+          <button type="button" data-f="todos" aria-pressed="true">Todos</button>
+          <button type="button" data-f="disponivel" aria-pressed="false">Disponíveis</button>
+          <button type="button" data-f="reservado" aria-pressed="false">Reservados</button>
+          <button type="button" data-f="vendido" aria-pressed="false">Vendidos</button>
+        </div>
+      </div>
+      <div class="rows" id="rows"></div>
+    </section>
+  </div>
+
+  <!-- lojistas (só administrador) -->
+  <div class="wrap pgrid" id="lojistasView" hidden>
+    <div class="lcol">
+      <form class="form" id="lForm" novalidate>
+        <h2 id="lFormTitle">Cadastrar lojista</h2>
+        <p class="hint">O usuário e a senha são gerados na hora. Você envia para a loja pelo WhatsApp.</p>
+        <fieldset>
+          <legend>Loja</legend>
+          <div class="f full"><label for="lNome">Nome da loja *</label><input id="lNome" required placeholder="Ex.: Auto Center Sul"></div>
+          <div class="f full"><label for="lResp">Responsável</label><input id="lResp" placeholder="Nome de quem vai usar o acesso"></div>
+          <div class="f"><label for="lFone">WhatsApp *</label><input id="lFone" inputmode="tel" required placeholder="(41) 99999-0000"></div>
+          <div class="f"><label for="lCidade">Cidade/UF *</label><input id="lCidade" list="cidades" required placeholder="Curitiba/PR"></div>
+          <div class="f"><label for="lCnpj">CNPJ</label><input id="lCnpj" inputmode="numeric" placeholder="00.000.000/0001-00"></div>
+          <div class="f"><label for="lUser">Usuário de acesso</label><input id="lUser" autocapitalize="none" placeholder="Criado pelo nome"></div>
+          <div class="f full"><label for="lObs">Anotações internas</label><textarea id="lObs" placeholder="Ex.: indicação do Carlos, plano mensal…"></textarea></div>
+        </fieldset>
+        <div class="btns">
+          <button type="submit" class="btn btn-y" id="lSalvar">Cadastrar lojista</button>
+          <button type="button" class="btn-ghost" id="lCancelar" hidden>Cancelar edição</button>
+        </div>
+        <div class="msg" id="lMsg" role="status"></div>
+      </form>
+      <div class="cred" id="credBox" hidden></div>
+    </div>
+    <section aria-label="Lojistas cadastrados">
+      <div class="listhead">
+        <input id="lBusca" type="search" placeholder="Buscar loja, cidade, usuário" aria-label="Buscar lojista">
+        <div class="seg" role="group" aria-label="Filtrar lojistas">
+          <button type="button" data-lf="todos" aria-pressed="true">Todos</button>
+          <button type="button" data-lf="ativos" aria-pressed="false">Ativos</button>
+          <button type="button" data-lf="inativos" aria-pressed="false">Desativados</button>
+        </div>
+      </div>
+      <div class="rows" id="lRows"></div>
+    </section>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div><div class="flogo"><img src="/logo.png" alt="" width="52" height="52"><h4>Pátio Repasses</h4></div><p>Portal de repasses de veículos entre lojistas do Paraná, Santa Catarina e Rio Grande do Sul. A negociação é feita direto com a loja anunciante.</p></div>
+    <div><h4>Portal</h4><ul><li><a href="#inicio">Comprar repasse</a></li><li><a href="#anunciar">Área do lojista</a></li><li><a href="#lojistas">Para lojistas</a></li></ul></div>
+    <div><h4>Estados</h4><ul><li>Paraná</li><li>Santa Catarina</li><li>Rio Grande do Sul</li></ul></div>
+    <div class="legal">Os preços e informações dos veículos são de responsabilidade de cada loja anunciante.</div>
+  </div>
+</footer>
+
+<datalist id="marcas">
+  <option>Chevrolet</option><option>Fiat</option><option>Volkswagen</option><option>Ford</option><option>Toyota</option>
+  <option>Honda</option><option>Hyundai</option><option>Renault</option><option>Jeep</option><option>Nissan</option>
+  <option>Peugeot</option><option>Citroën</option><option>Mitsubishi</option><option>BYD</option><option>Caoa Chery</option>
+</datalist>
+<datalist id="cidades">
+  <option>Curitiba/PR</option><option>Londrina/PR</option><option>Maringá/PR</option><option>Paranaguá/PR</option><option>Matinhos/PR</option>
+  <option>Joinville/SC</option><option>Florianópolis/SC</option><option>Blumenau/SC</option><option>Criciúma/SC</option><option>Chapecó/SC</option>
+  <option>Porto Alegre/RS</option><option>Caxias do Sul/RS</option><option>Pelotas/RS</option><option>Passo Fundo/RS</option>
+</datalist>
+
+<script>
+(function(){
+  const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+  const brl=n=>(n||n===0)?n.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}):'—';
+  const digits=s=>(s||'').replace(/\D/g,'');
+  const toInt=s=>{const d=digits(s);return d?parseInt(d,10):null};
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const STATUS={disponivel:'Disponível',reservado:'Reservado',vendido:'Vendido'};
+  const pctOff=(p,f)=>(!p||!f)?null:Math.round((1-p/f)*1000)/10;
+  const fmtPct=p=>Math.abs(p).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%';
+  const uf=c=>{const m=String(c||'').toUpperCase().match(/\b(PR|SC|RS)\b/);return m?m[1]:''};
+  const normPlaca=s=>(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,7);
+  const placaOk=s=>/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/.test(s);
+  const wa=(fone,txt)=>`https://wa.me/${digits(fone).length<=11?'55':''}${digits(fone)}${txt?'?text='+encodeURIComponent(txt):''}`;
+  const CAR=`<svg viewBox="0 0 120 50" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" aria-hidden="true"><path d="M8 36h8m22 0h44m22 0h8V28c0-3-2-5-5-6l-14-3-13-9c-2-1-4-2-7-2H42c-3 0-5 1-7 3l-9 9-14 3c-3 1-4 3-4 6v7z"/><circle cx="27" cy="37" r="7"/><circle cx="93" cy="37" r="7"/><path d="M38 19l7-7h12v7zM63 12h9l11 7H63z"/></svg>`;
+
+  /* ---------- sessão e API ---------- */
+  const LS={get:k=>{try{return localStorage.getItem(k)}catch(_){return null}},set:(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(_){}}};
+  let token=LS.get('pr_token')||'', me=null; // me = {role, loja}
+  async function api(path,opt={}){
+    const r=await fetch(path,{...opt,headers:{'content-type':'application/json',...(token?{authorization:'Bearer '+token}:{}),...(opt.headers||{})}});
+    let j=null; try{j=await r.json();}catch(_){}
+    if(r.status===401&&token&&!path.startsWith('/api/login')){ sair('Sua sessão expirou. Entre de novo.'); }
+    if(!r.ok){const e=new Error((j&&j.erro)||'Erro '+r.status);e.status=r.status;throw e;}
+    return j;
+  }
+
+  let items=[], meus=[], lojistas=[], loaded=false, editId=null, confirmDel=null, lEditId=null, lConfirm=null;
+  const fil={marca:'',modelo:'',max:null,uf:''}; let ordem='recentes', pFiltro='todos', lFiltro='todos', tab='repasses';
+
+  /* ---------- rotas ---------- */
+  function route(){
+    const h=location.hash.slice(1), panel=h==='anunciar';
+    $('#viewHome').hidden=panel; $('#viewPanel').hidden=!panel;
+    if(panel){ showPanel(); window.scrollTo(0,0); return; }
+    if(h&&h!=='inicio'){const t=document.getElementById(h);if(t){setTimeout(()=>t.scrollIntoView(),0);return;}}
+    window.scrollTo(0,0);
+  }
+  addEventListener('hashchange',route);
+
+  /* ---------- vitrine ---------- */
+  $('#heroSearch').addEventListener('submit',e=>{
+    e.preventDefault();
+    fil.marca=$('#sMarca').value; fil.modelo=$('#sModelo').value.trim(); fil.max=toInt($('#sMax').value); fil.uf=$('#sUf').value;
+    renderVitrine(); $('#vitrine').scrollIntoView({behavior:'smooth'});
+  });
+  $('#brands').addEventListener('click',e=>{const b=e.target.closest('[data-marca]');if(!b)return;
+    fil.marca=b.dataset.marca; syncMarcaSelect(); $('#sMarca').value=fil.marca; renderVitrine(); $('#vitrine').scrollIntoView({behavior:'smooth'});});
+  $('#ordem').addEventListener('change',e=>{ordem=e.target.value;renderVitrine();});
+  $('#activeFilters').addEventListener('click',e=>{const k=e.target.dataset.clear;if(!k)return;
+    fil[k]=k==='max'?null:''; const map={marca:'#sMarca',modelo:'#sModelo',max:'#sMax',uf:'#sUf'}; $(map[k]).value=''; renderVitrine();});
+  function syncMarcaSelect(){
+    const sel=$('#sMarca'), cur=sel.value||fil.marca;
+    const marcas=[...new Set(['Chevrolet','Fiat','Volkswagen','Hyundai','Toyota','Renault','Ford','Honda','Jeep',...items.map(i=>i.marca).filter(Boolean)])].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+    sel.innerHTML='<option value="">Todas</option>'+marcas.map(m=>`<option ${m===cur?'selected':''}>${esc(m)}</option>`).join('');
+  }
+  function kpis(){
+    $('#kDisp').textContent=items.filter(i=>(i.status||'disponivel')==='disponivel').length;
+    $('#kLojas').textContent=new Set(items.map(i=>(i.loja||'').trim().toLowerCase()).filter(Boolean)).size;
+    const ps=items.map(i=>pctOff(i.preco,i.fipe)).filter(p=>p!==null);
+    $('#kFipeWrap').hidden=!ps.length;
+    if(ps.length) $('#kFipe').textContent=(ps.reduce((a,b)=>a+b,0)/ps.length).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%';
+  }
+  function renderVitrine(){
+    const g=$('#vitrineGrid');
+    let list=items.slice();
+    if(fil.marca) list=list.filter(i=>(i.marca||'').toLowerCase()===fil.marca.toLowerCase());
+    if(fil.modelo){const q=fil.modelo.toLowerCase();list=list.filter(i=>[i.modelo,i.versao].join(' ').toLowerCase().includes(q));}
+    if(fil.max) list=list.filter(i=>i.preco&&i.preco<=fil.max);
+    if(fil.uf) list=list.filter(i=>uf(i.cidade)===fil.uf);
+    const by={menor:(a,b)=>(a.preco||1e12)-(b.preco||1e12),fipe:(a,b)=>(pctOff(b.preco,b.fipe)??-999)-(pctOff(a.preco,a.fipe)??-999),km:(a,b)=>(a.km??1e12)-(b.km??1e12)};
+    if(by[ordem]) list.sort(by[ordem]);
+    const af=[]; if(fil.marca)af.push(['marca',fil.marca]); if(fil.modelo)af.push(['modelo',fil.modelo]); if(fil.max)af.push(['max','Até '+brl(fil.max)]); if(fil.uf)af.push(['uf',fil.uf]);
+    $('#activeFilters').innerHTML=af.map(([k,v])=>`<button type="button" data-clear="${k}" aria-label="Remover filtro ${esc(v)}">${esc(v)} ✕</button>`).join('');
+    $('#resCount').textContent=items.length?` ${list.length} ${list.length===1?'carro':'carros'}`:'';
+    if(!loaded){g.innerHTML='';return;}
+    if(!items.length){g.innerHTML=`<div class="empty"><h3>Ainda não há repasses anunciados</h3><p>Quando as lojas parceiras cadastrarem carros, eles aparecem aqui com preço, FIPE e contato.</p><a class="btn btn-y" href="#lojistas">Quero anunciar</a></div>`;return;}
+    if(!list.length){g.innerHTML=`<div class="empty"><h3>Nenhum carro encontrado</h3><p>Tente outra marca, aumente o preço ou remova algum filtro.</p></div>`;return;}
+    g.innerHTML=list.map(i=>{
+      const p=pctOff(i.preco,i.fipe), st=i.status||'disponivel';
+      const badge=st==='reservado'?'<span class="badge res">Reservado</span>':(p!==null&&p>0?`<span class="badge">${fmtPct(p)} abaixo da FIPE</span>`:'');
+      const specs=[i.ano,i.km!=null?i.km.toLocaleString('pt-BR')+' km':'',i.cambio,i.placaFinal?'Final '+i.placaFinal:''].filter(Boolean).map(s=>`<span>${esc(s)}</span>`).join('');
+      return `<article class="card">
+        <div class="photo">${badge}${CAR}<span class="nofoto">Sem foto</span></div>
+        <div class="body">
+          <h3>${esc(i.marca)} ${esc(i.modelo)}${i.versao?`<small>${esc(i.versao)}</small>`:''}</h3>
+          <div class="specs">${specs}</div>
+          <div class="price">${brl(i.preco)}</div>
+          ${i.fipe?`<div class="fipe">FIPE ${brl(i.fipe)}${p>0?` · <b>${fmtPct(p)} abaixo</b>`:''}</div>`:''}
+          <div class="seller"><div><strong>${esc(i.loja)}</strong>${i.cidade?'<br>'+esc(i.cidade):''}</div>
+            ${i.whatsapp?`<a class="wa" target="_blank" rel="noopener" href="${wa(i.whatsapp,`Olá! Vi o repasse do ${i.marca} ${i.modelo} ${i.ano} no Pátio Repasses.`)}">WhatsApp</a>`:''}</div>
+        </div></article>`;
+    }).join('');
+  }
+  async function carregarVitrine(){
+    const note=$('#loadNote');
+    try{ items=await api('/api/repasses'); loaded=true; note.hidden=true; }
+    catch(e){ loaded=true; note.hidden=false; note.textContent='Não foi possível carregar os repasses agora. Tente recarregar a página.'; }
+    syncMarcaSelect(); kpis(); renderVitrine();
+  }
+  // botão "Quero ser parceiro" usa o WhatsApp configurado no Netlify
+  api('/api/config').then(c=>{ if(c&&c.contatoWhatsapp){ const b=$('#btnParceiro'); b.href=wa(c.contatoWhatsapp,'Olá! Tenho uma loja e quero anunciar meus repasses no Pátio Repasses.'); b.hidden=false; } }).catch(()=>{});
+
+  /* ---------- login / painel ---------- */
+  function sair(m){ token=''; me=null; LS.set('pr_token',null); showPanel(); if(m){ $('#loginMsg').className='msg err'; $('#loginMsg').textContent=m; } }
+  $('#btnSair').addEventListener('click',()=>sair());
+  async function showPanel(){
+    const logado=!!token;
+    $('#pActs').hidden=!logado; $('#senhaBox').hidden=true;
+    if(!logado){
+      $('#loginBox').hidden=false; $('#painel').hidden=true; $('#lojistasView').hidden=true; $('#pTabs').hidden=true;
+      $('#pTitle').textContent='Área do lojista'; $('#pSub').textContent='Entre com o usuário e a senha que você recebeu do Pátio Repasses.';
+      return;
+    }
+    $('#loginBox').hidden=true;
+    if(!me){ try{ me=await api('/api/me'); }catch(_){ return; } }
+    const admin=me.role==='admin';
+    $('#btnSenha').hidden=admin; $('#pTabs').hidden=!admin;
+    $('#pTitle').textContent=admin?'Painel do administrador':me.loja.nome;
+    $('#pSub').textContent=admin?'Cadastre lojistas, acompanhe e edite todos os repasses do portal.':'Cadastre os carros da loja e atualize preço e situação. O que estiver disponível ou reservado aparece na vitrine.';
+    $('#lojaInfo').hidden=admin; $('#lojaSelWrap').hidden=!admin;
+    if(!admin) $('#lojaInfo').innerHTML=`<b>Anunciando como ${esc(me.loja.nome)}</b><span>${esc(me.loja.cidade)} · WhatsApp ${esc(me.loja.whatsapp)}</span>`;
+    if(!admin) tab='repasses';
+    showTab();
+    carregarMeus(); if(admin) carregarLojistas();
+  }
+  function showTab(){
+    $('#painel').hidden=tab!=='repasses'; $('#lojistasView').hidden=tab!=='lojistas';
+    $$('[data-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===tab)));
+  }
+  $$('[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;showTab();}));
+  $('#loginForm').addEventListener('submit',async e=>{
+    e.preventDefault(); const m=$('#loginMsg'); m.textContent='';
+    try{
+      const r=await api('/api/login',{method:'POST',body:JSON.stringify({usuario:$('#lUsuario').value,senha:$('#senha').value})});
+      token=r.token; me={role:r.role,loja:r.loja}; LS.set('pr_token',token); $('#senha').value=''; showPanel();
+    }catch(err){ m.className='msg err'; m.textContent=err.message; }
+  });
+  $('#btnSenha').addEventListener('click',()=>{ $('#painel').hidden=true; $('#senhaBox').hidden=false; $('#senhaMsg').textContent=''; $('#sAtual').focus(); });
+  $('#senhaCancel').addEventListener('click',()=>{ $('#senhaBox').hidden=true; showTab(); });
+  $('#senhaForm').addEventListener('submit',async e=>{
+    e.preventDefault(); const m=$('#senhaMsg');
+    try{ const r=await api('/api/me/senha',{method:'PUT',body:JSON.stringify({atual:$('#sAtual').value,nova:$('#sNova').value})});
+      token=r.token; LS.set('pr_token',token); $('#senhaForm').reset(); m.className='msg ok'; m.textContent='Senha alterada.';
+      setTimeout(()=>{ $('#senhaBox').hidden=true; showTab(); },1200);
+    }catch(err){ m.className='msg err'; m.textContent=err.message; }
+  });
+  async function carregarMeus(){ try{ meus=await api('/api/repasses?meus=1'); renderRows(); }catch(_){} }
+
+  /* ---------- consulta de placa ---------- */
+  const flash=el=>{el.classList.add('filled');setTimeout(()=>el.classList.remove('filled'),1600);};
+  const setv=(id,v)=>{ if(v==null||v==='')return; const el=$(id); el.value=v; flash(el); };
+  function setSelect(id,v){ if(!v)return; const el=$(id); const o=[...el.options].find(o=>o.text.toLowerCase().startsWith(String(v).toLowerCase().slice(0,4))); if(o){el.value=o.value;flash(el);} }
+  const PH='Digite a placa e clique em Buscar dados para preencher o carro. Só o final da placa aparece na vitrine.';
+  $('#placaFull').addEventListener('input',e=>{const v=normPlaca(e.target.value);e.target.value=v;const h=$('#placaHint');
+    if(v.length===7&&!placaOk(v)){h.textContent='Placa inválida. Use o padrão ABC1D23 ou ABC1234.';h.style.color='var(--danger)';}
+    else{h.textContent=PH;h.style.color='';}});
+  $('#placaFull').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#btnPlaca').click();}});
+  $('#btnPlaca').addEventListener('click',async()=>{
+    const p=normPlaca($('#placaFull').value), h=$('#placaHint'), b=$('#btnPlaca');
+    if(!placaOk(p)){h.textContent='Digite a placa completa: ABC1D23 ou ABC1234.';h.style.color='var(--danger)';return;}
+    b.disabled=true; b.textContent='Buscando…'; h.style.color=''; h.textContent='Consultando a placa '+p+'…';
+    try{
+      const d=await api('/api/placa/'+p);
+      setv('#marca',d.marca); setv('#modelo',d.modelo); setv('#versao',d.versao);
+      if(d.anoFab||d.anoModelo) setv('#ano',[d.anoFab,d.anoModelo].filter(Boolean).join('/'));
+      setv('#cor',d.cor); setSelect('#comb',d.combustivel);
+      if(d.fipe){ setv('#fipe',brl(d.fipe)); calcFipe(); }
+      h.style.color='var(--ok)'; h.textContent=`Encontrado: ${d.marca} ${d.modelo} ${d.anoModelo||d.anoFab||''}. Confira os campos, coloque km e preço e salve.`;
+      $('#km').focus();
+    }catch(err){ h.style.color='var(--danger)'; h.textContent=err.message+' Você pode preencher os campos à mão.'; }
+    finally{ b.disabled=false; b.textContent='Buscar dados'; }
+  });
+
+  /* ---------- formulário de repasse ---------- */
+  function maskMoney(el){el.addEventListener('input',()=>{const n=toInt(el.value);el.value=n===null?'':brl(n);calcFipe();});}
+  maskMoney($('#preco')); maskMoney($('#fipe'));
+  $('#km').addEventListener('input',e=>{const n=toInt(e.target.value);e.target.value=n===null?'':n.toLocaleString('pt-BR');});
+  function calcFipe(){const p=pctOff(toInt($('#preco').value),toInt($('#fipe').value)),el=$('#fipeCalc');
+    if(p===null){el.textContent='';return;}
+    el.innerHTML=p>=0?`<strong>${fmtPct(p)} abaixo</strong> da tabela FIPE`:`<strong class="above">${fmtPct(p)} acima</strong> da tabela FIPE`;}
+  function lerForm(){const r={placa:normPlaca($('#placaFull').value),marca:$('#marca').value.trim(),modelo:$('#modelo').value.trim(),versao:$('#versao').value.trim(),ano:$('#ano').value.trim(),km:toInt($('#km').value),cambio:$('#cambio').value,combustivel:$('#comb').value,cor:$('#cor').value.trim(),preco:toInt($('#preco').value),fipe:toInt($('#fipe').value),obs:$('#obs').value.trim()};
+    if(me&&me.role==='admin') r.lojistaId=$('#lojaSel').value; return r;}
+  function preencher(r){$('#placaFull').value=r.placa||'';$('#marca').value=r.marca||'';$('#modelo').value=r.modelo||'';$('#versao').value=r.versao||'';$('#ano').value=r.ano||'';$('#km').value=r.km!=null?r.km.toLocaleString('pt-BR'):'';$('#cambio').value=r.cambio||'Manual';$('#comb').value=r.combustivel||'Flex';$('#cor').value=r.cor||'';$('#preco').value=r.preco!=null?brl(r.preco):'';$('#fipe').value=r.fipe!=null?brl(r.fipe):'';$('#obs').value=r.obs||'';if(r.lojistaId)$('#lojaSel').value=r.lojistaId;calcFipe();}
+  function limpar(){const loja=$('#lojaSel').value;$('#form').reset();$('#lojaSel').value=loja;calcFipe();$('#placaHint').textContent=PH;$('#placaHint').style.color='';
+    editId=null;$('#formTitle').textContent='Novo repasse';$('#btnSalvar').textContent='Cadastrar repasse';$('#btnCancelar').hidden=true;}
+  function msg(t,c){const m=$('#formMsg');m.textContent=t;m.className='msg '+(c||'');}
+  $('#btnCancelar').addEventListener('click',()=>{limpar();msg('');});
+  $('#form').addEventListener('submit',async e=>{
+    e.preventDefault(); const r=lerForm(), falta=[];
+    if(me&&me.role==='admin'&&!r.lojistaId)falta.push('loja');
+    if(!r.placa)falta.push('placa'); if(!r.marca)falta.push('marca'); if(!r.modelo)falta.push('modelo'); if(!r.ano)falta.push('ano'); if(!r.preco)falta.push('preço');
+    if(falta.length){msg('Preencha: '+falta.join(', ')+'.','err');return;}
+    if(!placaOk(r.placa)){msg('Confira a placa: use o padrão ABC1D23 ou ABC1234.','err');return;}
+    const btn=$('#btnSalvar'); btn.disabled=true;
+    try{
+      if(editId){await api('/api/repasses/'+editId,{method:'PUT',body:JSON.stringify(r)});msg('Repasse atualizado.','ok');}
+      else{await api('/api/repasses',{method:'POST',body:JSON.stringify(r)});msg(`${r.marca} ${r.modelo} cadastrado. Já aparece na vitrine.`,'ok');}
+      limpar(); await carregarMeus(); carregarVitrine(); if(me.role==='admin') carregarLojistas();
+    }catch(err){ msg(err.message,'err'); }
+    finally{btn.disabled=false;}
+  });
+  $$('[data-f]').forEach(b=>b.addEventListener('click',()=>{pFiltro=b.dataset.f;$$('[data-f]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));renderRows();}));
+  $('#busca').addEventListener('input',renderRows);
+  function renderRows(){
+    const box=$('#rows'), q=$('#busca').value.trim().toLowerCase(), admin=me&&me.role==='admin';
+    let list=meus.filter(i=>pFiltro==='todos'||(i.status||'disponivel')===pFiltro);
+    if(q) list=list.filter(i=>[i.placa,i.marca,i.modelo,i.versao,i.loja,i.cidade,i.cor,i.ano].join(' ').toLowerCase().includes(q));
+    if(!meus.length){box.innerHTML=`<div class="empty"><h3>Nenhum repasse cadastrado</h3><p>Digite a placa no formulário. Cada carro salvo entra direto na vitrine.</p></div>`;return;}
+    if(!list.length){box.innerHTML=`<div class="empty"><h3>Nada encontrado</h3><p>Nenhum repasse combina com a busca ou o filtro.</p></div>`;return;}
+    box.innerHTML=list.map(i=>{
+      const p=pctOff(i.preco,i.fipe), st=i.status||'disponivel';
+      const off=p===null?'':` · <span class="off ${p<0?'above':''}">${fmtPct(p)} ${p<0?'acima':'abaixo'}</span>`;
+      return `<article class="row ${st}">
+        <h3>${esc(i.marca)} ${esc(i.modelo)} <span class="pill ${st}">${STATUS[st]}</span></h3>
+        <div class="pr">${brl(i.preco)}<small>${i.fipe?'FIPE '+brl(i.fipe):'sem FIPE'}${off}</small></div>
+        <div class="specs"><span><b>${esc(i.placa)}</b></span>${i.versao?`<span>${esc(i.versao)}</span>`:''}<span>${esc(i.ano)}</span>${i.km!=null?`<span>${i.km.toLocaleString('pt-BR')} km</span>`:''}<span>${esc(i.cambio)}</span>${i.cor?`<span>${esc(i.cor)}</span>`:''}</div>
+        ${i.obs?`<p class="obs">${esc(i.obs)}</p>`:''}
+        <div class="meta"><div>${admin?`<strong>${esc(i.loja)}</strong> · ${esc(i.cidade)}`:`Cadastrado em ${new Date(i.criadoEm).toLocaleDateString('pt-BR')}`}</div>
+          <div class="actions">
+            <select data-st="${i.id}" aria-label="Situação de ${esc(i.marca)} ${esc(i.modelo)}">${Object.entries(STATUS).map(([k,v])=>`<option value="${k}" ${k===st?'selected':''}>${v}</option>`).join('')}</select>
+            <button type="button" data-ed="${i.id}">Editar</button>
+            ${confirmDel===i.id?`<button type="button" class="danger" data-delok="${i.id}">Confirmar exclusão</button><button type="button" data-delno>Não</button>`:`<button type="button" class="danger" data-del="${i.id}">Excluir</button>`}
+          </div></div>
+      </article>`;
+    }).join('');
+  }
+  $('#rows').addEventListener('change',async e=>{const id=e.target.dataset.st;if(!id)return;
+    try{await api('/api/repasses/'+id,{method:'PUT',body:JSON.stringify({status:e.target.value})});await carregarMeus();carregarVitrine();}catch(_){renderRows();}});
+  $('#rows').addEventListener('click',async e=>{
+    const t=e.target;
+    if(t.dataset.ed){const r=meus.find(x=>x.id===t.dataset.ed);if(!r)return;editId=r.id;preencher(r);$('#formTitle').textContent='Editar repasse';$('#btnSalvar').textContent='Salvar alterações';$('#btnCancelar').hidden=false;msg('');$('#form').scrollIntoView({behavior:'smooth'});}
+    if(t.dataset.del){confirmDel=t.dataset.del;renderRows();}
+    if(t.hasAttribute('data-delno')){confirmDel=null;renderRows();}
+    if(t.dataset.delok){const id=t.dataset.delok;confirmDel=null;try{await api('/api/repasses/'+id,{method:'DELETE'});if(editId===id)limpar();await carregarMeus();carregarVitrine();}catch(_){renderRows();}}
+  });
+
+  /* ---------- lojistas (administrador) ---------- */
+  async function carregarLojistas(){
+    try{ lojistas=await api('/api/lojistas'); }catch(_){ return; }
+    const sel=$('#lojaSel'), cur=sel.value;
+    const ativos=lojistas.filter(l=>l.ativo);
+    sel.innerHTML='<option value="">'+(ativos.length?'Escolha a loja':'Cadastre uma loja na aba Lojistas')+'</option>'+ativos.map(l=>`<option value="${l.id}">${esc(l.nome)} · ${esc(l.cidade)}</option>`).join('');
+    if(cur) sel.value=cur;
+    renderLojistas();
+  }
+  function lMsg(t,c){const m=$('#lMsg');m.textContent=t;m.className='msg '+(c||'');}
+  function lLer(){return{nome:$('#lNome').value.trim(),responsavel:$('#lResp').value.trim(),whatsapp:$('#lFone').value.trim(),cidade:$('#lCidade').value.trim(),cnpj:$('#lCnpj').value.trim(),usuario:$('#lUser').value.trim(),obs:$('#lObs').value.trim()};}
+  function lLimpar(){$('#lForm').reset();lEditId=null;$('#lFormTitle').textContent='Cadastrar lojista';$('#lSalvar').textContent='Cadastrar lojista';$('#lCancelar').hidden=true;$('#lUser').placeholder='Criado pelo nome';}
+  $('#lCancelar').addEventListener('click',()=>{lLimpar();lMsg('');});
+  function mostrarCred(l,senha,nova){
+    const site=location.origin;
+    const nomeP=(l.responsavel||l.nome).split(' ')[0];
+    const texto=`Olá, ${nomeP}! ${nova?'Sua nova senha':'Seu acesso'} do Pátio Repasses${nova?' está pronta':' está liberado'}.\n\nSite: ${site}\nUsuário: ${l.usuario}\nSenha: ${senha}\n\nEntre em "Anunciar" no topo do site para cadastrar seus repasses. Depois de entrar, você pode trocar a senha.`;
+    const box=$('#credBox'); box.hidden=false;
+    box.innerHTML=`<h3>${nova?'Nova senha gerada':'Lojista cadastrado'}: ${esc(l.nome)}</h3>
+      <dl><dt>Usuário</dt><dd>${esc(l.usuario)}</dd><dt>Senha</dt><dd>${esc(senha)}</dd></dl>
+      <p>Anote ou envie agora: a senha não aparece de novo. Se perder, gere outra.</p>
+      <div class="btns"><a class="btn btn-y" target="_blank" rel="noopener" href="${wa(l.whatsapp,texto)}">Enviar no WhatsApp</a><button type="button" class="btn-ghost" id="credCopy">Copiar mensagem</button></div>`;
+    $('#credCopy').addEventListener('click',async ev=>{const b=ev.currentTarget;try{await navigator.clipboard.writeText(texto);b.textContent='Mensagem copiada';}catch(_){b.textContent='Não deu para copiar';}setTimeout(()=>b.textContent='Copiar mensagem',1600);});
+    box.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  $('#lForm').addEventListener('submit',async e=>{
+    e.preventDefault(); const d=lLer(), falta=[];
+    if(!d.nome)falta.push('nome da loja'); if(!d.whatsapp)falta.push('WhatsApp'); if(!d.cidade)falta.push('cidade');
+    if(falta.length){lMsg('Preencha: '+falta.join(', ')+'.','err');return;}
+    const b=$('#lSalvar'); b.disabled=true;
+    try{
+      if(lEditId){ if(!d.usuario) delete d.usuario; await api('/api/lojistas/'+lEditId,{method:'PUT',body:JSON.stringify(d)}); lMsg('Lojista atualizado.','ok'); }
+      else{ const r=await api('/api/lojistas',{method:'POST',body:JSON.stringify(d)}); lMsg('',''); mostrarCred(r.lojista,r.senha,false); }
+      lLimpar(); carregarLojistas(); carregarMeus(); carregarVitrine();
+    }catch(err){ lMsg(err.message,'err'); }
+    finally{ b.disabled=false; }
+  });
+  $$('[data-lf]').forEach(b=>b.addEventListener('click',()=>{lFiltro=b.dataset.lf;$$('[data-lf]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));renderLojistas();}));
+  $('#lBusca').addEventListener('input',renderLojistas);
+  function renderLojistas(){
+    const box=$('#lRows'), q=$('#lBusca').value.trim().toLowerCase();
+    let list=lojistas.filter(l=>lFiltro==='todos'||(lFiltro==='ativos'?l.ativo:!l.ativo));
+    if(q) list=list.filter(l=>[l.nome,l.responsavel,l.cidade,l.usuario,l.whatsapp].join(' ').toLowerCase().includes(q));
+    if(!lojistas.length){box.innerHTML=`<div class="empty"><h3>Nenhum lojista cadastrado</h3><p>Cadastre a primeira loja no formulário. O sistema gera o usuário e a senha para você enviar.</p></div>`;return;}
+    if(!list.length){box.innerHTML=`<div class="empty"><h3>Nada encontrado</h3><p>Nenhum lojista combina com a busca ou o filtro.</p></div>`;return;}
+    box.innerHTML=list.map(l=>`<article class="row ${l.ativo?'':'inativo'}">
+        <h3>${esc(l.nome)} <span class="pill ${l.ativo?'ativo':'inativo'}">${l.ativo?'Ativo':'Desativado'}</span></h3>
+        <div class="pr">${l.carros}<small>${l.carros===1?'carro anunciado':'carros anunciados'}</small></div>
+        <div class="specs"><span>Usuário: <b>${esc(l.usuario)}</b></span>${l.responsavel?`<span>${esc(l.responsavel)}</span>`:''}<span>${esc(l.cidade)}</span><span>${esc(l.whatsapp)}</span>${l.cnpj?`<span>CNPJ ${esc(l.cnpj)}</span>`:''}</div>
+        ${l.obs?`<p class="obs">${esc(l.obs)}</p>`:''}
+        <div class="meta"><div>Desde ${new Date(l.criadoEm).toLocaleDateString('pt-BR')}</div>
+          <div class="actions">
+            <button type="button" data-led="${l.id}">Editar</button>
+            ${lConfirm===l.id?`<button type="button" class="danger" data-lsenhaok="${l.id}">Confirmar nova senha</button><button type="button" data-lno>Não</button>`:`<button type="button" data-lsenha="${l.id}">Gerar nova senha</button>`}
+            <button type="button" ${l.ativo?'class="danger"':''} data-lativo="${l.id}">${l.ativo?'Desativar':'Reativar'}</button>
+          </div></div>
+      </article>`).join('');
+  }
+  $('#lRows').addEventListener('click',async e=>{
+    const t=e.target;
+    if(t.dataset.led){const l=lojistas.find(x=>x.id===t.dataset.led);if(!l)return;lEditId=l.id;
+      $('#lNome').value=l.nome||'';$('#lResp').value=l.responsavel||'';$('#lFone').value=l.whatsapp||'';$('#lCidade').value=l.cidade||'';$('#lCnpj').value=l.cnpj||'';$('#lUser').value=l.usuario||'';$('#lObs').value=l.obs||'';
+      $('#lFormTitle').textContent='Editar lojista';$('#lSalvar').textContent='Salvar alterações';$('#lCancelar').hidden=false;lMsg('');$('#lForm').scrollIntoView({behavior:'smooth'});}
+    if(t.dataset.lsenha){lConfirm=t.dataset.lsenha;renderLojistas();}
+    if(t.hasAttribute('data-lno')){lConfirm=null;renderLojistas();}
+    if(t.dataset.lsenhaok){const l=lojistas.find(x=>x.id===t.dataset.lsenhaok);lConfirm=null;
+      try{const r=await api('/api/lojistas/'+l.id+'/senha',{method:'POST'});mostrarCred(l,r.senha,true);}catch(err){lMsg(err.message,'err');}renderLojistas();}
+    if(t.dataset.lativo){const l=lojistas.find(x=>x.id===t.dataset.lativo);
+      try{await api('/api/lojistas/'+l.id,{method:'PUT',body:JSON.stringify({ativo:!l.ativo})});await carregarLojistas();carregarVitrine();}catch(err){lMsg(err.message,'err');}}
+  });
+
+  route(); carregarVitrine();
+})();
+</script>
+</body>
+</html>

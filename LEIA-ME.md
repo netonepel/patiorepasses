@@ -1,0 +1,73 @@
+# Pátio Repasses — como colocar no ar no Netlify
+
+## O que tem aqui
+
+```
+public/index.html                 o site (vitrine + área do lojista)
+netlify/functions/placa.mjs       consulta a placa na sua API (a chave fica escondida no servidor)
+netlify/functions/repasses.mjs    salva e lista os anúncios (banco Netlify Blobs, já incluso no Netlify)
+netlify/functions/lojistas.mjs    cadastro de lojistas (só o administrador)
+netlify/functions/login.mjs       login de administrador e lojistas
+netlify/lib/core.mjs              senhas, sessões e banco
+netlify.toml / package.json       configuração
+```
+
+## 1. Subir o projeto
+
+O site tem funções de servidor, então **não funciona arrastando a pasta** no Netlify Drop. Use um destes jeitos:
+
+**Pelo GitHub (recomendado):** crie um repositório, envie esta pasta, e no Netlify clique em
+*Add new site → Import an existing project* e escolha o repositório. Não precisa mudar nada nas configurações de build.
+
+**Pelo terminal:**
+```
+npm install
+npx netlify-cli login
+npx netlify-cli deploy --prod
+```
+
+## 2. Configurar as variáveis
+
+No Netlify: *Site configuration → Environment variables → Add a variable*
+
+| Variável | O que colocar |
+|---|---|
+| `ADMIN_PASSWORD` | A **sua** senha de administrador. Você entra com o usuário `admin` e essa senha |
+| `CONTATO_WHATSAPP` | Seu WhatsApp, ex.: `(48) 99999-0000`. Aparece no botão "Quero ser parceiro" do site |
+| `SESSION_SECRET` | Opcional. Um texto longo e aleatório que protege os logins. Se não colocar, o site usa a senha de admin |
+| `PLACA_API_URL` | Endereço da consulta da sua API, com `{placa}` onde vai a placa e `{token}` onde vai a chave, se for na URL |
+| `PLACA_API_TOKEN` | Sua chave da API de placas |
+| `PLACA_API_HEADER` | Só se a sua API pede a chave num cabeçalho (ex.: `Authorization` ou `x-api-key`). Se for na URL, deixe sem |
+| `PLACA_CACHE_DIAS` | Opcional. Dias que uma placa já consultada fica guardada sem gastar crédito. Padrão: 30 |
+
+Exemplos de `PLACA_API_URL`:
+- WDAPI: `https://wdapi2.com.br/consulta/{placa}/{token}`
+- API que recebe a chave no cabeçalho: `https://api.exemplo.com.br/v1/placa/{placa}` + `PLACA_API_HEADER=Authorization` e `PLACA_API_TOKEN=Bearer SUA_CHAVE`
+
+Depois de salvar as variáveis, faça um novo deploy (*Deploys → Trigger deploy*).
+
+## 3. Cadastrar lojistas
+
+1. Abra o site, clique em **Anunciar** e entre com usuário `admin` e a sua `ADMIN_PASSWORD`.
+2. Vá na aba **Lojistas** e preencha nome da loja, responsável, WhatsApp e cidade.
+3. O sistema cria o usuário (pelo nome da loja) e uma senha. Clique em **Enviar no WhatsApp**: a mensagem já vai pronta com o site, o usuário e a senha.
+4. A senha só aparece nessa hora. Se a loja perder, clique em **Gerar nova senha** (a antiga para de funcionar).
+5. **Desativar** tira a loja do ar na hora: ela não entra mais e os carros dela somem da vitrine. **Reativar** traz tudo de volta.
+
+## 4. Como o lojista usa
+
+1. Entra em **Anunciar** com o usuário e a senha que recebeu (pode trocar a senha depois).
+2. Digita a placa e clica em **Buscar dados**: marca, modelo, versão, ano, cor, combustível e FIPE são preenchidos.
+3. Completa km e preço e salva. O carro aparece na vitrine com o nome, a cidade e o WhatsApp da loja.
+4. Ele só vê e mexe nos carros da própria loja. Você, como admin, vê e edita todos e pode anunciar em nome de qualquer loja.
+
+Se a consulta falhar, veja *Logs → Functions → placa* no Netlify: a resposta da API aparece lá.
+Me mande esse trecho que eu ajusto a leitura para o formato exato da sua API.
+
+## Segurança
+
+- A chave da API nunca vai para o navegador.
+- Só lojistas cadastrados e você conseguem consultar placa, então ninguém de fora gasta seus créditos.
+- As senhas dos lojistas são guardadas embaralhadas (nem você consegue ver a senha antiga, só gerar outra).
+- Consultas repetidas da mesma placa usam o cache, sem cobrar de novo.
+- A vitrine pública mostra só o final da placa.
