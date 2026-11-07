@@ -5,6 +5,7 @@
 //   PUT    /api/repasses/:id       edita  (dono ou admin)
 //   DELETE /api/repasses/:id       apaga  (dono ou admin)
 import { store, todos, json, corpo, sessao, pode } from "../lib/core.mjs";
+import { apagarFotos, fotosPermitidas } from "./fotos.mjs";
 
 const CAMPOS = ["placa","marca","modelo","versao","ano","km","cambio","combustivel","cor","preco","fipe","obs","status","chaveCopia","manual","cautelar"];
 const STATUS = ["disponivel","reservado","vendido"];
@@ -41,6 +42,7 @@ export default async (req, context) => {
       if (!l) return json({ erro: "Escolha a loja dona do carro." }, 400);
     }
     const erro = validar(r); if (erro) return json({ erro }, 400);
+    r.fotos = await fotosPermitidas(r.fotos || [], s);
     if ((await todos(st)).some(o => o.placa === r.placa && o.status !== "vendido"))
       return json({ erro: "Essa placa já está anunciada no portal." }, 409);
     const novo = { ...r, id: crypto.randomUUID(), lojistaId, status: "disponivel", criadoEm: new Date().toISOString() };
@@ -56,11 +58,13 @@ export default async (req, context) => {
     const b = await corpo(req); if (!b) return json({ erro: "Dados inválidos." }, 400);
     const novo = { ...atual, ...limpar(b, true), id, atualizadoEm: new Date().toISOString() };
     if (s.role === "admin" && b.lojistaId) novo.lojistaId = String(b.lojistaId);
+    if ("fotos" in b) novo.fotos = await fotosPermitidas(novo.fotos, s, atual.fotos || []);
     const erro = validar(novo); if (erro) return json({ erro }, 400);
     await st.setJSON(id, novo);
+    if ("fotos" in b) await apagarFotos((atual.fotos || []).filter(f => !novo.fotos.includes(f)));
     return json(novo);
   }
-  if (req.method === "DELETE") { await st.delete(id); return json({ ok: true }); }
+  if (req.method === "DELETE") { await st.delete(id); await apagarFotos(atual.fotos); return json({ ok: true }); }
   return json({ erro: "Método não suportado." }, 405);
 };
 
@@ -84,6 +88,8 @@ function limpar(b, parcial = false) {
     o[c] = v;
   }
   if (o.placa) o.placa = o.placa.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 7);
+  if ("fotos" in b) o.fotos = (Array.isArray(b.fotos) ? b.fotos : []).map(String).filter(x => /^[a-z0-9-]{8,64}$/i.test(x)).slice(0, 10);
+  else if (!parcial) o.fotos = [];
   for (const c of ["chaveCopia", "manual"]) if (c in o && !SIM_NAO.includes(o[c] ?? "")) o[c] = "";
   if ("cautelar" in o && !CAUTELAR.includes(o.cautelar ?? "")) o.cautelar = "";
   if (!parcial || "status" in b) o.status = STATUS.includes(o.status) ? o.status : "disponivel";

@@ -32,7 +32,8 @@ export async function chamarApi(cfg, placa) {
 
   // APIBrasil (apibrasil.io): POST com Bearer Token e { tipo, placa }
   if (ehApiBrasil(cfg)) {
-    const url = /apibrasil\.io/i.test(tpl) ? tpl : APIBRASIL_URL;
+    // só usa o endereço salvo se for um endereço completo da APIBrasil; senão, o oficial
+    const url = /^https:\/\/[^/]*apibrasil\.io\/api\//i.test(tpl) ? tpl : APIBRASIL_URL;
     const auth = /^bearer\s/i.test(token) ? token : "Bearer " + token;
     const r = await tenta("POST", url, { tipo: "fipe-chassi", placa, homolog: false }, { Authorization: auth });
     if (valido(r)) return { tentativas, bruto: r.json };

@@ -9,7 +9,9 @@ export function store(name) {
     if (!mem.has(name)) mem.set(name, new Map());
     const m = mem.get(name);
     return {
-      get: async k => (m.has(k) ? JSON.parse(m.get(k)) : null),
+      get: async (k, o) => { if (!m.has(k)) return null; const v = m.get(k); return v.bin ? (o?.type === "arrayBuffer" ? v.bin : v.bin) : (o?.type === "json" || !o ? JSON.parse(v) : v); },
+      getWithMetadata: async (k) => m.has(k) ? { data: m.get(k).bin, metadata: m.get(k).meta } : null,
+      set: async (k, data, o) => { m.set(k, { bin: data, meta: o?.metadata || {} }); },
       setJSON: async (k, v) => { m.set(k, JSON.stringify(v)); },
       delete: async k => { m.delete(k); },
       list: async () => ({ blobs: [...m.keys()].map(key => ({ key })) }),

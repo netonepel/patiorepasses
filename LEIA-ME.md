@@ -10,6 +10,8 @@ netlify/functions/lojistas.mjs    cadastro de lojistas (só o administrador)
 netlify/functions/login.mjs       login de administrador, equipe e lojistas
 netlify/functions/admin.mjs       painel master: equipe, configurações e histórico
 netlify/functions/reservas.mjs    reservas com sinal (comissão do Pátio)
+netlify/functions/fotos.mjs       fotos dos anúncios (guardadas no Netlify Blobs)
+netlify/lib/placa-api.mjs         chamada à API de placa (APIBrasil, Placa Fipe ou outra)
 netlify/lib/core.mjs              senhas, sessões e banco
 netlify.toml / package.json       configuração
 ```
@@ -107,6 +109,14 @@ Me mande esse trecho que eu ajusto a leitura para o formato exato da sua API.
 4. O carro vira **Reservado** na vitrine e o lojista vê o contato do cliente na aba **Reservas** dele, para fechar o negócio.
 5. **Cancelar reserva** devolve o carro para Disponível. O lojista nunca vê o valor da comissão.
 6. A vitrine não mostra o WhatsApp das lojas, para a negociação passar pelo Pátio.
+
+## Fotos
+
+- No cadastro do carro, em **Fotos**, toque em **Adicionar fotos** (no celular abre a câmera ou a galeria). Até 10 por carro.
+- O site reduz cada foto antes de enviar (grande com 1600 px e miniatura com 560 px), então funciona bem no 4G.
+- Use **‹ ›** para mudar a ordem. A primeira foto é a **capa** da vitrine. **✕** remove.
+- Na vitrine, clicar na foto abre a galeria (setas, teclado ou arrastar com o dedo).
+- Uma loja não consegue usar nem apagar fotos de outra. Excluir o anúncio apaga as fotos dele.
 
 ## Segurança
 
