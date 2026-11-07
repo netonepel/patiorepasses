@@ -57,8 +57,8 @@ export function gerarSenha() {
 
 /* ---------- sessões (token assinado, válido por 30 dias) ---------- */
 const segredo = () => process.env.SESSION_SECRET || "patio:" + (process.env.ADMIN_PASSWORD || "");
-export function criarToken(dados) {
-  const p = Buffer.from(JSON.stringify({ ...dados, exp: Date.now() + 30 * 864e5 })).toString("base64url");
+export function criarToken(dados, dias = 30) {
+  const p = Buffer.from(JSON.stringify({ ...dados, exp: Date.now() + dias * 864e5 })).toString("base64url");
   const s = crypto.createHmac("sha256", segredo()).update(p).digest("base64url");
   return p + "." + s;
 }
@@ -72,6 +72,9 @@ function lerToken(tok) {
     return o.exp > Date.now() ? o : null;
   } catch { return null; }
 }
+/** Lê um token assinado (verificação de telefone, Facebook etc.). Devolve o conteúdo ou null. */
+export const lerTokenAssinado = tok => lerToken(tok);
+
 /* ---------- permissões ---------- */
 export const PERMS = ["repasses", "reservas", "lojistas", "config", "acessos"];
 export const pode = (s, p) => !!s && s.role === "admin" && (s.master || (s.perms || []).includes(p));
@@ -126,6 +129,15 @@ const PADRAO = () => ({
   placaApiToken: process.env.PLACA_API_TOKEN || "",
   placaApiHeader: process.env.PLACA_API_HEADER || "",
   placaCacheDias: Number(process.env.PLACA_CACHE_DIAS || 30),
+  // verificação por WhatsApp (APIBrasil) e Facebook
+  verifWhatsUrl: process.env.VERIF_WHATS_URL || "https://gateway.apibrasil.io/api/v2/whatsapp/sendText",
+  verifBearer: process.env.VERIF_BEARER || "",
+  verifDeviceToken: process.env.VERIF_DEVICE_TOKEN || "",
+  verifMensagem: "Pátio Repasses: seu código de verificação é {codigo}. Ele vale por 10 minutos. Não passe esse código para ninguém.",
+  exigirTelefoneReserva: true,
+  exigirFacebookReserva: false,
+  fbAppId: process.env.FB_APP_ID || "",
+  fbAppSecret: process.env.FB_APP_SECRET || "",
 });
 export async function getConfig() {
   const salvo = await store("config").get("geral", { type: "json" }).catch(() => null);

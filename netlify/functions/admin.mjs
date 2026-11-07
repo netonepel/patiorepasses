@@ -9,6 +9,7 @@
 import { store, todos, json, corpo, sessao, pode, PERMS, getConfig, salvarConfig, registrar,
   hashSenha, gerarSenha, slug, usuarioEmUso } from "../lib/core.mjs";
 import { chamarApi } from "../lib/placa-api.mjs";
+import { normFone, whatsConfigurado, enviarWhats } from "../lib/verifica.mjs";
 import { normalizar } from "./placa.mjs";
 
 const CONFIG_CAMPOS = {
@@ -16,6 +17,8 @@ const CONFIG_CAMPOS = {
   taxaCheia: "numero", taxaPromo: "numero", promoAte: "data",
   avisoAtivo: "bool", avisoTitulo: "texto", avisoTexto: "longo",
   placaProvedor: "texto", placaApiUrl: "texto", placaApiHeader: "texto", placaApiToken: "segredo", placaCacheDias: "numero",
+  verifWhatsUrl: "texto", verifBearer: "segredo", verifDeviceToken: "segredo", verifMensagem: "longo",
+  exigirTelefoneReserva: "bool", exigirFacebookReserva: "bool", fbAppId: "texto", fbAppSecret: "segredo",
 };
 
 export default async (req, context) => {
@@ -30,8 +33,9 @@ export default async (req, context) => {
     if (req.method === "GET") {
       const c = await getConfig();
       const out = {}; for (const k of Object.keys(CONFIG_CAMPOS)) out[k] = c[k];
-      out.placaApiToken = c.placaApiToken ? "••••" + String(c.placaApiToken).slice(-4) : "";
+      for (const [k, tipo] of Object.entries(CONFIG_CAMPOS)) if (tipo === "segredo") { out["tem_" + k] = !!c[k]; out[k] = c[k] ? "••••" + String(c[k]).slice(-4) : ""; }
       out.temToken = !!c.placaApiToken;
+      out.fbRetorno = (process.env.URL || new URL(req.url).origin).replace(/\/+$/, "") + "/api/facebook/retorno";
       return json(out);
     }
     if (req.method === "PUT") {
@@ -47,13 +51,16 @@ export default async (req, context) => {
         m[k] = v;
       }
       if (b.limparToken === true) m.placaApiToken = "";
+      for (const k of ["verifBearer", "verifDeviceToken", "fbAppSecret"]) if (b["limpar_" + k] === true) m[k] = "";
       const atual = await getConfig();
       if (("avisoTitulo" in m && m.avisoTitulo !== atual.avisoTitulo) || ("avisoTexto" in m && m.avisoTexto !== atual.avisoTexto) || (m.avisoAtivo && !atual.avisoAtivo))
         m.avisoVersao = (atual.avisoVersao || 1) + 1; // aviso mudou: aparece de novo para quem já tinha visto
       const NOMES = { contatoWhatsapp: "WhatsApp do Pátio", grupoWhatsapp: "link do grupo", pixChave: "chave Pix", pixNome: "favorecido do Pix",
         taxaCheia: "valor do sinal", taxaPromo: "valor da promoção", promoAte: "fim da promoção", avisoAtivo: "aviso ligado/desligado",
         avisoTitulo: "título do aviso", avisoTexto: "texto do aviso", placaProvedor: "serviço de placa", placaApiUrl: "endereço da API de placa", placaApiHeader: "cabeçalho da API",
-        placaApiToken: "chave da API de placa", placaCacheDias: "dias de cache da placa" };
+        placaApiToken: "chave da API de placa", placaCacheDias: "dias de cache da placa",
+        verifWhatsUrl: "endereço de envio do WhatsApp", verifBearer: "Bearer Token do envio", verifDeviceToken: "DeviceToken do WhatsApp", verifMensagem: "mensagem do código",
+        exigirTelefoneReserva: "exigir WhatsApp na reserva", exigirFacebookReserva: "exigir Facebook na reserva", fbAppId: "App ID do Facebook", fbAppSecret: "chave secreta do Facebook" };
       const mudou = Object.keys(m).filter(k => NOMES[k] && m[k] !== atual[k]);
       await salvarConfig(m);
       if (mudou.length) await registrar(s, "Alterou configurações", mudou.map(k => NOMES[k]).join(", "));
@@ -72,6 +79,18 @@ export default async (req, context) => {
     await registrar(s, "Testou a API de placa", placa + (r.erro ? " (falhou)" : " (ok)"));
     return json({ ok: !r.erro && !!(dados?.marca || dados?.modelo), erro: r.erro || "", dados,
       tentativas: r.tentativas.map(({ json, ...t }) => t), configurado: { url: cfg.placaApiUrl, temToken: !!cfg.placaApiToken, cabecalho: cfg.placaApiHeader || "" } });
+  }
+
+  /* ----- teste de envio por WhatsApp ----- */
+  if (path === "/api/admin/verif-teste" && req.method === "POST") {
+    if (!pode(s, "config")) return json({ erro: "Sem permissão." }, 403);
+    const fone = normFone((await corpo(req))?.whatsapp);
+    if (!fone) return json({ erro: "Digite um WhatsApp com DDD para o teste." }, 400);
+    const cfg = await getConfig();
+    if (!whatsConfigurado(cfg)) return json({ erro: "Falta salvar o DeviceToken e o Bearer Token." }, 400);
+    const r = await enviarWhats(cfg, fone, "Teste do Pátio Repasses: o envio de códigos por WhatsApp está funcionando.");
+    await registrar(s, "Testou o envio por WhatsApp", fone.slice(-4) + (r.ok ? " (ok)" : " (falhou)"));
+    return json({ ok: r.ok, status: r.status, corpo: r.corpo, msg: r.msg });
   }
 
   /* ----- histórico ----- */
@@ -142,6 +161,6 @@ export default async (req, context) => {
   return json({ erro: "Não encontrado." }, 404);
 };
 
-export const config = { path: ["/api/admin/config", "/api/admin/log", "/api/admin/placa-teste", "/api/admin/usuarios", "/api/admin/usuarios/:id", "/api/admin/usuarios/:id/senha"] };
+export const config = { path: ["/api/admin/config", "/api/admin/log", "/api/admin/placa-teste", "/api/admin/verif-teste", "/api/admin/usuarios", "/api/admin/usuarios/:id", "/api/admin/usuarios/:id/senha"] };
 
 function pub(u) { const { senhaHash, senhaVersao, ...r } = u; return r; }

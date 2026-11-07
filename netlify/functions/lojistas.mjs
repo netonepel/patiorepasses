@@ -52,6 +52,8 @@ export default async (req, context) => {
     const b = await corpo(req) || {};
     const novo = { ...atual, ...limpar(b, true), atualizadoEm: new Date().toISOString() };
     if ("ativo" in b) novo.ativo = !!b.ativo;
+    if ("whatsapp" in b && String(b.whatsapp).replace(/\D/g, "") !== String(atual.whatsapp || "").replace(/\D/g, "")) { delete novo.telefoneVerificado; delete novo.telefoneVerificadoEm; }
+    if (b.removerFacebook === true) delete novo.facebook;
     if ("usuario" in b) {
       novo.usuario = slug(b.usuario);
       if (!novo.usuario || novo.usuario === "admin") return json({ erro: "Usuário inválido." }, 400);

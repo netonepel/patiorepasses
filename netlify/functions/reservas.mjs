@@ -4,7 +4,8 @@
 //   PUT  /api/reservas/:id    admin: { status: "pago" | "aguardando" | "cancelado", obs? }
 //        pago      -> carro vira "reservado"
 //        cancelado -> se o carro estava reservado por essa reserva, volta a "disponível"
-import { store, todos, json, corpo, sessao, taxaAgora, pode, getConfig, registrar } from "../lib/core.mjs";
+import { store, todos, json, corpo, sessao, taxaAgora, pode, getConfig, registrar, lerTokenAssinado } from "../lib/core.mjs";
+import { normFone, whatsConfigurado, fbConfigurado } from "../lib/verifica.mjs";
 
 export default async (req, context) => {
   const st = store("reservas");
@@ -26,11 +27,19 @@ export default async (req, context) => {
     const repetida = abertas.find(r => r.whatsapp.replace(/\D/g, "") === whatsapp.replace(/\D/g, ""));
     const cfg = await getConfig();
     const t = await taxaAgora(cfg);
+    // verificação do comprador
+    const tel = lerTokenAssinado(b.telToken || "");
+    const telOk = tel?.role === "tel" && tel.tel === normFone(whatsapp);
+    if (cfg.exigirTelefoneReserva && whatsConfigurado(cfg) && !telOk) return json({ erro: "Confirme seu WhatsApp com o código antes de reservar.", precisa: "telefone" }, 400);
+    const fb = lerTokenAssinado(b.fbToken || "");
+    const fbOk = fb?.role === "fb" ? { id: fb.id, nome: fb.nome } : null;
+    if (cfg.exigirFacebookReserva && fbConfigurado(cfg) && !fbOk) return json({ erro: "Confirme sua conta do Facebook antes de reservar.", precisa: "facebook" }, 400);
     const reserva = repetida || {
       id: crypto.randomUUID(), codigo: codigo(), repasseId: carro.id, lojistaId: carro.lojistaId,
       carro: `${carro.marca} ${carro.modelo} ${carro.ano}`, placa: carro.placa, preco: carro.preco, precoVitrine: (carro.preco || 0) + t.valor,
       nome, whatsapp, documento, obs: String(b.obs || "").trim().slice(0, 500),
       valor: t.valor, promo: t.promo, status: "aguardando", criadoEm: new Date().toISOString(),
+      telefoneVerificado: telOk, facebook: fbOk,
     };
     if (!repetida) await st.setJSON(reserva.id, reserva);
     return json({ reserva: { id: reserva.id, codigo: reserva.codigo, carro: reserva.carro, valor: reserva.valor, promo: reserva.promo },

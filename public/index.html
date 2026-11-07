@@ -568,6 +568,29 @@ footer .assin b{color:var(--yellow);font-weight:700}
 .conta{display:grid;grid-template-columns:1fr auto;gap:4px 12px;margin-top:10px;padding-top:10px;border-top:1px dashed #e6c34d;font-size:14px}
 .conta b{text-align:right;font-weight:700}
 .conta span:last-of-type,.conta b:last-of-type{font-weight:800;color:var(--ink)}
+
+/* ===== verificação ===== */
+.verif{border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.verif>b{font-size:15px}
+.vlinha{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
+.vicon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff}
+.vicon svg{width:20px;height:20px}
+.vicon.wa{background:#25d366} .vicon.fb{background:#1877f2}
+.vcorpo{display:flex;flex-direction:column;gap:6px;font-size:13.5px;min-width:0}
+.vcorpo .ok{color:var(--ok);font-weight:700}
+.vcod{display:flex;gap:6px}
+.vcod input{width:120px;font-size:18px;font-weight:800;letter-spacing:.25em;border:2px solid var(--black);border-radius:6px;padding:6px 10px;text-align:center}
+.vbtn{white-space:nowrap;font-size:13.5px}
+.vbtn[disabled]{opacity:.55;cursor:default}
+.vlinha.feito .vbtn{display:none}
+@media (max-width:480px){.vlinha{grid-template-columns:auto minmax(0,1fr)}.vbtn{grid-column:2;justify-self:start}}
+.vsel{display:inline-flex;gap:3px;margin-left:3px;vertical-align:-3px}
+.vsel i{width:17px;height:17px;border-radius:50%;display:grid;place-items:center;color:#fff}
+.vsel i svg{width:11px;height:11px}
+.vsel .wa{background:#25d366} .vsel .fb{background:#1877f2}
+.chip.wa{background:#e3f8ea;color:#137a3c;border-color:transparent} .chip.fb{background:#e7f0fe;color:#1458c8;border-color:transparent}
+.check.limpo{font-size:13.5px;color:var(--ink);align-items:center;margin-right:6px}
+.check.limpo input{margin-top:0}
 </style>
 </head>
 <body>
@@ -625,6 +648,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
       <div class="list-head">
         <h2>Repasses recentes<span class="res" id="resCount"></span></h2>
         <div class="tools">
+          <label class="check limpo"><input type="checkbox" id="fLimpo"> <span>Sem leilão e sem sinistro</span></label>
           <label for="ordem" class="hint" style="margin:0">Ordenar</label>
           <select id="ordem"><option value="recentes">Mais recentes</option><option value="menor">Menor preço</option><option value="fipe">Maior desconto FIPE</option><option value="km">Menor km</option></select>
         </div>
@@ -801,6 +825,23 @@ footer .assin b{color:var(--yellow);font-weight:700}
     <form class="form" id="form" novalidate>
       <h2 id="formTitle">Novo repasse</h2>
       <div class="lojainfo" id="lojaInfo" hidden></div>
+      <div class="verif loja" id="lVerif" hidden>
+        <b>Verificação da loja</b>
+        <span class="hint" style="margin:0">Lojas verificadas ganham selos na vitrine e passam mais confiança ao comprador.</span>
+        <div class="vlinha" id="lvTel">
+          <span class="vicon wa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3zm0 16.4a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.7.7.7-2.6-.2-.3A7.4 7.4 0 1 1 12 19.4zm4.1-5.5c-.2-.1-1.3-.7-1.5-.7-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6 6 0 0 1-3-2.6c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.6c-.2-.4-.4-.4-.5-.4h-.4c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.4c.1.1 1.6 2.5 4 3.5 1.5.6 2 .7 2.8.6.4-.1 1.3-.5 1.5-1.1.2-.5.2-1 .1-1.1l-.4-.2z"/></svg></span>
+          <div class="vcorpo"><span id="lvTelTxt"></span>
+            <div class="vcod" id="lvCodBox" hidden><input id="lvCod" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000" aria-label="Código recebido no WhatsApp"><button type="button" class="btn btn-dark" id="lvCodOk">Confirmar</button></div>
+          </div>
+          <button type="button" class="btn-ghost vbtn" id="lvTelBtn">Verificar WhatsApp</button>
+        </div>
+        <div class="vlinha" id="lvFb">
+          <span class="vicon fb"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H8v3h2.5V21z"/></svg></span>
+          <div class="vcorpo"><span id="lvFbTxt"></span></div>
+          <button type="button" class="btn-ghost vbtn" id="lvFbBtn">Conectar Facebook</button>
+        </div>
+        <div class="msg" id="lvMsg" role="status"></div>
+      </div>
       <div class="f" id="lojaSelWrap" hidden><label for="lojaSel">Loja dona do carro *</label><select id="lojaSel"></select></div>
       <p class="hint">Campos com * são obrigatórios.</p>
       <fieldset>
@@ -834,6 +875,8 @@ footer .assin b{color:var(--yellow);font-weight:700}
         <legend>Itens e documentação</legend>
         <div class="f"><label for="chaveCopia">Chave cópia</label><select id="chaveCopia"><option value="">Não informado</option><option value="sim">Tem</option><option value="nao">Não tem</option></select></div>
         <div class="f"><label for="manual">Manual do proprietário</label><select id="manual"><option value="">Não informado</option><option value="sim">Tem</option><option value="nao">Não tem</option></select></div>
+        <div class="f"><label for="leilao">Leilão</label><select id="leilao"><option value="">Não informado</option><option value="nao">Sem passagem por leilão</option><option value="sim">Tem passagem por leilão</option></select></div>
+        <div class="f"><label for="sinistro">Sinistro</label><select id="sinistro"><option value="">Não informado</option><option value="nao">Sem sinistro</option><option value="pequena">Sinistro de pequena monta</option><option value="media">Sinistro de média monta (recuperado)</option></select></div>
         <div class="f full"><label for="cautelar">Laudo cautelar</label><select id="cautelar"><option value="">Não informado</option><option value="aprovada">Aprovado</option><option value="apontamento">Aprovado com apontamento</option><option value="reprovada">Reprovado</option><option value="nao">Não tem laudo</option></select></div>
       </fieldset>
       <fieldset>
@@ -959,6 +1002,30 @@ footer .assin b{color:var(--yellow);font-weight:700}
           <div id="tRes"></div>
         </div>
       </section>
+      <section class="form">
+        <h2>Verificação por WhatsApp</h2>
+        <span class="hint" style="margin:0">Envia o código de 6 dígitos pela APIBrasil. Na APIBrasil, conecte o WhatsApp que vai mandar os códigos e copie o <b>DeviceToken</b> em Credenciais → Device Tokens.</span>
+        <div class="f"><label for="cvDevice">DeviceToken</label><input id="cvDevice" type="password" autocomplete="off" placeholder="Não cadastrado"></div>
+        <div class="f"><label for="cvBearer">Bearer Token do envio</label><input id="cvBearer" type="password" autocomplete="off" placeholder="Vazio usa o mesmo da consulta de placa"></div>
+        <div class="f"><label for="cvUrl">Endereço de envio</label><input id="cvUrl"></div>
+        <div class="f"><label for="cvMsg">Mensagem do código</label><textarea id="cvMsg" rows="3"></textarea><span class="hint" style="margin:0">Use {codigo} onde entra o número.</span></div>
+        <label class="check"><input type="checkbox" id="cvExigeTel"> <span>Exigir WhatsApp confirmado para reservar</span></label>
+        <div class="teste-api">
+          <b>Testar o envio</b>
+          <span class="hint" style="margin:0">Salve antes. Manda uma mensagem de teste para o número abaixo.</span>
+          <div class="placa-row"><input id="cvTesteFone" inputmode="tel" placeholder="(48) 99999-0000"><button type="button" class="btn btn-dark" id="cvTesteBtn">Enviar teste</button></div>
+          <div id="cvTesteRes"></div>
+        </div>
+      </section>
+      <section class="form">
+        <h2>Login com Facebook</h2>
+        <span class="hint" style="margin:0">Crie um app em developers.facebook.com com o produto <b>Login do Facebook</b> e cole aqui o App ID e a chave secreta.</span>
+        <div class="f"><label for="cfbId">App ID</label><input id="cfbId" inputmode="numeric"></div>
+        <div class="f"><label for="cfbSec">Chave secreta do app</label><input id="cfbSec" type="password" autocomplete="off" placeholder="Não cadastrada"></div>
+        <div class="f"><label for="cfbRet">Endereço de retorno (cole no app da Meta)</label><div class="placa-row"><input id="cfbRet" readonly><button type="button" class="btn btn-dark" id="cfbCopy">Copiar</button></div>
+          <span class="hint" style="margin:0">No app da Meta: Login do Facebook → Configurações → URIs de redirecionamento do OAuth válidos.</span></div>
+        <label class="check"><input type="checkbox" id="cvExigeFb"> <span>Exigir Facebook para reservar (se desmarcado, é opcional)</span></label>
+      </section>
       <div class="cfg-save">
         <button type="submit" class="btn btn-y" id="cSalvar">Salvar configurações</button>
         <div class="msg" id="cMsg" role="status"></div>
@@ -1016,7 +1083,23 @@ footer .assin b{color:var(--yellow);font-weight:700}
         <div class="f"><label for="rNome">Seu nome ou da sua loja *</label><input id="rNome" autocomplete="name" required></div>
         <div class="f"><label for="rFone">WhatsApp *</label><input id="rFone" inputmode="tel" autocomplete="tel" required placeholder="(48) 99999-0000"></div>
         <div class="f"><label for="rDoc">CPF ou CNPJ</label><input id="rDoc" inputmode="numeric" placeholder="Opcional"></div>
-        <label class="check"><input type="checkbox" id="rAceite"> <span>Entendo que o sinal é a comissão do Pátio Repasses, que a reserva vale depois da confirmação do Pix e que o restante do valor é negociado direto com a loja.</span></label>
+        <div class="verif" id="rVerif" hidden>
+          <b>Confirme que é você</b>
+          <div class="vlinha" id="rTelBox" hidden>
+            <span class="vicon wa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3zm0 16.4a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.7.7.7-2.6-.2-.3A7.4 7.4 0 1 1 12 19.4zm4.1-5.5c-.2-.1-1.3-.7-1.5-.7-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6 6 0 0 1-3-2.6c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.6c-.2-.4-.4-.4-.5-.4h-.4c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.4c.1.1 1.6 2.5 4 3.5 1.5.6 2 .7 2.8.6.4-.1 1.3-.5 1.5-1.1.2-.5.2-1 .1-1.1l-.4-.2z"/></svg></span>
+            <div class="vcorpo">
+              <span id="rTelTxt">Enviamos um código de 6 dígitos para o seu WhatsApp.</span>
+              <div class="vcod" id="rCodBox" hidden><input id="rCod" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000" aria-label="Código recebido no WhatsApp"><button type="button" class="btn btn-dark" id="rCodOk">Confirmar</button></div>
+            </div>
+            <button type="button" class="btn-ghost vbtn" id="rTelEnviar">Enviar código</button>
+          </div>
+          <div class="vlinha" id="rFbBox" hidden>
+            <span class="vicon fb"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H8v3h2.5V21z"/></svg></span>
+            <div class="vcorpo"><span id="rFbTxt">Confirme com a sua conta do Facebook.</span></div>
+            <button type="button" class="btn-ghost vbtn" id="rFbBtn">Entrar com Facebook</button>
+          </div>
+        </div>
+        <label class="check"><input type="checkbox" id="rAceite"> <span>Entendo que o sinal é a comissão do Pátio Repasses, que a reserva vale depois da confirmação do Pix e que o restante do valor é negociado direto com a loja. Li a <a href="/privacidade.html" target="_blank" rel="noopener">política de privacidade</a>.</span></label>
         <button type="submit" class="btn btn-y" id="rEnviar">Quero reservar</button>
         <div class="msg" id="rMsg" role="status"></div>
       </form>
@@ -1053,7 +1136,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
 <footer>
   <div class="wrap">
     <div><div class="flogo"><img src="/logo.png" alt="" width="52" height="52"><h4>Pátio Repasses</h4></div><p>Portal de repasses de veículos do Paraná, Santa Catarina e Rio Grande do Sul. O cliente reserva com sinal pelo Pátio e fecha o negócio com a loja anunciante.</p></div>
-    <div><h4>Portal</h4><ul><li><a href="#inicio">Comprar repasse</a></li><li><a href="#anunciar">Área do lojista</a></li><li><a href="#lojistas">Para lojistas</a></li></ul></div>
+    <div><h4>Portal</h4><ul><li><a href="#inicio">Comprar repasse</a></li><li><a href="#anunciar">Área do lojista</a></li><li><a href="#lojistas">Para lojistas</a></li><li><a href="/privacidade.html">Política de privacidade</a></li></ul></div>
     <div><h4>Estados</h4><ul><li>Paraná</li><li>Santa Catarina</li><li>Rio Grande do Sul</li></ul></div>
     <div class="legal"><span>Os preços e informações dos veículos são de responsabilidade de cada loja anunciante. O sinal pago ao Pátio Repasses é a comissão pela intermediação.</span><span class="assin">Site desenvolvido por <b>Neto Marketing Automotivo</b></span></div>
   </div>
@@ -1090,6 +1173,8 @@ footer .assin b{color:var(--yellow);font-weight:700}
     if(i.chaveCopia==='sim')c.push(['Chave cópia','ok']); else if(i.chaveCopia==='nao')c.push(['Sem chave cópia','']);
     if(i.manual==='sim')c.push(['Manual','ok']); else if(i.manual==='nao')c.push(['Sem manual','']);
     if(CAUT[i.cautelar])c.push(CAUT[i.cautelar]);
+    if(i.leilao==='nao')c.push(['Sem leilão','ok']); else if(i.leilao==='sim')c.push(['Passagem por leilão','warn']);
+    if(i.sinistro==='nao')c.push(['Sem sinistro','ok']); else if(i.sinistro==='pequena')c.push(['Sinistro pequena monta','warn']); else if(i.sinistro==='media')c.push(['Sinistro média monta','bad']);
     return c.length?`<div class="chips">${c.map(([t,k])=>`<span class="chip ${k}">${esc(t)}</span>`).join('')}</div>`:'';
   }
   const dataBR=d=>{const [y,m,dd]=String(d).split('-');return dd+'/'+m;};
@@ -1137,6 +1222,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
   $('#brands').addEventListener('click',e=>{const b=e.target.closest('[data-marca]');if(!b)return;
     fil.marca=b.dataset.marca; syncMarcaSelect(); $('#sMarca').value=fil.marca; renderVitrine(); $('#vitrine').scrollIntoView({behavior:'smooth'});});
   $('#ordem').addEventListener('change',e=>{ordem=e.target.value;renderVitrine();});
+  $('#fLimpo').addEventListener('change',renderVitrine);
   $('#activeFilters').addEventListener('click',e=>{const k=e.target.dataset.clear;if(!k)return;
     fil[k]=k==='max'?null:''; const map={marca:'#sMarca',modelo:'#sModelo',max:'#sMax',uf:'#sUf'}; $(map[k]).value=''; renderVitrine();});
   function syncMarcaSelect(){
@@ -1146,10 +1232,10 @@ footer .assin b{color:var(--yellow);font-weight:700}
   }
   function kpis(){
     contar($('#kDisp'),items.filter(i=>(i.status||'disponivel')==='disponivel').length,v=>Math.round(v));
-    contar($('#kLojas'),new Set(items.map(i=>(i.loja||'').trim().toLowerCase()).filter(Boolean)).size,v=>Math.round(v));
+    contar($('#kLojas'),new Set(items.map(i=>i.lojaRef).filter(Boolean)).size,v=>Math.round(v));
     const ps=items.map(i=>pctOff(i.preco,i.fipe)).filter(p=>p!==null);
     $('#kFipeWrap').hidden=!ps.length;
-    const nC=items.length, nL=new Set(items.map(i=>(i.loja||'').trim().toLowerCase()).filter(Boolean)).size;
+    const nC=items.length, nL=new Set(items.map(i=>i.lojaRef).filter(Boolean)).size;
     const live=$('#ljLive'); live.hidden=!nC; if(nC) live.textContent=`Agora no portal: ${nC} ${nC===1?'carro':'carros'} de ${nL} ${nL===1?'loja':'lojas'}.`;
     if(ps.length) contar($('#kFipe'),ps.reduce((a,b)=>a+b,0)/ps.length,v=>v.toLocaleString('pt-BR',{maximumFractionDigits:1})+'%');
   }
@@ -1160,6 +1246,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
     if(fil.modelo){const q=fil.modelo.toLowerCase();list=list.filter(i=>[i.modelo,i.versao].join(' ').toLowerCase().includes(q));}
     if(fil.max) list=list.filter(i=>i.preco&&i.preco<=fil.max);
     if(fil.uf) list=list.filter(i=>uf(i.cidade)===fil.uf);
+    if($('#fLimpo').checked) list=list.filter(i=>i.leilao==='nao'&&i.sinistro==='nao');
     const by={menor:(a,b)=>(a.preco||1e12)-(b.preco||1e12),fipe:(a,b)=>(pctOff(b.preco,b.fipe)??-999)-(pctOff(a.preco,a.fipe)??-999),km:(a,b)=>(a.km??1e12)-(b.km??1e12)};
     if(by[ordem]) list.sort(by[ordem]);
     const af=[]; if(fil.marca)af.push(['marca',fil.marca]); if(fil.modelo)af.push(['modelo',fil.modelo]); if(fil.max)af.push(['max','Até '+brl(fil.max)]); if(fil.uf)af.push(['uf',fil.uf]);
@@ -1172,7 +1259,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
     g.innerHTML=list.map(i=>{
       const p=pctOff(i.preco,i.fipe), st=i.status||'disponivel';
       const badge=st==='reservado'?'<span class="badge res">Reservado</span>':(p!==null&&p>0?`<span class="badge">${fmtPct(p)} abaixo da FIPE</span>`:'');
-      const specs=[i.ano,i.km!=null?i.km.toLocaleString('pt-BR')+' km':'',i.cambio,i.placaFinal?'Final '+i.placaFinal:''].filter(Boolean).map(s=>`<span>${esc(s)}</span>`).join('');
+      const specs=[i.ano,i.km!=null?i.km.toLocaleString('pt-BR')+' km':'',i.cambio,i.placaMasc?'Placa '+i.placaMasc:''].filter(Boolean).map(s=>`<span>${esc(s)}</span>`).join('');
       return `<article class="card">
         ${(i.fotos||[]).length
           ?`<button type="button" class="photo tem" data-gal="${i.id}" aria-label="Ver ${i.fotos.length} fotos do ${esc(i.marca)} ${esc(i.modelo)}">${badge}<img class="cover" src="/api/fotos/${i.fotos[0]}?t=1" alt="${esc(i.marca)} ${esc(i.modelo)} ${esc(i.ano)}" loading="lazy"><span class="nfotos">${i.fotos.length} ${i.fotos.length===1?'foto':'fotos'}</span></button>`
@@ -1183,7 +1270,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
           <div class="price">${brl(i.preco)}</div>
           ${i.fipe?`<div class="fipe">FIPE ${brl(i.fipe)}${p>0?` · <b>${fmtPct(p)} abaixo</b>`:''}</div>`:''}
           ${itensChips(i)}
-          <div class="seller"><div><strong>${esc(i.loja)}</strong><span class="parceira" title="Loja parceira do Pátio Repasses"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Parceira</span>${i.cidade?'<br>'+esc(i.cidade):''}</div>
+          <div class="seller"><div><strong>Loja parceira</strong>${i.lojaVerif&&(i.lojaVerif.tel||i.lojaVerif.fb)?`<span class="vsel">${i.lojaVerif.tel?`<i class="wa" title="WhatsApp da loja verificado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/></svg></i>`:''}${i.lojaVerif.fb?`<i class="fb" title="Facebook da loja verificado">${IFB}</i>`:''}</span>`:''}${i.cidade?'<br>'+esc(i.cidade):''}</div>
             ${st==='reservado'?'<button type="button" class="btn-res" disabled>Reservado</button>':`<button type="button" class="btn-res" data-res="${i.id}">Reservar com sinal</button>`}</div>
         </div></article>`;
     }).join('');
@@ -1208,7 +1295,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
   calc();
 
   /* ---------- configuração, aviso de testes ---------- */
-  api('/api/config').then(c=>{ cfg=c||{};
+  api('/api/config').then(c=>{ cfg=c||{}; if(me&&me.loja) lojaVerifUI();
     if(cfg.contatoWhatsapp){ const t='Olá! Tenho uma loja e quero anunciar meus repasses no Pátio Repasses.';
       ['#btnParceiro','#btnParceiro2'].forEach(id=>{ const b=$(id); b.href=wa(cfg.contatoWhatsapp,t); b.hidden=false; }); }
     const gl=waLink(cfg.grupoWhatsapp); if(gl){ $('#btnGrupoLoj').href=gl; $('#btnGrupoLoj').hidden=false; }
@@ -1226,6 +1313,83 @@ footer .assin b{color:var(--yellow);font-weight:700}
   function fechar(m){ m.hidden=true; if(![...$$('.modal')].some(x=>!x.hidden)) document.body.style.overflow=''; }
   $$('.modal').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m||e.target.closest('[data-close]')) fechar(m); }));
   addEventListener('keydown',e=>{ if(e.key==='Escape') $$('.modal').forEach(m=>{ if(!m.hidden) fechar(m); }); });
+
+  /* ---------- verificação ---------- */
+  function lojaVerifUI(){
+    const box=$('#lVerif'), v=cfg.verif||{}, l=me&&me.loja;
+    box.hidden=!(l&&(v.telefone||v.facebook)); if(box.hidden) return;
+    $('#lvTel').hidden=!v.telefone; $('#lvFb').hidden=!v.facebook;
+    $('#lvTel').classList.toggle('feito',!!l.telefoneVerificado);
+    if(l.telefoneVerificado) $('#lvTelTxt').innerHTML=`<span class="ok">✓ WhatsApp ${esc(l.whatsapp)} verificado</span>`;
+    else if($('#lvCodBox').hidden) $('#lvTelTxt').textContent=`Confirme o WhatsApp ${l.whatsapp} com um código.`;
+    $('#lvFb').classList.toggle('feito',!!l.facebook);
+    $('#lvFbTxt').innerHTML=l.facebook?`<span class="ok">✓ Facebook de ${esc(l.facebook.nome)} conectado</span>`:'Conecte o Facebook do responsável pela loja.';
+  }
+  async function recarregaMe(){ try{ const r=await api('/api/me'); me={...me,...r}; lojaVerifUI(); }catch(_){} }
+  $('#lvTelBtn').addEventListener('click',async()=>{ const m=$('#lvMsg'), b=$('#lvTelBtn'); b.disabled=true; m.textContent='';
+    try{ const r=await api('/api/verificar/enviar',{method:'POST',body:JSON.stringify({para:'loja'})}); $('#lvTelTxt').textContent=`Código enviado para o WhatsApp terminado em ${r.final}:`; $('#lvCodBox').hidden=false; $('#lvCod').focus();
+      setTimeout(()=>{b.disabled=false; b.textContent='Reenviar';},60000); }
+    catch(err){ m.className='msg err'; m.textContent=err.message; b.disabled=false; } });
+  async function lvConfirma(){ const m=$('#lvMsg'), c=digits($('#lvCod').value); if(c.length!==6) return;
+    try{ await api('/api/verificar/confirmar',{method:'POST',body:JSON.stringify({para:'loja',codigo:c})}); $('#lvCodBox').hidden=true; m.className='msg ok'; m.textContent='WhatsApp verificado. O selo já aparece nos seus carros.'; await recarregaMe(); carregarVitrine(); }
+    catch(err){ m.className='msg err'; m.textContent=err.message; } }
+  $('#lvCodOk').addEventListener('click',lvConfirma);
+  $('#lvCod').addEventListener('input',e=>{ e.target.value=digits(e.target.value).slice(0,6); if(e.target.value.length===6) lvConfirma(); });
+  $('#lvFbBtn').addEventListener('click',async e=>{ const m=$('#lvMsg');
+    try{ await loginFacebook(e.currentTarget,'loja'); m.className='msg ok'; m.textContent='Facebook conectado. O selo já aparece nos seus carros.'; await recarregaMe(); carregarVitrine(); }
+    catch(err){ m.className='msg err'; m.textContent=err.message; } });
+  const IWA=`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3zm0 16.4a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.7.7.7-2.6-.2-.3A7.4 7.4 0 1 1 12 19.4zm4.1-5.5c-.2-.1-1.3-.7-1.5-.7-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6 6 0 0 1-3-2.6c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.6c-.2-.4-.4-.4-.5-.4h-.4c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.4c.1.1 1.6 2.5 4 3.5 1.5.6 2 .7 2.8.6.4-.1 1.3-.5 1.5-1.1.2-.5.2-1 .1-1.1l-.4-.2z"/></svg>`, IFB=`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H8v3h2.5V21z"/></svg>`;
+  const foneN=v=>{ let d=digits(v); if(d.length===10||d.length===11) d='55'+d; return d; };
+  // abre a janela do Facebook e espera a resposta
+  async function loginFacebook(btn,para){
+    const win=window.open('about:blank','prfb','width=520,height=680');
+    btn.disabled=true;
+    try{
+      const r=await api('/api/facebook/link',{method:'POST',body:JSON.stringify({para:para||'cliente'})});
+      if(!win) { location.href=r.url; return null; }
+      win.location.href=r.url;
+      return await new Promise((ok,falha)=>{
+        const fim=setInterval(()=>{ if(win.closed){ clearInterval(fim); removeEventListener('message',h); falha(new Error('A janela do Facebook foi fechada antes de terminar.')); } },700);
+        function h(e){ if(e.origin!==location.origin||!e.data||e.data.tipo!=='pr-facebook') return; clearInterval(fim); removeEventListener('message',h); e.data.ok?ok(e.data):falha(new Error(e.data.texto)); }
+        addEventListener('message',h);
+      });
+    }catch(err){ try{win&&win.close();}catch(_){} throw err; }
+    finally{ btn.disabled=false; }
+  }
+  // comprador
+  let rTel={fone:'',token:''}, rFb=null;
+  function rVerifUI(){
+    const v=cfg.verif||{};
+    $('#rVerif').hidden=!(v.telefoneObrigatorio||v.facebook);
+    $('#rTelBox').hidden=!v.telefoneObrigatorio; $('#rFbBox').hidden=!v.facebook;
+    const tOk=rTel.token&&rTel.fone===foneN($('#rFone').value);
+    $('#rTelBox').classList.toggle('feito',!!tOk);
+    if(tOk){ $('#rTelTxt').innerHTML='<span class="ok">✓ WhatsApp confirmado</span>'; $('#rCodBox').hidden=true; }
+    else if($('#rCodBox').hidden) $('#rTelTxt').textContent='Vamos mandar um código de 6 dígitos para o WhatsApp que você digitou.';
+    $('#rFbBox').classList.toggle('feito',!!rFb);
+    $('#rFbTxt').innerHTML=rFb?`<span class="ok">✓ Facebook: ${esc(rFb.nome)}</span>`:(v.facebookObrigatorio?'Confirme com a sua conta do Facebook.':'Opcional: confirme com o Facebook para passar mais confiança à loja.');
+  }
+  $('#rFone').addEventListener('input',()=>{ if(rTel.fone&&rTel.fone!==foneN($('#rFone').value)){ rTel={fone:'',token:''}; $('#rCodBox').hidden=true; } rVerifUI(); });
+  $('#rTelEnviar').addEventListener('click',async()=>{
+    const m=$('#rMsg'), b=$('#rTelEnviar'), f=$('#rFone').value;
+    if(digits(f).length<10){ m.className='msg err'; m.textContent='Digite seu WhatsApp com DDD antes.'; $('#rFone').focus(); return; }
+    b.disabled=true; m.textContent='';
+    try{ const r=await api('/api/verificar/enviar',{method:'POST',body:JSON.stringify({whatsapp:f})});
+      $('#rTelTxt').textContent=`Código enviado para o WhatsApp terminado em ${r.final}. Digite abaixo:`; $('#rCodBox').hidden=false; $('#rCod').value=''; $('#rCod').focus();
+      b.textContent='Reenviar'; let n=60; const t=setInterval(()=>{ n--; b.textContent=n>0?`Reenviar (${n})`:'Reenviar'; if(n<=0){clearInterval(t); b.disabled=false;} },1000);
+    }catch(err){ m.className='msg err'; m.textContent=err.message; b.disabled=false; }
+  });
+  async function rConfirmaCod(){
+    const m=$('#rMsg'), c=digits($('#rCod').value); if(c.length!==6){ m.className='msg err'; m.textContent='Digite os 6 números do código.'; return; }
+    try{ const r=await api('/api/verificar/confirmar',{method:'POST',body:JSON.stringify({whatsapp:$('#rFone').value,codigo:c})});
+      rTel={fone:foneN($('#rFone').value),token:r.token}; m.textContent=''; rVerifUI();
+    }catch(err){ m.className='msg err'; m.textContent=err.message; }
+  }
+  $('#rCodOk').addEventListener('click',rConfirmaCod);
+  $('#rCod').addEventListener('input',e=>{ e.target.value=digits(e.target.value).slice(0,6); if(e.target.value.length===6) rConfirmaCod(); });
+  $('#rFbBtn').addEventListener('click',async e=>{ const m=$('#rMsg');
+    try{ const r=await loginFacebook(e.currentTarget); if(r){ rFb={nome:r.nome,token:r.token}; m.textContent=''; rVerifUI(); } }
+    catch(err){ m.className='msg err'; m.textContent=err.message; } });
 
   /* ---------- reserva com sinal (cliente comprador) ---------- */
   let resCarro=null;
@@ -1252,17 +1416,20 @@ footer .assin b{color:var(--yellow);font-weight:700}
   $('#vitrineGrid').addEventListener('click',e=>{ const b=e.target.closest('[data-res]'); if(!b) return;
     resCarro=items.find(x=>x.id===b.dataset.res); if(!resCarro) return;
     const i=resCarro, t=cfg.taxa||{valor:1900};
-    $('#resCar').innerHTML=`${(i.fotos||[]).length?`<img src="/api/fotos/${i.fotos[0]}?t=1" alt="">`:''}<div><b>${esc(i.marca)} ${esc(i.modelo)} ${esc(i.ano)}</b>${[i.versao,brl(i.preco),[i.loja,i.cidade].filter(Boolean).join(', ')].filter(Boolean).map(esc).join(' · ')}</div>`;
+    $('#resCar').innerHTML=`${(i.fotos||[]).length?`<img src="/api/fotos/${i.fotos[0]}?t=1" alt="">`:''}<div><b>${esc(i.marca)} ${esc(i.modelo)} ${esc(i.ano)}</b>${[i.versao,brl(i.preco),i.cidade].filter(Boolean).map(esc).join(' · ')}</div>`;
     const restante=i.precoLoja??Math.max(0,i.preco-t.valor);
     $('#resFee').innerHTML=`Sinal para reservar (comissão do Pátio)<strong>${brl(t.valor)}</strong>${t.promo?`<s>${brl(t.cheia)}</s> Promoção de lançamento até ${dataBR(t.promoAte)}.`:''}
       <div class="conta"><span>Valor do carro</span><b>${brl(i.preco)}</b><span>Sinal pago agora ao Pátio</span><b>− ${brl(t.valor)}</b><span>Restante pago direto à loja</span><b>${brl(restante)}</b></div>`;
-    $('#resStep1').hidden=false; $('#resStep2').hidden=true; $('#rMsg').textContent=''; $('#rAceite').checked=false;
+    $('#resStep1').hidden=false; $('#resStep2').hidden=true; $('#rMsg').textContent=''; $('#rAceite').checked=false; rVerifUI();
     abrir('#resModal'); setTimeout(()=>$('#rNome').focus(),50);
   });
   $('#resForm').addEventListener('submit',async e=>{
     e.preventDefault(); const m=$('#rMsg'), b=$('#rEnviar');
-    const d={repasseId:resCarro&&resCarro.id,nome:$('#rNome').value.trim(),whatsapp:$('#rFone').value.trim(),documento:$('#rDoc').value.trim(),aceite:$('#rAceite').checked};
+    const d={repasseId:resCarro&&resCarro.id,nome:$('#rNome').value.trim(),whatsapp:$('#rFone').value.trim(),documento:$('#rDoc').value.trim(),aceite:$('#rAceite').checked,telToken:rTel.token,fbToken:rFb&&rFb.token};
+    const v=cfg.verif||{};
     if(!d.nome||digits(d.whatsapp).length<10){m.className='msg err';m.textContent='Preencha seu nome e um WhatsApp com DDD.';return;}
+    if(v.telefoneObrigatorio&&!(rTel.token&&rTel.fone===foneN(d.whatsapp))){m.className='msg err';m.textContent='Confirme seu WhatsApp com o código antes de reservar.';$('#rTelEnviar').focus();return;}
+    if(v.facebookObrigatorio&&!rFb){m.className='msg err';m.textContent='Confirme com o Facebook antes de reservar.';return;}
     if(!d.aceite){m.className='msg err';m.textContent='Marque a caixa confirmando que leu as condições do sinal.';return;}
     b.disabled=true;
     try{
@@ -1347,6 +1514,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
       :me.master?'Gerencie lojistas, reservas, acessos da equipe e as configurações do portal.':`Olá, ${me.nome}. Você vê as áreas liberadas pelo administrador.`;
     $('#lojaInfo').hidden=admin; $('#lojaSelWrap').hidden=!admin;
     if(!admin) $('#lojaInfo').innerHTML=`<b>Anunciando como ${esc(me.loja.nome)}</b><span>${esc(me.loja.cidade)} · WhatsApp ${esc(me.loja.whatsapp)}</span>`;
+    lojaVerifUI();
     if(!vis[tab]) tab=Object.keys(vis).find(k=>vis[k])||'repasses';
     $('#rSeg').hidden=!admin; $('#resSum').hidden=!admin; $('#rBusca').hidden=!admin;
     showTab();
@@ -1464,9 +1632,9 @@ footer .assin b{color:var(--yellow);font-weight:700}
     const p=pctOff(vit,toInt($('#fipe').value)),el=$('#fipeCalc');
     if(p===null){el.textContent='';return;}
     el.innerHTML=p>=0?`Na vitrine: <strong>${fmtPct(p)} abaixo</strong> da tabela FIPE`:`Na vitrine: <strong class="above">${fmtPct(p)} acima</strong> da tabela FIPE`;}
-  function lerForm(){const r={placa:normPlaca($('#placaFull').value),marca:$('#marca').value.trim(),modelo:$('#modelo').value.trim(),versao:$('#versao').value.trim(),ano:$('#ano').value.trim(),km:toInt($('#km').value),cambio:$('#cambio').value,combustivel:$('#comb').value,cor:$('#cor').value.trim(),preco:toInt($('#preco').value),fipe:toInt($('#fipe').value),obs:$('#obs').value.trim(),chaveCopia:$('#chaveCopia').value,manual:$('#manual').value,cautelar:$('#cautelar').value,fotos:fotos.filter(f=>f.status==='ok').map(f=>f.id)};
+  function lerForm(){const r={placa:normPlaca($('#placaFull').value),marca:$('#marca').value.trim(),modelo:$('#modelo').value.trim(),versao:$('#versao').value.trim(),ano:$('#ano').value.trim(),km:toInt($('#km').value),cambio:$('#cambio').value,combustivel:$('#comb').value,cor:$('#cor').value.trim(),preco:toInt($('#preco').value),fipe:toInt($('#fipe').value),obs:$('#obs').value.trim(),chaveCopia:$('#chaveCopia').value,manual:$('#manual').value,cautelar:$('#cautelar').value,leilao:$('#leilao').value,sinistro:$('#sinistro').value,fotos:fotos.filter(f=>f.status==='ok').map(f=>f.id)};
     if(me&&me.role==='admin') r.lojistaId=$('#lojaSel').value; return r;}
-  function preencher(r){$('#placaFull').value=r.placa||'';$('#marca').value=r.marca||'';$('#modelo').value=r.modelo||'';$('#versao').value=r.versao||'';$('#ano').value=r.ano||'';$('#km').value=r.km!=null?r.km.toLocaleString('pt-BR'):'';$('#cambio').value=r.cambio||'Manual';$('#comb').value=r.combustivel||'Flex';$('#cor').value=r.cor||'';$('#preco').value=r.preco!=null?brl(r.preco):'';$('#fipe').value=r.fipe!=null?brl(r.fipe):'';$('#obs').value=r.obs||'';$('#chaveCopia').value=r.chaveCopia||'';$('#manual').value=r.manual||'';$('#cautelar').value=r.cautelar||'';syncModelos();fotos=(r.fotos||[]).map(id=>({id,url:'/api/fotos/'+id+'?t=1',status:'ok'}));renderFotos();if(r.lojistaId)$('#lojaSel').value=r.lojistaId;calcFipe();}
+  function preencher(r){$('#placaFull').value=r.placa||'';$('#marca').value=r.marca||'';$('#modelo').value=r.modelo||'';$('#versao').value=r.versao||'';$('#ano').value=r.ano||'';$('#km').value=r.km!=null?r.km.toLocaleString('pt-BR'):'';$('#cambio').value=r.cambio||'Manual';$('#comb').value=r.combustivel||'Flex';$('#cor').value=r.cor||'';$('#preco').value=r.preco!=null?brl(r.preco):'';$('#fipe').value=r.fipe!=null?brl(r.fipe):'';$('#obs').value=r.obs||'';$('#chaveCopia').value=r.chaveCopia||'';$('#manual').value=r.manual||'';$('#cautelar').value=r.cautelar||'';$('#leilao').value=r.leilao||'';$('#sinistro').value=r.sinistro||'';syncModelos();fotos=(r.fotos||[]).map(id=>({id,url:'/api/fotos/'+id+'?t=1',status:'ok'}));renderFotos();if(r.lojistaId)$('#lojaSel').value=r.lojistaId;calcFipe();}
   function limpar(){const loja=$('#lojaSel').value;$('#form').reset();$('#lojaSel').value=loja;calcFipe();$('#placaHint').textContent=PH;$('#placaHint').style.color='';
     fotos=[];renderFotos();editId=null;$('#formTitle').textContent='Novo repasse';$('#btnSalvar').textContent='Cadastrar repasse';$('#btnCancelar').hidden=true;}
   function msg(t,c){const m=$('#formMsg');m.textContent=t;m.className='msg '+(c||'');}
@@ -1561,6 +1729,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
         <h3>${esc(r.carro)} <span class="pill ${r.status}">${NOME[r.status]}</span></h3>
         <div class="pr">${brl(r.valor)}<small>sinal${r.promo?' · promoção':''}</small></div>
         <div class="specs"><span><b>${esc(r.codigo)}</b></span><span>Cliente: <b>${esc(r.nome)}</b></span><span>${esc(r.whatsapp)}</span>${r.documento?`<span>${esc(r.documento)}</span>`:''}<span>Loja: ${esc(r.loja)}</span><span>Placa ${esc(r.placa)}</span></div>
+        ${r.telefoneVerificado||r.facebook?`<div class="chips" style="grid-column:1/-1">${r.telefoneVerificado?'<span class="chip wa">✓ WhatsApp verificado</span>':''}${r.facebook?`<span class="chip fb">✓ Facebook: ${esc(r.facebook.nome)}</span>`:''}</div>`:''}
         <div class="meta"><div>${r.status==='pago'?'Pago em':'Pedido em'} ${quando}</div><div class="actions">${acoes}</div></div>
       </article>`;
     }).join('');
@@ -1641,6 +1810,11 @@ footer .assin b{color:var(--yellow);font-weight:700}
     $('#cAvisoAtivo').checked=c.avisoAtivo!==false; $('#cAvisoTit').value=c.avisoTitulo||''; $('#cAvisoTxt').value=c.avisoTexto||'';
     $('#cProv').value=c.placaProvedor||'apibrasil'; $('#cApiUrl').value=c.placaApiUrl||''; provUI(); $('#cApiHead').value=c.placaApiHeader||''; $('#cApiTok').value=''; $('#cApiTok').placeholder=c.temToken?'Salva ('+c.placaApiToken+'). Digite só para trocar':'Não cadastrada';
     $('#cCache').value=c.placaCacheDias??30; taxaHoje();
+    $('#cvDevice').value=''; $('#cvDevice').placeholder=c.tem_verifDeviceToken?'Salvo ('+c.verifDeviceToken+'). Digite só para trocar':'Não cadastrado';
+    $('#cvBearer').value=''; $('#cvBearer').placeholder=c.tem_verifBearer?'Salvo ('+c.verifBearer+'). Digite só para trocar':'Vazio usa o mesmo da consulta de placa';
+    $('#cvUrl').value=c.verifWhatsUrl||''; $('#cvMsg').value=c.verifMensagem||''; $('#cvExigeTel').checked=c.exigirTelefoneReserva!==false;
+    $('#cfbId').value=c.fbAppId||''; $('#cfbSec').value=''; $('#cfbSec').placeholder=c.tem_fbAppSecret?'Salva ('+c.fbAppSecret+'). Digite só para trocar':'Não cadastrada';
+    $('#cfbRet').value=c.fbRetorno||''; $('#cvExigeFb').checked=!!c.exigirFacebookReserva;
   }
   const PF_URL='https://api.placafipe.com.br/getplacafipe/{placa}/{token}';
   function provUI(){ const v=$('#cProv').value;
@@ -1661,6 +1835,11 @@ footer .assin b{color:var(--yellow);font-weight:700}
       avisoAtivo:$('#cAvisoAtivo').checked,avisoTitulo:$('#cAvisoTit').value,avisoTexto:$('#cAvisoTxt').value,
       placaProvedor:$('#cProv').value,placaApiUrl:$('#cApiUrl').value,placaApiHeader:$('#cApiHead').value,placaCacheDias:toInt($('#cCache').value)||30};
     if($('#cApiTok').value.trim()) d.placaApiToken=$('#cApiTok').value.trim();
+    Object.assign(d,{verifWhatsUrl:$('#cvUrl').value.trim(),verifMensagem:$('#cvMsg').value,exigirTelefoneReserva:$('#cvExigeTel').checked,fbAppId:$('#cfbId').value.trim(),exigirFacebookReserva:$('#cvExigeFb').checked});
+    if($('#cvDevice').value.trim()) d.verifDeviceToken=$('#cvDevice').value.trim();
+    if($('#cvBearer').value.trim()) d.verifBearer=$('#cvBearer').value.trim();
+    if($('#cfbSec').value.trim()) d.fbAppSecret=$('#cfbSec').value.trim();
+    if(d.verifMensagem&&!d.verifMensagem.includes('{codigo}')){ m.className='msg err'; m.textContent='A mensagem do código precisa ter {codigo}.'; return; }
     if(!d.taxaCheia){ m.className='msg err'; m.textContent='Coloque o valor normal do sinal.'; return; }
     b.disabled=true;
     try{ await api('/api/admin/config',{method:'PUT',body:JSON.stringify(d)}); m.className='msg ok'; m.textContent='Configurações salvas. Já valem no site.';
@@ -1685,6 +1864,13 @@ footer .assin b{color:var(--yellow);font-weight:700}
     }catch(err){ box.innerHTML=`<div class="t-err">${esc(err.message)}</div>`; }
     finally{ b.disabled=false; b.textContent='Testar'; }
   });
+
+  $('#cfbCopy').addEventListener('click',async ev=>{ const b=ev.currentTarget; try{ await navigator.clipboard.writeText($('#cfbRet').value); b.textContent='Copiado'; }catch(_){ $('#cfbRet').select(); b.textContent='Copie (Ctrl+C)'; } setTimeout(()=>b.textContent='Copiar',1600); });
+  $('#cvTesteBtn').addEventListener('click',async()=>{ const box=$('#cvTesteRes'), b=$('#cvTesteBtn'); b.disabled=true; box.innerHTML='';
+    try{ const r=await api('/api/admin/verif-teste',{method:'POST',body:JSON.stringify({whatsapp:$('#cvTesteFone').value})});
+      box.innerHTML=r.ok?'<div class="t-ok"><b>Enviado.</b> Confira se a mensagem chegou no WhatsApp.</div>'
+        :`<div class="t-err"><b>Não enviou.</b> A APIBrasil respondeu ${r.status||'sem resposta'}${r.msg?': '+esc(r.msg):''}.</div><div class="t-try"><pre>${esc(r.corpo||'')}</pre></div>`;
+    }catch(err){ box.innerHTML=`<div class="t-err">${esc(err.message)}</div>`; } finally{ b.disabled=false; } });
 
   /* ---------- lojistas (administrador) ---------- */
   async function carregarLojistas(){
@@ -1734,6 +1920,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
     box.innerHTML=list.map(l=>`<article class="row ${l.ativo?'':'inativo'}">
         <h3>${esc(l.nome)} <span class="pill ${l.ativo?'ativo':'inativo'}">${l.ativo?'Ativo':'Desativado'}</span></h3>
         <div class="pr">${l.carros}<small>${l.carros===1?'carro anunciado':'carros anunciados'}</small></div>
+        <div class="chips" style="grid-column:1/-1">${l.telefoneVerificado?'<span class="chip wa">✓ WhatsApp verificado</span>':'<span class="chip">WhatsApp não verificado</span>'}${l.facebook?`<span class="chip fb">✓ Facebook: ${esc(l.facebook.nome)}</span>`:'<span class="chip">Facebook não conectado</span>'}</div>
         <div class="specs"><span>Usuário: <b>${esc(l.usuario)}</b></span>${l.responsavel?`<span>${esc(l.responsavel)}</span>`:''}<span>${esc(l.cidade)}</span><span>${esc(l.whatsapp)}</span>${l.cnpj?`<span>CNPJ ${esc(l.cnpj)}</span>`:''}</div>
         ${l.obs?`<p class="obs">${esc(l.obs)}</p>`:''}
         <div class="meta"><div>Desde ${new Date(l.criadoEm).toLocaleDateString('pt-BR')}</div>

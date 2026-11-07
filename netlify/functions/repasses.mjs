@@ -4,13 +4,16 @@
 //   POST   /api/repasses           cria   (lojista: na própria loja | admin: informa lojistaId)
 //   PUT    /api/repasses/:id       edita  (dono ou admin)
 //   DELETE /api/repasses/:id       apaga  (dono ou admin)
+import crypto from "node:crypto";
 import { store, todos, json, corpo, sessao, pode, taxaAgora } from "../lib/core.mjs";
 import { apagarFotos, fotosPermitidas } from "./fotos.mjs";
 
-const CAMPOS = ["placa","marca","modelo","versao","ano","km","cambio","combustivel","cor","preco","fipe","obs","status","chaveCopia","manual","cautelar"];
+const CAMPOS = ["placa","marca","modelo","versao","ano","km","cambio","combustivel","cor","preco","fipe","obs","status","chaveCopia","manual","cautelar","leilao","sinistro"];
 const STATUS = ["disponivel","reservado","vendido"];
 const SIM_NAO = ["sim","nao",""];
 const CAUTELAR = ["aprovada","apontamento","reprovada","nao",""];
+const LEILAO = ["nao","sim",""];
+const SINISTRO = ["nao","pequena","media",""];
 
 export default async (req, context) => {
   const st = store("repasses");
@@ -76,7 +79,8 @@ async function mapaLojas() {
 }
 function juntar(r, lojas) {
   const l = lojas[r.lojistaId];
-  return { ...r, loja: l?.nome || "Loja removida", whatsapp: l?.whatsapp || "", cidade: l?.cidade || "" };
+  return { ...r, loja: l?.nome || "Loja removida", whatsapp: l?.whatsapp || "", cidade: l?.cidade || "",
+    lojaVerif: { tel: !!l?.telefoneVerificado, fb: !!l?.facebook } };
 }
 const porData = (a, b) => String(b.criadoEm).localeCompare(String(a.criadoEm));
 function limpar(b, parcial = false) {
@@ -93,6 +97,8 @@ function limpar(b, parcial = false) {
   else if (!parcial) o.fotos = [];
   for (const c of ["chaveCopia", "manual"]) if (c in o && !SIM_NAO.includes(o[c] ?? "")) o[c] = "";
   if ("cautelar" in o && !CAUTELAR.includes(o.cautelar ?? "")) o.cautelar = "";
+  if ("leilao" in o && !LEILAO.includes(o.leilao ?? "")) o.leilao = "";
+  if ("sinistro" in o && !SINISTRO.includes(o.sinistro ?? "")) o.sinistro = "";
   if (!parcial || "status" in b) o.status = STATUS.includes(o.status) ? o.status : "disponivel";
   return o;
 }
@@ -105,7 +111,10 @@ function validar(r) {
 }
 // Vitrine: sem placa completa e sem contato da loja (a negociação passa pelo Pátio)
 // Na vitrine o preço já vem somado à comissão do Pátio (o sinal que o comprador paga)
+// Vitrine: sem nome nem contato da loja e com a placa escondida (só a primeira e a última letra)
 function publico(r, comissao) {
-  const { placa, lojistaId, whatsapp, reservaId, preco, ...resto } = r;
-  return { ...resto, preco: (preco || 0) + comissao, precoLoja: preco, comissao, placaFinal: placa ? placa.slice(-1) : "" };
+  const { placa, lojistaId, whatsapp, reservaId, preco, loja, ...resto } = r;
+  const lojaRef = crypto.createHash("sha256").update(String(lojistaId)).digest("hex").slice(0, 10); // só para contar lojas, sem identificar
+  return { ...resto, preco: (preco || 0) + comissao, precoLoja: preco, comissao, lojaRef,
+    placaMasc: placa ? placa[0] + "•••••" + placa.slice(-1) : "" };
 }

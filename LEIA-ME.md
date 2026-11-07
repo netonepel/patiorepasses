@@ -118,6 +118,36 @@ Me mande esse trecho que eu ajusto a leitura para o formato exato da sua API.
 - Na vitrine, clicar na foto abre a galeria (setas, teclado ou arrastar com o dedo).
 - Uma loja não consegue usar nem apagar fotos de outra. Excluir o anúncio apaga as fotos dele.
 
+## Leilão e sinistro
+
+No cadastro do carro, em **Itens e documentação**: Leilão (sem passagem / tem passagem) e Sinistro (sem sinistro / pequena monta / média monta).
+Na vitrine viram selos (verde, amarelo ou vermelho) e o comprador pode marcar o filtro **Sem leilão e sem sinistro**.
+
+## Verificação por WhatsApp e Facebook
+
+### WhatsApp (código de 6 dígitos pela APIBrasil)
+1. Na APIBrasil, contrate uma conexão de WhatsApp (para códigos, as não oficiais **WhatsMeow** ou **Baileys** servem) e conecte um número lendo o QR Code. Use um chip só para isso, não o WhatsApp principal da empresa.
+2. Em Credenciais → **Device Tokens**, copie o DeviceToken dessa conexão.
+3. No site, **Configurações → Verificação por WhatsApp**: cole o DeviceToken (o Bearer Token pode ficar vazio, o site usa o mesmo da consulta de placa), salve e use **Enviar teste**.
+4. Com isso ligado, quem reserva precisa confirmar o WhatsApp com o código. O lojista vê no painel o quadro **Verificação da loja** para confirmar o WhatsApp da loja.
+- Limites contra abuso: 1 código por minuto e 5 por hora para cada número, 12 por hora para cada internet; 5 tentativas por código; o código vale 10 minutos.
+
+### Facebook (login oficial da Meta)
+1. Entre em **developers.facebook.com** → Meus apps → **Criar app** → caso de uso "Autenticar e solicitar dados de usuários com o Login do Facebook".
+2. Em **Configurações do app → Básico**: copie o **ID do app** e a **Chave secreta**. Preencha:
+   - Domínios do app: `patiorepasses.netlify.app`
+   - URL da Política de Privacidade: `https://patiorepasses.netlify.app/privacidade.html`
+   - URL de instruções de exclusão de dados: `https://patiorepasses.netlify.app/privacidade.html#exclusao`
+3. Em **Login do Facebook → Configurações**, em "URIs de redirecionamento do OAuth válidos", cole o endereço que aparece no site em Configurações → Login com Facebook (ex.: `https://patiorepasses.netlify.app/api/facebook/retorno`).
+4. Coloque o app no modo **Ao vivo**. Só usamos o perfil público (nome), que não precisa de análise da Meta.
+5. No site, cole App ID e Chave secreta em **Configurações → Login com Facebook** e salve.
+- Para o comprador, o Facebook é opcional (marque "Exigir Facebook para reservar" se quiser obrigatório).
+- O lojista conecta o Facebook no quadro **Verificação da loja**. Lojas verificadas ganham os ícones de WhatsApp e Facebook na vitrine.
+
+## Privacidade da loja na vitrine
+A vitrine mostra "Loja parceira" e a cidade, sem o nome da loja, e a placa aparece só com a primeira e a última letra (ex.: A•••••3).
+O nome da loja e a placa completa aparecem só para a equipe do Pátio e para a própria loja.
+
 ## Segurança
 
 - A chave da API nunca vai para o navegador.
