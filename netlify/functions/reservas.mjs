@@ -4,7 +4,7 @@
 //   PUT  /api/reservas/:id    admin: { status: "pago" | "aguardando" | "cancelado", obs? }
 //        pago      -> carro vira "reservado"
 //        cancelado -> se o carro estava reservado por essa reserva, volta a "disponível"
-import { store, todos, json, corpo, sessao, taxaAgora } from "../lib/core.mjs";
+import { store, todos, json, corpo, sessao, taxaAgora, pode, getConfig, registrar } from "../lib/core.mjs";
 
 export default async (req, context) => {
   const st = store("reservas");
@@ -24,7 +24,8 @@ export default async (req, context) => {
     // evita pedidos repetidos do mesmo cliente para o mesmo carro
     const abertas = (await todos(st)).filter(r => r.repasseId === carro.id && r.status === "aguardando");
     const repetida = abertas.find(r => r.whatsapp.replace(/\D/g, "") === whatsapp.replace(/\D/g, ""));
-    const t = taxaAgora();
+    const cfg = await getConfig();
+    const t = await taxaAgora(cfg);
     const reserva = repetida || {
       id: crypto.randomUUID(), codigo: codigo(), repasseId: carro.id, lojistaId: carro.lojistaId,
       carro: `${carro.marca} ${carro.modelo} ${carro.ano}`, placa: carro.placa, preco: carro.preco,
@@ -33,12 +34,13 @@ export default async (req, context) => {
     };
     if (!repetida) await st.setJSON(reserva.id, reserva);
     return json({ reserva: { id: reserva.id, codigo: reserva.codigo, carro: reserva.carro, valor: reserva.valor, promo: reserva.promo },
-      pix: { chave: process.env.PIX_CHAVE || "", nome: process.env.PIX_NOME || "" },
-      contatoWhatsapp: process.env.CONTATO_WHATSAPP || "" }, repetida ? 200 : 201);
+      pix: { chave: cfg.pixChave || "", nome: cfg.pixNome || "" },
+      contatoWhatsapp: cfg.contatoWhatsapp || "" }, repetida ? 200 : 201);
   }
 
   const s = await sessao(req);
   if (!s) return json({ erro: "Sessão expirada. Entre de novo." }, 401);
+  if (s.role === "admin" && !pode(s, "reservas")) return json({ erro: "Você não tem permissão para ver reservas." }, 403);
 
   if (req.method === "GET" && !id) {
     const [rs, ls] = await Promise.all([todos(st), todos(store("lojistas"))]);
@@ -50,7 +52,7 @@ export default async (req, context) => {
   }
 
   if (req.method === "PUT" && id) {
-    if (s.role !== "admin") return json({ erro: "Só o administrador altera reservas." }, 403);
+    if (s.role !== "admin") return json({ erro: "Só a equipe do Pátio altera reservas." }, 403);
     const r = await st.get(id, { type: "json" });
     if (!r) return json({ erro: "Reserva não encontrada." }, 404);
     const b = await corpo(req) || {};
@@ -70,6 +72,7 @@ export default async (req, context) => {
     if (b.status === "pago") novo.pagoEm = new Date().toISOString();
     if (b.obs != null) novo.obsAdmin = String(b.obs).slice(0, 300);
     await st.setJSON(id, novo);
+    if (b.status !== r.status) await registrar(s, { pago: "Confirmou Pix do sinal", cancelado: "Cancelou reserva", aguardando: "Reabriu reserva" }[b.status], `${r.codigo} · ${r.carro} · ${r.nome}`);
     return json(novo);
   }
   return json({ erro: "Método não suportado." }, 405);

@@ -3,14 +3,16 @@
 //   POST /api/lojistas                 cria  { nome, responsavel, whatsapp, cidade, usuario? } -> { lojista, senha }
 //   PUT  /api/lojistas/:id             edita { nome, responsavel, whatsapp, cidade, usuario, ativo }
 //   POST /api/lojistas/:id/senha       gera senha nova -> { senha }   (derruba o login antigo)
-import { store, todos, json, corpo, sessao, hashSenha, gerarSenha, lojistaPublico, slug } from "../lib/core.mjs";
+import { store, todos, json, corpo, sessao, hashSenha, gerarSenha, lojistaPublico, slug, pode, usuarioEmUso, registrar } from "../lib/core.mjs";
 
 export default async (req, context) => {
   const s = await sessao(req);
-  if (!s || s.role !== "admin") return json({ erro: "Só o administrador pode gerenciar lojistas." }, 403);
   const st = store("lojistas");
   const id = context.params?.id;
   const path = new URL(req.url).pathname;
+  // quem cuida de repasses precisa da lista de lojas para escolher a dona do carro
+  const soLista = req.method === "GET" && !id && pode(s, "repasses");
+  if (!pode(s, "lojistas") && !soLista) return json({ erro: "Você não tem permissão para gerenciar lojistas." }, 403);
 
   if (req.method === "GET" && !id) {
     const [ls, rs] = await Promise.all([todos(st), todos(store("repasses"))]);
@@ -23,15 +25,15 @@ export default async (req, context) => {
   if (req.method === "POST" && !id) {
     const b = limpar(await corpo(req) || {});
     const erro = validar(b); if (erro) return json({ erro }, 400);
-    const lista = await todos(st);
     let usuario = slug(b.usuario || b.nome);
     if (!usuario) return json({ erro: "Escolha um usuário com letras ou números." }, 400);
     if (usuario === "admin") usuario = "loja" + usuario;
-    if (b.usuario && lista.some(l => l.usuario === usuario)) return json({ erro: `O usuário "${usuario}" já existe.` }, 409);
-    let base = usuario, n = 2; while (lista.some(l => l.usuario === usuario)) usuario = base + n++;
+    if (b.usuario && await usuarioEmUso(usuario)) return json({ erro: `O usuário "${usuario}" já existe.` }, 409);
+    let base = usuario, n = 2; while (await usuarioEmUso(usuario)) usuario = base + n++;
     const senha = gerarSenha();
     const l = { id: crypto.randomUUID(), ...b, usuario, ativo: true, senhaHash: hashSenha(senha), senhaVersao: 0, criadoEm: new Date().toISOString() };
     await st.setJSON(l.id, l);
+    await registrar(s, "Cadastrou lojista", `${l.nome} (${l.usuario})`);
     return json({ lojista: lojistaPublico(l), senha }, 201);
   }
 
@@ -42,6 +44,7 @@ export default async (req, context) => {
   if (req.method === "POST" && path.endsWith("/senha")) {
     const senha = gerarSenha();
     await st.setJSON(id, { ...atual, senhaHash: hashSenha(senha), senhaVersao: (atual.senhaVersao || 0) + 1 });
+    await registrar(s, "Gerou nova senha de lojista", atual.nome);
     return json({ senha });
   }
 
@@ -52,10 +55,11 @@ export default async (req, context) => {
     if ("usuario" in b) {
       novo.usuario = slug(b.usuario);
       if (!novo.usuario || novo.usuario === "admin") return json({ erro: "Usuário inválido." }, 400);
-      if ((await todos(st)).some(l => l.id !== id && l.usuario === novo.usuario)) return json({ erro: `O usuário "${novo.usuario}" já existe.` }, 409);
+      if (await usuarioEmUso(novo.usuario, id)) return json({ erro: `O usuário "${novo.usuario}" já existe.` }, 409);
     }
     const erro = validar(novo); if (erro) return json({ erro }, 400);
     await st.setJSON(id, novo);
+    await registrar(s, "ativo" in b && !!b.ativo !== atual.ativo ? (b.ativo ? "Reativou lojista" : "Desativou lojista") : "Editou lojista", novo.nome);
     return json(lojistaPublico(novo));
   }
   return json({ erro: "Método não suportado." }, 405);

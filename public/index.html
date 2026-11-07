@@ -307,6 +307,69 @@ form.login{max-width:420px;margin:28px 0 56px}
 .actions a{font-size:13px;padding:5px 10px;border:1px solid var(--line-2);border-radius:4px;background:var(--white);color:var(--ink);text-decoration:none}
 .actions .okb{background:var(--ok);color:#fff;border-color:var(--ok)}
 @media (max-width:640px){.res-sum{grid-template-columns:minmax(0,1fr)}}
+
+/* ===== painel master ===== */
+.ptabs{flex-wrap:wrap}
+.perms{display:flex;flex-direction:column;gap:10px;grid-template-columns:none}
+.perms .check{color:var(--ink);font-size:14px}
+.perms .check b{font-weight:700}
+.sec-t{margin:0;font-size:18px;font-weight:800}
+.master-box{gap:8px}
+.log{background:var(--white);border:1px solid var(--line);border-radius:6px;max-height:520px;overflow:auto}
+.log div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:2px 12px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13.5px}
+.log div:last-child{border-bottom:0}
+.log time{color:var(--muted);font-size:12.5px;grid-row:span 2}
+.log b{font-weight:600}
+.log span{color:var(--muted);overflow-wrap:anywhere}
+#avisoTexto{display:flex;flex-direction:column;gap:10px}
+#avisoTexto p{margin:0;color:var(--muted);max-width:40ch}
+.cfg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;padding-block:24px 56px;align-items:start}
+.cfg .form{gap:12px}
+.cfg h2{font-size:18px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cfg-save{grid-column:1/-1;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;bottom:0;background:var(--bg);padding-block:14px;border-top:1px solid var(--line)}
+.pill.equipe{background:#ece9ff;color:#4b3fb5}
+@media (max-width:820px){.cfg{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:480px){.row2{grid-template-columns:1fr}}
+
+/* ===== senha ===== */
+.pw{position:relative;display:block}
+.pw input{padding-right:46px!important}
+.pw-eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:38px;height:38px;border:0;background:transparent;color:var(--muted);border-radius:6px;display:grid;place-items:center}
+.pw-eye:hover{color:var(--ink);background:#f1f0eb}
+.pw-eye svg{width:20px;height:20px}
+.link-btn{background:none;border:0;color:var(--ink);text-decoration:underline;font-weight:600;font-size:14px;padding:8px 4px}
+.esqueci{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.esqueci p{margin:0;font-size:14px;color:var(--muted)}
+.forca{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:2px}
+.forca i{height:4px;border-radius:2px;background:var(--line);transition:background .25s}
+.forca[data-n="1"] i:nth-child(-n+1){background:var(--danger)}
+.forca[data-n="2"] i:nth-child(-n+2){background:#e08a00}
+.forca[data-n="3"] i:nth-child(-n+3){background:#9bbf2a}
+.forca[data-n="4"] i{background:var(--ok)}
+
+/* ===== animações ===== */
+@media (prefers-reduced-motion:no-preference){
+  @keyframes entra{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @keyframes some{from{opacity:0}to{opacity:1}}
+  @keyframes pop{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
+  .anim-in{animation:entra .34s cubic-bezier(.2,.8,.2,1) both}
+  .anim-in .rows>*,.anim-in .grid>*,.grid.anim-list>*,.rows.anim-list>*{animation:entra .38s cubic-bezier(.2,.8,.2,1) both}
+  .anim-in .rows>*:nth-child(2),.anim-list>*:nth-child(2){animation-delay:.04s}
+  .anim-in .rows>*:nth-child(3),.anim-list>*:nth-child(3){animation-delay:.08s}
+  .anim-in .rows>*:nth-child(4),.anim-list>*:nth-child(4){animation-delay:.12s}
+  .anim-in .rows>*:nth-child(n+5),.anim-list>*:nth-child(n+5){animation-delay:.16s}
+  .modal:not([hidden]){animation:some .2s ease both}
+  .modal:not([hidden]) .modal-box{animation:pop .32s cubic-bezier(.2,.9,.25,1.1) both}
+  .ptabs button{transition:background .22s ease,color .22s ease}
+  .ptabs button[aria-pressed="false"]:hover{color:var(--on-dark)}
+  .seg button,.tab,.btn,.btn-res,.brands button,.actions button,.wa{transition:background .18s ease,color .18s ease,border-color .18s ease,transform .12s ease}
+  .btn:active,.btn-res:active{transform:scale(.97)}
+  .card{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+  .card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.08)}
+  .esqueci:not([hidden]),#credBox:not([hidden]),#uCred:not([hidden]){animation:entra .3s ease both}
+  .filled{transition:background 1.2s ease}
+}
 </style>
 </head>
 <body>
@@ -409,9 +472,11 @@ form.login{max-width:420px;margin:28px 0 56px}
         </div>
       </div>
       <div class="ptabs" id="pTabs" role="group" aria-label="Seções" hidden>
-        <button type="button" data-tab="repasses" aria-pressed="true">Repasses</button>
-        <button type="button" data-tab="reservas" aria-pressed="false">Reservas <span class="tabcount" id="resBadge" hidden></span></button>
+        <button type="button" data-tab="repasses" aria-pressed="true" id="tabRepasses">Repasses</button>
+        <button type="button" data-tab="reservas" aria-pressed="false" id="tabReservas">Reservas <span class="tabcount" id="resBadge" hidden></span></button>
         <button type="button" data-tab="lojistas" aria-pressed="false" id="tabLojistas">Lojistas</button>
+        <button type="button" data-tab="acessos" aria-pressed="false" id="tabAcessos">Acessos</button>
+        <button type="button" data-tab="config" aria-pressed="false" id="tabConfig">Configurações</button>
       </div>
     </div>
   </header>
@@ -421,8 +486,14 @@ form.login{max-width:420px;margin:28px 0 56px}
       <h2>Entrar</h2>
       <div class="f"><label for="lUsuario">Usuário</label><input id="lUsuario" autocomplete="username" autocapitalize="none" required placeholder="Ex.: autocentersul"></div>
       <div class="f"><label for="senha">Senha</label><input id="senha" type="password" autocomplete="current-password" required></div>
-      <div class="btns"><button type="submit" class="btn btn-y">Entrar</button></div>
+      <div class="btns"><button type="submit" class="btn btn-y">Entrar</button><button type="button" class="link-btn" id="btnEsqueci" aria-expanded="false">Esqueci minha senha</button></div>
       <div class="msg" id="loginMsg" role="status"></div>
+      <div class="esqueci" id="esqueciBox" hidden>
+        <b>Esqueceu a senha?</b>
+        <p>Por segurança, a senha não pode ser vista nem recuperada, só trocada por uma nova. Peça uma senha nova ao Pátio Repasses: ela chega pelo WhatsApp e a antiga para de funcionar.</p>
+        <a class="btn btn-dark" id="esqueciWa" target="_blank" rel="noopener" href="#" hidden>Pedir nova senha no WhatsApp</a>
+        <p class="hint" style="margin:0">Administrador: veja no LEIA-ME como liberar a senha pelo Netlify.</p>
+      </div>
       <p class="hint" style="margin:0">Ainda não tem acesso? <a href="#lojistas">Veja como ser parceiro</a>.</p>
     </form>
   </div>
@@ -431,7 +502,9 @@ form.login{max-width:420px;margin:28px 0 56px}
     <form class="form login" id="senhaForm">
       <h2>Trocar senha</h2>
       <div class="f"><label for="sAtual">Senha atual</label><input id="sAtual" type="password" autocomplete="current-password" required></div>
-      <div class="f"><label for="sNova">Nova senha</label><input id="sNova" type="password" autocomplete="new-password" minlength="6" required><span class="hint" style="margin:0">Pelo menos 6 caracteres.</span></div>
+      <div class="f"><label for="sNova">Nova senha</label><input id="sNova" type="password" autocomplete="new-password" minlength="6" required>
+        <div class="forca" aria-hidden="true"><i></i><i></i><i></i><i></i></div><span class="hint" style="margin:0" id="sForca">Use pelo menos 6 caracteres. Misture letras e números.</span></div>
+      <div class="f"><label for="sNova2">Repita a nova senha</label><input id="sNova2" type="password" autocomplete="new-password" required><span class="hint" style="margin:0" id="sIgual"></span></div>
       <div class="btns"><button type="submit" class="btn btn-y">Salvar senha</button><button type="button" class="btn-ghost" id="senhaCancel">Voltar</button></div>
       <div class="msg" id="senhaMsg" role="status"></div>
     </form>
@@ -506,6 +579,85 @@ form.login{max-width:420px;margin:28px 0 56px}
     <div class="rows" id="rRows"></div>
   </div>
 
+  <!-- acessos (master) -->
+  <div class="wrap pgrid" id="acessosView" hidden>
+    <div class="lcol">
+      <form class="form" id="uForm" novalidate>
+        <h2 id="uFormTitle">Novo acesso da equipe</h2>
+        <p class="hint">Para quem ajuda você no portal, como alguém que confirma os Pix. A pessoa só vê as áreas marcadas.</p>
+        <div class="f"><label for="uNome">Nome *</label><input id="uNome" required placeholder="Ex.: Maria Souza"></div>
+        <div class="f"><label for="uUser">Usuário de acesso</label><input id="uUser" autocapitalize="none" placeholder="Criado pelo primeiro nome"></div>
+        <fieldset class="perms">
+          <legend>O que a pessoa pode acessar</legend>
+          <label class="check"><input type="checkbox" value="reservas"> <span><b>Reservas</b> · confirmar Pix e falar com clientes</span></label>
+          <label class="check"><input type="checkbox" value="repasses"> <span><b>Repasses</b> · ver e editar carros de todas as lojas</span></label>
+          <label class="check"><input type="checkbox" value="lojistas"> <span><b>Lojistas</b> · cadastrar lojas e gerar senhas</span></label>
+          <label class="check"><input type="checkbox" value="config"> <span><b>Configurações</b> · Pix, comissão, aviso e API de placa</span></label>
+          <label class="check" id="permAcessos"><input type="checkbox" value="acessos"> <span><b>Acessos</b> · criar e desativar pessoas da equipe</span></label>
+        </fieldset>
+        <div class="btns">
+          <button type="submit" class="btn btn-y" id="uSalvar">Criar acesso</button>
+          <button type="button" class="btn-ghost" id="uCancelar" hidden>Cancelar edição</button>
+        </div>
+        <div class="msg" id="uMsg" role="status"></div>
+      </form>
+      <div class="cred" id="uCred" hidden></div>
+      <div class="form master-box">
+        <h2>Senha master</h2>
+        <p class="hint" style="margin:0">Você entra com o usuário <b>admin</b>. Para trocar a sua senha, use o botão <b>Trocar senha</b> no topo do painel. Depois de trocar, a senha que está no Netlify deixa de valer.</p>
+      </div>
+    </div>
+    <section aria-label="Equipe e atividade" class="lcol">
+      <h2 class="sec-t">Equipe</h2>
+      <div class="rows" id="uRows"></div>
+      <h2 class="sec-t">Atividade recente</h2>
+      <div class="log" id="logBox"></div>
+    </section>
+  </div>
+
+  <!-- configurações -->
+  <div class="wrap" id="configView" hidden>
+    <form class="cfg" id="cfgForm" novalidate>
+      <section class="form">
+        <h2>Contato e grupo</h2>
+        <div class="f"><label for="cContato">WhatsApp do Pátio</label><input id="cContato" inputmode="tel" placeholder="(48) 99999-0000"><span class="hint" style="margin:0">Recebe comprovantes do sinal e pedidos de novos parceiros.</span></div>
+        <div class="f"><label for="cGrupo">Link do grupo de WhatsApp</label><input id="cGrupo" placeholder="https://chat.whatsapp.com/..."></div>
+      </section>
+      <section class="form">
+        <h2>Pix para os sinais</h2>
+        <div class="f"><label for="cPix">Chave Pix</label><input id="cPix" placeholder="CNPJ, e-mail, telefone ou chave aleatória"></div>
+        <div class="f"><label for="cPixNome">Nome do favorecido</label><input id="cPixNome" placeholder="Ex.: Pátio Repasses"></div>
+      </section>
+      <section class="form">
+        <h2>Comissão (sinal)</h2>
+        <div class="row2">
+          <div class="f"><label for="cTaxa">Valor normal (R$)</label><input id="cTaxa" inputmode="numeric"></div>
+          <div class="f"><label for="cPromo">Valor na promoção (R$)</label><input id="cPromo" inputmode="numeric"></div>
+        </div>
+        <div class="f"><label for="cPromoAte">Promoção vale até</label><input id="cPromoAte" type="date"><span class="hint" style="margin:0" id="cTaxaHoje"></span></div>
+      </section>
+      <section class="form">
+        <h2>Aviso de boas-vindas</h2>
+        <label class="check"><input type="checkbox" id="cAvisoAtivo"> <span>Mostrar o aviso na primeira visita</span></label>
+        <div class="f"><label for="cAvisoTit">Título</label><input id="cAvisoTit"></div>
+        <div class="f"><label for="cAvisoTxt">Texto</label><textarea id="cAvisoTxt" rows="4"></textarea><span class="hint" style="margin:0">Cada linha vira um parágrafo. Se mudar o texto, o aviso aparece de novo para quem já tinha visto.</span></div>
+      </section>
+      <section class="form">
+        <h2>Consulta de placa</h2>
+        <div class="f"><label for="cApiUrl">Endereço da API</label><input id="cApiUrl" placeholder="https://api.exemplo.com.br/consulta/{placa}/{token}"><span class="hint" style="margin:0">Use {placa} onde entra a placa e {token} se a chave vai no endereço.</span></div>
+        <div class="row2">
+          <div class="f"><label for="cApiTok">Chave (token)</label><input id="cApiTok" type="password" autocomplete="off" placeholder="Não cadastrada"></div>
+          <div class="f"><label for="cApiHead">Cabeçalho da chave</label><input id="cApiHead" placeholder="Vazio se vai no endereço"></div>
+        </div>
+        <div class="f"><label for="cCache">Guardar consultas por (dias)</label><input id="cCache" inputmode="numeric"><span class="hint" style="margin:0">Placa já consultada nesse período não gasta crédito de novo.</span></div>
+      </section>
+      <div class="cfg-save">
+        <button type="submit" class="btn btn-y" id="cSalvar">Salvar configurações</button>
+        <div class="msg" id="cMsg" role="status"></div>
+      </div>
+    </form>
+  </div>
+
   <!-- lojistas (só administrador) -->
   <div class="wrap pgrid" id="lojistasView" hidden>
     <div class="lcol">
@@ -571,8 +723,7 @@ form.login{max-width:420px;margin:28px 0 56px}
     <img src="/logo.png" alt="" width="96" height="96">
     <span class="eyebrow-s">Fase de testes</span>
     <h2 id="avisoTitle">Bem-vindo ao Pátio Repasses</h2>
-    <p>Estamos em fase de testes, então você pode encontrar ajustes acontecendo e poucos carros por enquanto.</p>
-    <p>Entre no nosso grupo de WhatsApp para receber os repasses em primeira mão e ajudar a construir o portal.</p>
+    <div id="avisoTexto"></div>
     <div class="btns">
       <a class="btn btn-y" id="avisoGrupo" target="_blank" rel="noopener" href="#" hidden>Entrar no grupo</a>
       <button type="button" class="btn-ghost" data-close>Continuar no site</button>
@@ -650,7 +801,8 @@ form.login{max-width:420px;margin:28px 0 56px}
   /* ---------- rotas ---------- */
   function route(){
     const h=location.hash.slice(1), panel=h==='anunciar';
-    $('#viewHome').hidden=panel; $('#viewPanel').hidden=!panel;
+    const mudou=$('#viewPanel').hidden===panel; $('#viewHome').hidden=panel; $('#viewPanel').hidden=!panel;
+    if(mudou) animar(panel?$('#viewPanel'):$('#viewHome'));
     if(panel){ showPanel(); window.scrollTo(0,0); return; }
     if(h&&h!=='inicio'){const t=document.getElementById(h);if(t){setTimeout(()=>t.scrollIntoView(),0);return;}}
     window.scrollTo(0,0);
@@ -695,6 +847,7 @@ form.login{max-width:420px;margin:28px 0 56px}
     if(!loaded){g.innerHTML='';return;}
     if(!items.length){g.innerHTML=`<div class="empty"><h3>Ainda não há repasses anunciados</h3><p>Quando as lojas parceiras cadastrarem carros, eles aparecem aqui com preço, FIPE e contato.</p><a class="btn btn-y" href="#lojistas">Quero anunciar</a></div>`;return;}
     if(!list.length){g.innerHTML=`<div class="empty"><h3>Nenhum carro encontrado</h3><p>Tente outra marca, aumente o preço ou remova algum filtro.</p></div>`;return;}
+    g.classList.remove('anim-list'); void g.offsetWidth; g.classList.add('anim-list');
     g.innerHTML=list.map(i=>{
       const p=pctOff(i.preco,i.fipe), st=i.status||'disponivel';
       const badge=st==='reservado'?'<span class="badge res">Reservado</span>':(p!==null&&p>0?`<span class="badge">${fmtPct(p)} abaixo da FIPE</span>`:'');
@@ -723,12 +876,18 @@ form.login{max-width:420px;margin:28px 0 56px}
     if(cfg.contatoWhatsapp){ const b=$('#btnParceiro'); b.href=wa(cfg.contatoWhatsapp,'Olá! Tenho uma loja e quero anunciar meus repasses no Pátio Repasses.'); b.hidden=false; }
     const g=waLink(cfg.grupoWhatsapp)||(cfg.contatoWhatsapp?wa(cfg.contatoWhatsapp,'Olá! Quero entrar no grupo do Pátio Repasses.'):'');
     if(g){ $('#avisoGrupo').href=g; $('#avisoGrupo').hidden=false; }
+    const av=cfg.aviso||{};
+    if(av.ativo!==false){
+      $('#avisoTitle').textContent=av.titulo||'Bem-vindo ao Pátio Repasses';
+      $('#avisoTexto').innerHTML=String(av.texto||'').split(/\n+/).filter(Boolean).map(t=>`<p>${esc(t)}</p>`).join('');
+      const k='pr_aviso_v'+(av.versao||1);
+      if(location.hash.slice(1)!=='anunciar' && !LS.get(k)){ setTimeout(()=>abrir('#avisoModal'),500); LS.set(k,'1'); }
+    }
   }).catch(()=>{});
   function abrir(id){ $(id).hidden=false; document.body.style.overflow='hidden'; }
   function fechar(m){ m.hidden=true; if(![...$$('.modal')].some(x=>!x.hidden)) document.body.style.overflow=''; }
   $$('.modal').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m||e.target.closest('[data-close]')) fechar(m); }));
   addEventListener('keydown',e=>{ if(e.key==='Escape') $$('.modal').forEach(m=>{ if(!m.hidden) fechar(m); }); });
-  if(location.hash.slice(1)!=='anunciar' && !LS.get('pr_aviso_v1')){ setTimeout(()=>abrir('#avisoModal'),600); LS.set('pr_aviso_v1','1'); }
 
   /* ---------- reserva com sinal (cliente comprador) ---------- */
   let resCarro=null;
@@ -763,48 +922,83 @@ form.login{max-width:420px;margin:28px 0 56px}
     finally{ b.disabled=false; }
   });
 
+  /* ---------- animações ---------- */
+  function animar(el){ if(!el) return; el.classList.remove('anim-in'); void el.offsetWidth; el.classList.add('anim-in'); }
+
+  /* ---------- campos de senha: olho para mostrar ---------- */
+  const OLHO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+  const OLHO_X='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.2M6.6 6.6C3.7 8.4 2 12 2 12s3.5 7 10 7a10 10 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+  $$('input[type=password]').forEach(inp=>{
+    const w=document.createElement('span'); w.className='pw'; inp.parentNode.insertBefore(w,inp); w.appendChild(inp);
+    const b=document.createElement('button'); b.type='button'; b.className='pw-eye'; b.innerHTML=OLHO; b.setAttribute('aria-label','Mostrar senha');
+    b.addEventListener('click',()=>{ const ver=inp.type==='password'; inp.type=ver?'text':'password'; b.innerHTML=ver?OLHO_X:OLHO; b.setAttribute('aria-label',ver?'Esconder senha':'Mostrar senha'); inp.focus(); });
+    w.appendChild(b);
+  });
+  $('#btnEsqueci').addEventListener('click',()=>{ const box=$('#esqueciBox'), abrir=box.hidden; box.hidden=!abrir; $('#btnEsqueci').setAttribute('aria-expanded',String(abrir));
+    if(cfg.contatoWhatsapp){ const u=$('#lUsuario').value.trim(); const a=$('#esqueciWa'); a.hidden=false;
+      a.href=wa(cfg.contatoWhatsapp,`Olá! Esqueci minha senha do Pátio Repasses.${u?' Meu usuário é '+u+'.':''} Pode gerar uma nova?`); } });
+  function forcaSenha(v){ let n=0; if(v.length>=6)n++; if(v.length>=10)n++; if(/[a-z]/i.test(v)&&/\d/.test(v))n++; if(/[^a-z0-9]/i.test(v)||/[A-Z]/.test(v)&&/[a-z]/.test(v))n++; return v?Math.max(1,n):0; }
+  function checaSenha(){
+    const v=$('#sNova').value, v2=$('#sNova2').value, n=forcaSenha(v);
+    $('#senhaMsg').textContent='';
+    $('.forca').dataset.n=n;
+    $('#sForca').textContent=!v?'Use pelo menos 6 caracteres. Misture letras e números.':v.length<6?`Faltam ${6-v.length} caracteres.`:['','Senha fraca. Misture letras e números.','Senha razoável.','Senha boa.','Senha forte.'][n];
+    $('#sForca').style.color=v&&v.length<6?'var(--danger)':'';
+    const ig=$('#sIgual');
+    if(!v2){ ig.textContent=''; } else if(v===v2){ ig.textContent='✓ As senhas são iguais.'; ig.style.color='var(--ok)'; } else { ig.textContent='As senhas não são iguais.'; ig.style.color='var(--danger)'; }
+  }
+  $('#sNova').addEventListener('input',checaSenha); $('#sNova2').addEventListener('input',checaSenha);
+
   /* ---------- login / painel ---------- */
   function sair(m){ token=''; me=null; LS.set('pr_token',null); showPanel(); if(m){ $('#loginMsg').className='msg err'; $('#loginMsg').textContent=m; } }
   $('#btnSair').addEventListener('click',()=>sair());
+  const can=p=>!!me&&me.role==='admin'&&(me.master||(me.perms||[]).includes(p));
   async function showPanel(){
     const logado=!!token;
     $('#pActs').hidden=!logado; $('#senhaBox').hidden=true;
     if(!logado){
-      $('#loginBox').hidden=false; $('#painel').hidden=true; $('#lojistasView').hidden=true; $('#reservasView').hidden=true; $('#pTabs').hidden=true;
+      animar($('#loginBox')); $('#loginBox').hidden=false; ['#painel','#lojistasView','#reservasView','#acessosView','#configView'].forEach(v=>$(v).hidden=true); $('#pTabs').hidden=true;
       $('#pTitle').textContent='Área do lojista'; $('#pSub').textContent='Entre com o usuário e a senha que você recebeu do Pátio Repasses.';
       return;
     }
     $('#loginBox').hidden=true;
     if(!me){ try{ me=await api('/api/me'); }catch(_){ return; } }
     const admin=me.role==='admin';
-    $('#btnSenha').hidden=admin; $('#pTabs').hidden=false; $('#tabLojistas').hidden=!admin;
-    $('#pTitle').textContent=admin?'Painel do administrador':me.loja.nome;
-    $('#pSub').textContent=admin?'Cadastre lojistas, acompanhe e edite todos os repasses do portal.':'Cadastre os carros da loja e atualize preço e situação. O que estiver disponível ou reservado aparece na vitrine.';
+    const vis={repasses:!admin||can('repasses'),reservas:!admin||can('reservas'),lojistas:can('lojistas'),acessos:can('acessos'),config:can('config')};
+    $('#tabRepasses').hidden=!vis.repasses; $('#tabReservas').hidden=!vis.reservas; $('#tabLojistas').hidden=!vis.lojistas; $('#tabAcessos').hidden=!vis.acessos; $('#tabConfig').hidden=!vis.config;
+    $('#btnSenha').hidden=false; $('#pTabs').hidden=false; $('#permAcessos').hidden=!me.master;
+    $('#pTitle').textContent=!admin?me.loja.nome:me.master?'Painel master':'Painel da equipe';
+    $('#pSub').textContent=!admin?'Cadastre os carros da loja e atualize preço e situação. O que estiver disponível ou reservado aparece na vitrine.'
+      :me.master?'Gerencie lojistas, reservas, acessos da equipe e as configurações do portal.':`Olá, ${me.nome}. Você vê as áreas liberadas pelo administrador.`;
     $('#lojaInfo').hidden=admin; $('#lojaSelWrap').hidden=!admin;
     if(!admin) $('#lojaInfo').innerHTML=`<b>Anunciando como ${esc(me.loja.nome)}</b><span>${esc(me.loja.cidade)} · WhatsApp ${esc(me.loja.whatsapp)}</span>`;
-    if(!admin&&tab==='lojistas') tab='repasses';
+    if(!vis[tab]) tab=Object.keys(vis).find(k=>vis[k])||'repasses';
     $('#rSeg').hidden=!admin; $('#resSum').hidden=!admin; $('#rBusca').hidden=!admin;
     showTab();
-    carregarMeus(); carregarReservas(); if(admin) carregarLojistas();
+    if(vis.repasses) carregarMeus(); if(vis.reservas) carregarReservas(); if(admin&&(vis.lojistas||vis.repasses)) carregarLojistas();
+    if(vis.acessos) carregarAcessos(); if(vis.config) carregarConfig();
   }
   function showTab(){
-    $('#painel').hidden=tab!=='repasses'; $('#lojistasView').hidden=tab!=='lojistas'; $('#reservasView').hidden=tab!=='reservas';
+    $('#painel').hidden=tab!=='repasses'; $('#lojistasView').hidden=tab!=='lojistas'; $('#reservasView').hidden=tab!=='reservas'; $('#acessosView').hidden=tab!=='acessos'; $('#configView').hidden=tab!=='config';
     $$('[data-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===tab)));
+    animar({repasses:$('#painel'),reservas:$('#reservasView'),lojistas:$('#lojistasView'),acessos:$('#acessosView'),config:$('#configView')}[tab]);
   }
   $$('[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;showTab();}));
   $('#loginForm').addEventListener('submit',async e=>{
     e.preventDefault(); const m=$('#loginMsg'); m.textContent='';
     try{
       const r=await api('/api/login',{method:'POST',body:JSON.stringify({usuario:$('#lUsuario').value,senha:$('#senha').value})});
-      token=r.token; me={role:r.role,loja:r.loja}; LS.set('pr_token',token); $('#senha').value=''; showPanel();
+      token=r.token; me={role:r.role,master:!!r.master,perms:r.perms||[],nome:r.nome,loja:r.loja}; LS.set('pr_token',token); $('#senha').value=''; showPanel();
     }catch(err){ m.className='msg err'; m.textContent=err.message; }
   });
-  $('#btnSenha').addEventListener('click',()=>{ $('#painel').hidden=true; $('#senhaBox').hidden=false; $('#senhaMsg').textContent=''; $('#sAtual').focus(); });
+  $('#btnSenha').addEventListener('click',()=>{ ['#painel','#lojistasView','#reservasView','#acessosView','#configView'].forEach(v=>$(v).hidden=true); $('#senhaBox').hidden=false; animar($('#senhaBox')); $('#senhaMsg').textContent=''; $('#sAtual').focus(); });
   $('#senhaCancel').addEventListener('click',()=>{ $('#senhaBox').hidden=true; showTab(); });
   $('#senhaForm').addEventListener('submit',async e=>{
     e.preventDefault(); const m=$('#senhaMsg');
+    if($('#sNova').value.length<6){ m.className='msg err'; m.textContent='A nova senha precisa ter pelo menos 6 caracteres.'; return; }
+    if($('#sNova').value!==$('#sNova2').value){ m.className='msg err'; m.textContent='As duas senhas novas não são iguais. Digite de novo.'; $('#sNova2').focus(); return; }
     try{ const r=await api('/api/me/senha',{method:'PUT',body:JSON.stringify({atual:$('#sAtual').value,nova:$('#sNova').value})});
-      token=r.token; LS.set('pr_token',token); $('#senhaForm').reset(); m.className='msg ok'; m.textContent='Senha alterada.';
+      token=r.token; LS.set('pr_token',token); $('#senhaForm').reset(); checaSenha(); m.className='msg ok'; m.textContent='Senha alterada. Use a nova senha no próximo login.';
       setTimeout(()=>{ $('#senhaBox').hidden=true; showTab(); },1200);
     }catch(err){ m.className='msg err'; m.textContent=err.message; }
   });
@@ -954,6 +1148,88 @@ form.login{max-width:420px;margin:28px 0 56px}
     await carregarReservas(); carregarMeus(); carregarVitrine();
   });
   function alertMsg(t){ const b=$('#rRows'); const d=document.createElement('div'); d.className='msg err'; d.textContent=t; b.prepend(d); setTimeout(()=>d.remove(),5000); }
+
+  /* ---------- acessos da equipe (master) ---------- */
+  const PERM_NOME={reservas:'Reservas',repasses:'Repasses',lojistas:'Lojistas',config:'Configurações',acessos:'Acessos'};
+  let equipe=[], uEditId=null, uConfirm=null;
+  async function carregarAcessos(){
+    try{ equipe=await api('/api/admin/usuarios'); }catch(_){ equipe=[]; }
+    renderEquipe();
+    try{ const log=await api('/api/admin/log');
+      $('#logBox').innerHTML=log.length?log.slice(0,80).map(x=>`<div><time>${new Date(x.em).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</time><b>${esc(x.quem)} · ${esc(x.acao)}</b><span>${esc(x.detalhe||'')}</span></div>`).join('')
+        :'<div><span>Nada registrado ainda.</span></div>';
+    }catch(_){}
+  }
+  function uMsg(t,c){const m=$('#uMsg');m.textContent=t;m.className='msg '+(c||'');}
+  const uPerms=()=>[...$$('#uForm .perms input:checked')].map(i=>i.value);
+  function uLimpar(){ $('#uForm').reset(); uEditId=null; $('#uFormTitle').textContent='Novo acesso da equipe'; $('#uSalvar').textContent='Criar acesso'; $('#uCancelar').hidden=true; }
+  $('#uCancelar').addEventListener('click',()=>{uLimpar();uMsg('');});
+  function uCred(u,senha,nova){
+    const texto=`Olá, ${u.nome.split(' ')[0]}! ${nova?'Sua nova senha':'Seu acesso à equipe'} do Pátio Repasses.\n\nSite: ${location.origin}\nUsuário: ${u.usuario}\nSenha: ${senha}\n\nClique em "Anunciar" no topo do site para entrar. Depois você pode trocar a senha.`;
+    const box=$('#uCred'); box.hidden=false;
+    box.innerHTML=`<h3>${nova?'Nova senha':'Acesso criado'}: ${esc(u.nome)}</h3><dl><dt>Usuário</dt><dd>${esc(u.usuario)}</dd><dt>Senha</dt><dd>${esc(senha)}</dd></dl>
+      <p>Anote ou envie agora: a senha não aparece de novo.</p><div class="btns"><button type="button" class="btn btn-y" id="uCopy">Copiar mensagem</button></div>`;
+    $('#uCopy').addEventListener('click',async ev=>{const b=ev.currentTarget;try{await navigator.clipboard.writeText(texto);b.textContent='Mensagem copiada';}catch(_){b.textContent='Não deu para copiar';}});
+    box.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  $('#uForm').addEventListener('submit',async e=>{
+    e.preventDefault(); const d={nome:$('#uNome').value.trim(),perms:uPerms()}; const us=$('#uUser').value.trim(); if(us) d.usuario=us;
+    if(!d.nome){uMsg('Digite o nome da pessoa.','err');return;} if(!d.perms.length){uMsg('Marque pelo menos uma área.','err');return;}
+    const b=$('#uSalvar'); b.disabled=true;
+    try{
+      if(uEditId){ await api('/api/admin/usuarios/'+uEditId,{method:'PUT',body:JSON.stringify(d)}); uMsg('Acesso atualizado.','ok'); }
+      else{ const r=await api('/api/admin/usuarios',{method:'POST',body:JSON.stringify(d)}); uMsg(''); uCred(r.usuario,r.senha,false); }
+      uLimpar(); carregarAcessos();
+    }catch(err){ uMsg(err.message,'err'); } finally{ b.disabled=false; }
+  });
+  function renderEquipe(){
+    const box=$('#uRows');
+    if(!equipe.length){ box.innerHTML=`<div class="empty"><h3>Só você por enquanto</h3><p>Crie um acesso para quem vai ajudar no portal. Cada pessoa entra com usuário e senha próprios.</p></div>`; return; }
+    box.innerHTML=equipe.map(u=>`<article class="row ${u.ativo?'':'inativo'}">
+      <h3>${esc(u.nome)} <span class="pill ${u.ativo?'equipe':'inativo'}">${u.ativo?'Equipe':'Desativado'}</span></h3>
+      <div class="pr" style="font-size:14px;font-weight:600">${esc(u.usuario)}<small>usuário</small></div>
+      <div class="chips" style="grid-column:1/-1">${(u.perms||[]).map(p=>`<span class="chip">${PERM_NOME[p]||p}</span>`).join('')}</div>
+      <div class="meta"><div>Desde ${new Date(u.criadoEm).toLocaleDateString('pt-BR')}</div><div class="actions">
+        <button type="button" data-ued="${u.id}">Editar</button>
+        ${uConfirm===u.id?`<button type="button" class="danger" data-usenhaok="${u.id}">Confirmar nova senha</button><button type="button" data-uno>Não</button>`:`<button type="button" data-usenha="${u.id}">Gerar nova senha</button>`}
+        <button type="button" ${u.ativo?'class="danger"':''} data-uativo="${u.id}">${u.ativo?'Desativar':'Reativar'}</button>
+      </div></div></article>`).join('');
+  }
+  $('#uRows').addEventListener('click',async e=>{
+    const t=e.target.closest('button'); if(!t) return; const u=equipe.find(x=>x.id===(t.dataset.ued||t.dataset.usenha||t.dataset.usenhaok||t.dataset.uativo));
+    if(t.dataset.ued&&u){ uEditId=u.id; $('#uNome').value=u.nome; $('#uUser').value=u.usuario; $$('#uForm .perms input').forEach(i=>i.checked=(u.perms||[]).includes(i.value));
+      $('#uFormTitle').textContent='Editar acesso'; $('#uSalvar').textContent='Salvar alterações'; $('#uCancelar').hidden=false; uMsg(''); $('#uForm').scrollIntoView({behavior:'smooth'}); }
+    if(t.dataset.usenha){ uConfirm=t.dataset.usenha; renderEquipe(); }
+    if(t.hasAttribute('data-uno')){ uConfirm=null; renderEquipe(); }
+    if(t.dataset.usenhaok&&u){ uConfirm=null; try{ const r=await api('/api/admin/usuarios/'+u.id+'/senha',{method:'POST'}); uCred(u,r.senha,true); }catch(err){ uMsg(err.message,'err'); } carregarAcessos(); }
+    if(t.dataset.uativo&&u){ try{ await api('/api/admin/usuarios/'+u.id,{method:'PUT',body:JSON.stringify({ativo:!u.ativo})}); }catch(err){ uMsg(err.message,'err'); } carregarAcessos(); }
+  });
+
+  /* ---------- configurações ---------- */
+  async function carregarConfig(){
+    let c; try{ c=await api('/api/admin/config'); }catch(_){ return; }
+    $('#cContato').value=c.contatoWhatsapp||''; $('#cGrupo').value=c.grupoWhatsapp||''; $('#cPix').value=c.pixChave||''; $('#cPixNome').value=c.pixNome||'';
+    $('#cTaxa').value=c.taxaCheia??''; $('#cPromo').value=c.taxaPromo??''; $('#cPromoAte').value=c.promoAte||'';
+    $('#cAvisoAtivo').checked=c.avisoAtivo!==false; $('#cAvisoTit').value=c.avisoTitulo||''; $('#cAvisoTxt').value=c.avisoTexto||'';
+    $('#cApiUrl').value=c.placaApiUrl||''; $('#cApiHead').value=c.placaApiHeader||''; $('#cApiTok').value=''; $('#cApiTok').placeholder=c.temToken?'Salva ('+c.placaApiToken+'). Digite só para trocar':'Não cadastrada';
+    $('#cCache').value=c.placaCacheDias??30; taxaHoje();
+  }
+  function taxaHoje(){ const hoje=new Date().toLocaleDateString('en-CA',{timeZone:'America/Sao_Paulo'}), ate=$('#cPromoAte').value, promo=ate&&hoje<=ate;
+    $('#cTaxaHoje').textContent=`Hoje o cliente paga ${brl(toInt(promo?$('#cPromo').value:$('#cTaxa').value)||0)} de sinal${promo?' (promoção)':''}.`; }
+  ['#cTaxa','#cPromo','#cPromoAte'].forEach(id=>$(id).addEventListener('input',taxaHoje));
+  $('#cfgForm').addEventListener('submit',async e=>{
+    e.preventDefault(); const m=$('#cMsg'), b=$('#cSalvar');
+    const d={contatoWhatsapp:$('#cContato').value,grupoWhatsapp:$('#cGrupo').value,pixChave:$('#cPix').value,pixNome:$('#cPixNome').value,
+      taxaCheia:toInt($('#cTaxa').value)||0,taxaPromo:toInt($('#cPromo').value)||0,promoAte:$('#cPromoAte').value,
+      avisoAtivo:$('#cAvisoAtivo').checked,avisoTitulo:$('#cAvisoTit').value,avisoTexto:$('#cAvisoTxt').value,
+      placaApiUrl:$('#cApiUrl').value,placaApiHeader:$('#cApiHead').value,placaCacheDias:toInt($('#cCache').value)||30};
+    if($('#cApiTok').value.trim()) d.placaApiToken=$('#cApiTok').value.trim();
+    if(!d.taxaCheia){ m.className='msg err'; m.textContent='Coloque o valor normal do sinal.'; return; }
+    b.disabled=true;
+    try{ await api('/api/admin/config',{method:'PUT',body:JSON.stringify(d)}); m.className='msg ok'; m.textContent='Configurações salvas. Já valem no site.';
+      api('/api/config').then(c=>{cfg=c||cfg;}).catch(()=>{}); carregarConfig(); }
+    catch(err){ m.className='msg err'; m.textContent=err.message; } finally{ b.disabled=false; }
+  });
 
   /* ---------- lojistas (administrador) ---------- */
   async function carregarLojistas(){

@@ -7,7 +7,9 @@ public/index.html                 o site (vitrine + área do lojista)
 netlify/functions/placa.mjs       consulta a placa na sua API (a chave fica escondida no servidor)
 netlify/functions/repasses.mjs    salva e lista os anúncios (banco Netlify Blobs, já incluso no Netlify)
 netlify/functions/lojistas.mjs    cadastro de lojistas (só o administrador)
-netlify/functions/login.mjs       login de administrador e lojistas
+netlify/functions/login.mjs       login de administrador, equipe e lojistas
+netlify/functions/admin.mjs       painel master: equipe, configurações e histórico
+netlify/functions/reservas.mjs    reservas com sinal (comissão do Pátio)
 netlify/lib/core.mjs              senhas, sessões e banco
 netlify.toml / package.json       configuração
 ```
@@ -51,6 +53,28 @@ Exemplos de `PLACA_API_URL`:
 - API que recebe a chave no cabeçalho: `https://api.exemplo.com.br/v1/placa/{placa}` + `PLACA_API_HEADER=Authorization` e `PLACA_API_TOKEN=Bearer SUA_CHAVE`
 
 Depois de salvar as variáveis, faça um novo deploy (*Deploys → Trigger deploy*).
+
+## Painel master (usuário `admin`)
+
+Tudo que antes ficava nas variáveis do Netlify agora pode ser mudado no próprio site, aba **Configurações**:
+WhatsApp do Pátio, link do grupo, chave Pix, valor do sinal e da promoção, aviso de boas-vindas e API de placa.
+O que for salvo no painel vale mais que a variável do Netlify. As variáveis continuam servindo como valor inicial.
+
+Aba **Acessos**:
+- **Criar acesso da equipe**: nome + o que a pessoa pode ver (Reservas, Repasses, Lojistas, Configurações, Acessos).
+  O sistema gera usuário e senha. Exemplo: uma atendente só com **Reservas** confirma Pix e não vê mais nada.
+- **Gerar nova senha** e **Desativar** derrubam o acesso da pessoa na hora.
+- **Atividade recente**: quem entrou, confirmou Pix, cadastrou loja, mudou configuração (últimos 300 eventos).
+- Só o master pode dar a permissão de Acessos para alguém.
+
+**Senha master**: troque pelo botão **Trocar senha** no topo do painel. Depois disso, a `ADMIN_PASSWORD` do Netlify deixa de valer.
+
+**Esqueceu a senha master?**
+1. No Netlify, em Environment variables, crie `ADMIN_RESET` com o valor `1` e faça um novo deploy.
+2. Entre com o usuário `admin` e a senha que está na `ADMIN_PASSWORD`.
+3. Apague a variável `ADMIN_RESET` e faça outro deploy. A senha do Netlify continua valendo até você trocar de novo no painel.
+
+**Lojista ou equipe esqueceu a senha?** No login tem o link "Esqueci minha senha", que abre o seu WhatsApp. Você gera uma nova em Lojistas ou Acessos.
 
 ## 3. Cadastrar lojistas
 

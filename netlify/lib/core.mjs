@@ -70,14 +70,80 @@ function lerToken(tok) {
     return o.exp > Date.now() ? o : null;
   } catch { return null; }
 }
-/** Quem está fazendo a chamada: {role:"admin"} | {role:"lojista", lojista} | null */
+/* ---------- permissões ---------- */
+export const PERMS = ["repasses", "reservas", "lojistas", "config", "acessos"];
+export const pode = (s, p) => !!s && s.role === "admin" && (s.master || (s.perms || []).includes(p));
+
+/**
+ * Quem está fazendo a chamada:
+ *   {role:"admin", master:true, perms}            dono do portal (usuário "admin")
+ *   {role:"admin", master:false, perms, usuario}  pessoa da equipe, com as permissões dadas pelo master
+ *   {role:"lojista", lojista}
+ */
 export async function sessao(req) {
   const t = lerToken((req.headers.get("authorization") || "").replace(/^Bearer\s+/i, ""));
   if (!t) return null;
-  if (t.role === "admin") return process.env.ADMIN_PASSWORD ? { role: "admin" } : null;
+  if (t.role === "admin") {
+    const cfg = await getConfig();
+    if (!cfg.masterHash && !process.env.ADMIN_PASSWORD) return null;
+    if ((cfg.masterVersao || 0) !== (t.v || 0)) return null; // senha master trocada
+    return { role: "admin", master: true, perms: PERMS, nome: "Administrador" };
+  }
+  if (t.role === "equipe") {
+    const u = await store("usuarios").get(t.sub, { type: "json" });
+    if (!u || !u.ativo || (u.senhaVersao || 0) !== t.v) return null;
+    return { role: "admin", master: false, perms: u.perms || [], usuario: u, nome: u.nome };
+  }
   const l = await store("lojistas").get(t.sub, { type: "json" });
   if (!l || !l.ativo || (l.senhaVersao || 0) !== t.v) return null; // desativado ou senha trocada
-  return { role: "lojista", lojista: l };
+  return { role: "lojista", lojista: l, nome: l.nome };
+}
+export const quem = s => !s ? "Visitante" : s.master ? "Administrador" : s.usuario ? s.usuario.nome : s.lojista?.nome || "?";
+
+/** Usuário de acesso já usado por loja ou pessoa da equipe? */
+export async function usuarioEmUso(usuario, exceto) {
+  if (usuario === "admin") return true;
+  const [ls, us] = await Promise.all([todos(store("lojistas")), todos(store("usuarios"))]);
+  return [...ls, ...us].some(x => x.usuario === usuario && x.id !== exceto);
+}
+
+/* ---------- configurações do portal (salvas no banco; variáveis do Netlify valem como padrão) ---------- */
+const PADRAO = () => ({
+  contatoWhatsapp: process.env.CONTATO_WHATSAPP || "",
+  grupoWhatsapp: process.env.GRUPO_WHATSAPP || "",
+  pixChave: process.env.PIX_CHAVE || "",
+  pixNome: process.env.PIX_NOME || "",
+  taxaCheia: Number(process.env.TAXA_CHEIA || 1900),
+  taxaPromo: Number(process.env.TAXA_PROMO || 1000),
+  promoAte: process.env.PROMO_ATE || "2026-11-22",
+  avisoAtivo: true,
+  avisoTitulo: "Bem-vindo ao Pátio Repasses",
+  avisoTexto: "Estamos em fase de testes, então você pode encontrar ajustes acontecendo e poucos carros por enquanto.\nEntre no nosso grupo de WhatsApp para receber os repasses em primeira mão e ajudar a construir o portal.",
+  placaApiUrl: process.env.PLACA_API_URL || "",
+  placaApiToken: process.env.PLACA_API_TOKEN || "",
+  placaApiHeader: process.env.PLACA_API_HEADER || "",
+  placaCacheDias: Number(process.env.PLACA_CACHE_DIAS || 30),
+});
+export async function getConfig() {
+  const salvo = await store("config").get("geral", { type: "json" }).catch(() => null);
+  return { ...PADRAO(), ...(salvo || {}) };
+}
+export async function salvarConfig(mudancas) {
+  const atual = await store("config").get("geral", { type: "json" }).catch(() => null) || {};
+  const novo = { ...atual, ...mudancas, atualizadoEm: new Date().toISOString() };
+  await store("config").setJSON("geral", novo);
+  return novo;
+}
+
+/* ---------- histórico de atividade (últimos 300 eventos) ---------- */
+export async function registrar(s, acao, detalhe = "") {
+  try {
+    const st = store("log");
+    const doc = await st.get("atividade", { type: "json" }) || { itens: [] };
+    doc.itens.unshift({ em: new Date().toISOString(), quem: typeof s === "string" ? s : quem(s), acao, detalhe: String(detalhe).slice(0, 200) });
+    doc.itens = doc.itens.slice(0, 300);
+    await st.setJSON("atividade", doc);
+  } catch { /* o histórico nunca derruba a ação principal */ }
 }
 
 /* ---------- lojistas ---------- */
@@ -94,9 +160,10 @@ export const slug = s => String(s || "").toLowerCase().normalize("NFD").replace(
 export function hojeBR() {
   return new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
 }
-export function taxaAgora() {
-  const cheia = Number(process.env.TAXA_CHEIA || 1900), promocional = Number(process.env.TAXA_PROMO || 1000);
-  const promoAte = process.env.PROMO_ATE || "2026-11-22";
-  const promo = hojeBR() <= promoAte;
+export async function taxaAgora(cfg) {
+  cfg = cfg || await getConfig();
+  const cheia = Number(cfg.taxaCheia) || 1900, promocional = Number(cfg.taxaPromo) || 1000;
+  const promoAte = cfg.promoAte || "";
+  const promo = !!promoAte && hojeBR() <= promoAte;
   return { valor: promo ? promocional : cheia, promo, promoAte, cheia, promocional };
 }

@@ -10,7 +10,7 @@
 //   Só lojistas logados e o administrador consultam placa (evita gastar seus créditos)
 //   PLACA_CACHE_DIAS   (opcional) por quantos dias guardar uma consulta já feita. Padrão: 30
 
-import { store, sessao } from "../lib/core.mjs";
+import { store, sessao, getConfig } from "../lib/core.mjs";
 
 const PLACA_RE = /^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/;
 
@@ -20,19 +20,20 @@ export default async (req, context) => {
 
   if (!(await sessao(req))) return json({ erro: "Entre como lojista para consultar placas." }, 401);
 
-  const urlTpl = process.env.PLACA_API_URL;
-  const token = process.env.PLACA_API_TOKEN || "";
-  if (!urlTpl) return json({ erro: "A consulta de placa ainda não foi configurada (falta PLACA_API_URL)." }, 500);
+  const cfg = await getConfig();
+  const urlTpl = cfg.placaApiUrl;
+  const token = cfg.placaApiToken || "";
+  if (!urlTpl) return json({ erro: "A consulta de placa ainda não foi configurada. O administrador precisa preencher em Configurações." }, 500);
 
   // cache: placa já consultada não gasta crédito de novo
   const cache = store("placas");
-  const dias = Number(process.env.PLACA_CACHE_DIAS || 30);
+  const dias = Number(cfg.placaCacheDias || 30);
   const salvo = await cache.get(placa, { type: "json" }).catch(() => null);
   if (salvo && Date.now() - salvo.em < dias * 864e5) return json({ ...salvo.dados, cache: true });
 
   const url = urlTpl.replaceAll("{placa}", placa).replaceAll("{token}", encodeURIComponent(token));
   const headers = { Accept: "application/json" };
-  if (process.env.PLACA_API_HEADER) headers[process.env.PLACA_API_HEADER] = token;
+  if (cfg.placaApiHeader) headers[cfg.placaApiHeader] = token;
 
   let bruto;
   try {

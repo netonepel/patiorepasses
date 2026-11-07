@@ -4,7 +4,7 @@
 //   POST   /api/repasses           cria   (lojista: na própria loja | admin: informa lojistaId)
 //   PUT    /api/repasses/:id       edita  (dono ou admin)
 //   DELETE /api/repasses/:id       apaga  (dono ou admin)
-import { store, todos, json, corpo, sessao } from "../lib/core.mjs";
+import { store, todos, json, corpo, sessao, pode } from "../lib/core.mjs";
 
 const CAMPOS = ["placa","marca","modelo","versao","ano","km","cambio","combustivel","cor","preco","fipe","obs","status","chaveCopia","manual","cautelar"];
 const STATUS = ["disponivel","reservado","vendido"];
@@ -24,6 +24,7 @@ export default async (req, context) => {
 
   const s = await sessao(req);
   if (!s) return json({ erro: "Sessão expirada. Entre de novo." }, 401);
+  if (s.role === "admin" && !pode(s, "repasses")) return json({ erro: "Você não tem permissão para gerenciar repasses." }, 403);
   const dono = r => s.role === "admin" || r.lojistaId === s.lojista.id;
 
   if (req.method === "GET") {
