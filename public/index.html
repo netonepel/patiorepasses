@@ -591,6 +591,26 @@ footer .assin b{color:var(--yellow);font-weight:700}
 .chip.wa{background:#e3f8ea;color:#137a3c;border-color:transparent} .chip.fb{background:#e7f0fe;color:#1458c8;border-color:transparent}
 .check.limpo{font-size:13.5px;color:var(--ink);align-items:center;margin-right:6px}
 .check.limpo input{margin-top:0}
+
+.alerta{background:#fff6d6;border:1px solid #f0d77a;border-radius:8px;padding:12px 14px;font-size:14px;line-height:1.5}
+.alerta .link-btn{padding:0;font-size:14px}
+
+/* ===== margem mínima ===== */
+.margem{grid-column:1/-1;border-radius:8px;padding:10px 12px;font-size:13.5px;line-height:1.45}
+.margem.ok{background:var(--ok-bg);color:#14532d}
+.margem.ruim{background:#fbe4e2;color:#7f1d1d;border:1px solid #f3b4ae}
+.mtab-wrap{overflow-x:auto}
+.mtab{width:100%;border-collapse:collapse;font-size:13.5px}
+.mtab th{text-align:left;font-weight:600;color:var(--muted);padding:4px 6px;font-size:12.5px}
+.mtab td{padding:4px 6px}
+.mtab input{width:100%;min-width:90px;border:1px solid var(--line-2);border-radius:6px;padding:8px 9px;font:inherit;color:var(--ink);background:var(--white)}
+.mtab input:disabled{background:var(--bg);color:var(--muted)}
+.mtab .btn-ghost{padding:6px 10px}
+
+.bk-lista{display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+.bk-item{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--bg)}
+.bk-item small{display:block;color:var(--muted);font-size:12px}
+.bk-rest summary{cursor:pointer;font-weight:600;font-size:14px}
 </style>
 </head>
 <body>
@@ -884,6 +904,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
         <div class="f"><label for="preco">Valor para a loja *</label><input id="preco" inputmode="numeric" required placeholder="R$ 0"></div>
         <div class="f"><label for="fipe">Tabela FIPE</label><input id="fipe" inputmode="numeric" placeholder="R$ 0"></div>
         <div class="fipe-calc" id="fipeCalc"></div>
+        <div class="margem" id="margemBox" hidden role="status"></div>
         <div class="vitrine-preco" id="precoVitrine" hidden></div>
         <div class="f full"><label for="obs">Observações</label><textarea id="obs" placeholder="Laudo, lataria, documentação, aceita troca…"></textarea></div>
       </fieldset>
@@ -927,13 +948,14 @@ footer .assin b{color:var(--yellow);font-weight:700}
     <div class="lcol">
       <form class="form" id="uForm" novalidate>
         <h2 id="uFormTitle">Novo acesso da equipe</h2>
-        <p class="hint">Para quem ajuda você no portal, como alguém que confirma os Pix. A pessoa só vê as áreas marcadas.</p>
+        <div class="alerta"><b>Vai cadastrar uma loja?</b> Use a aba <button type="button" class="link-btn" data-ir="lojistas">Lojistas</button>. Esta aba é só para a <b>sua equipe interna</b>, como quem confirma os Pix. Um login criado aqui não fica ligado a nenhuma loja.</div>
+        <p class="hint">A pessoa só vê as áreas marcadas.</p>
         <div class="f"><label for="uNome">Nome *</label><input id="uNome" required placeholder="Ex.: Maria Souza"></div>
         <div class="f"><label for="uUser">Usuário de acesso</label><input id="uUser" autocapitalize="none" placeholder="Criado pelo primeiro nome"></div>
         <fieldset class="perms">
           <legend>O que a pessoa pode acessar</legend>
           <label class="check"><input type="checkbox" value="reservas"> <span><b>Reservas</b> · confirmar Pix e falar com clientes</span></label>
-          <label class="check"><input type="checkbox" value="repasses"> <span><b>Repasses</b> · ver e editar carros de todas as lojas</span></label>
+          <label class="check"><input type="checkbox" value="repasses"> <span><b>Repasses</b> · ver e editar os carros de <u>todas</u> as lojas</span></label>
           <label class="check"><input type="checkbox" value="lojistas"> <span><b>Lojistas</b> · cadastrar lojas e gerar senhas</span></label>
           <label class="check"><input type="checkbox" value="config"> <span><b>Configurações</b> · Pix, comissão, aviso e API de placa</span></label>
           <label class="check" id="permAcessos"><input type="checkbox" value="acessos"> <span><b>Acessos</b> · criar e desativar pessoas da equipe</span></label>
@@ -945,6 +967,19 @@ footer .assin b{color:var(--yellow);font-weight:700}
         <div class="msg" id="uMsg" role="status"></div>
       </form>
       <div class="cred" id="uCred" hidden></div>
+      <div class="form master-box" id="bkBox" hidden>
+        <h2>Cópias de segurança</h2>
+        <p class="hint" style="margin:0">O site guarda sozinho uma cópia por dia (as últimas 14). Baixe também uma cópia de vez em quando e guarde no seu computador ou Google Drive: ela salva lojistas, carros, reservas, equipe e configurações. As fotos ficam no Netlify.</p>
+        <div class="btns"><button type="button" class="btn btn-y" id="bkBaixar">Baixar cópia agora</button></div>
+        <div class="bk-lista" id="bkLista"></div>
+        <details class="bk-rest"><summary>Restaurar de um arquivo</summary>
+          <p class="hint" style="margin:6px 0">Use só se algo se perdeu. O site junta o arquivo ao que existe hoje e não apaga nada. Antes de restaurar ele guarda uma cópia do estado atual.</p>
+          <input type="file" id="bkArq" accept="application/json,.json">
+          <div class="btns" id="bkConf" hidden><button type="button" class="btn btn-dark" id="bkOk">Confirmar restauração</button><button type="button" class="btn-ghost" id="bkNao">Cancelar</button></div>
+          <div class="msg" id="bkMsg" role="status"></div>
+        </details>
+        <p class="hint" style="margin:0"><b>Atenção:</b> o arquivo tem dados dos lojistas e as chaves das configurações. Guarde em lugar seguro.</p>
+      </div>
       <div class="form master-box">
         <h2>Senha master</h2>
         <p class="hint" style="margin:0">Você entra com o usuário <b>admin</b>. Para trocar a sua senha, use o botão <b>Trocar senha</b> no topo do painel. Depois de trocar, a senha que está no Netlify deixa de valer.</p>
@@ -978,6 +1013,14 @@ footer .assin b{color:var(--yellow);font-weight:700}
           <div class="f"><label for="cPromo">Valor na promoção (R$)</label><input id="cPromo" inputmode="numeric"></div>
         </div>
         <div class="f"><label for="cPromoAte">Promoção vale até</label><input id="cPromoAte" type="date"><span class="hint" style="margin:0" id="cTaxaHoje"></span></div>
+      </section>
+      <section class="form">
+        <h2>Margem mínima abaixo da FIPE</h2>
+        <label class="check"><input type="checkbox" id="cmAtivo"> <span>Bloquear carros que não estão na margem mínima</span></label>
+        <div class="f"><label for="cmBase">Conferir a margem sobre</label><select id="cmBase"><option value="vitrine">Preço da vitrine (valor da loja + comissão)</option><option value="loja">Valor que a loja recebe</option></select></div>
+        <span class="hint" style="margin:0">A faixa é escolhida pelo valor da FIPE do carro. Comissão da faixa é opcional: vazia usa a comissão padrão acima.</span>
+        <div class="mtab-wrap"><table class="mtab"><thead><tr><th>FIPE até (R$)</th><th>Mínimo abaixo da FIPE (%)</th><th>Comissão da faixa (R$)</th><th></th></tr></thead><tbody id="cmRows"></tbody></table></div>
+        <button type="button" class="btn-ghost" id="cmAdd">+ Adicionar faixa</button>
       </section>
       <section class="form">
         <h2>Aviso de boas-vindas</h2>
@@ -1041,11 +1084,12 @@ footer .assin b{color:var(--yellow);font-weight:700}
         <p class="hint">O usuário e a senha são gerados na hora. Você envia para a loja pelo WhatsApp.</p>
         <fieldset>
           <legend>Loja</legend>
-          <div class="f full"><label for="lNome">Nome da loja *</label><input id="lNome" required placeholder="Ex.: Auto Center Sul"></div>
+          <div class="f full"><label for="lMod">Modalidade *</label><select id="lMod"><option value="lojista">Lojista</option><option value="repassador_pj">Repassador PJ (empresa)</option><option value="repassador_pf">Repassador pessoa física</option></select></div>
+          <div class="f full"><label for="lNome" id="lNomeLbl">Nome da loja *</label><input id="lNome" required placeholder="Ex.: Auto Center Sul"></div>
           <div class="f full"><label for="lResp">Responsável</label><input id="lResp" placeholder="Nome de quem vai usar o acesso"></div>
           <div class="f"><label for="lFone">WhatsApp *</label><input id="lFone" inputmode="tel" required placeholder="(41) 99999-0000"></div>
           <div class="f"><label for="lCidade">Cidade/UF *</label><input id="lCidade" list="cidades" required placeholder="Curitiba/PR"></div>
-          <div class="f"><label for="lCnpj">CNPJ</label><input id="lCnpj" inputmode="numeric" placeholder="00.000.000/0001-00"></div>
+          <div class="f"><label for="lCnpj" id="lCnpjLbl">CNPJ</label><input id="lCnpj" inputmode="numeric" placeholder="00.000.000/0001-00"></div>
           <div class="f"><label for="lUser">Usuário de acesso</label><input id="lUser" autocapitalize="none" placeholder="Criado pelo nome"></div>
           <div class="f full"><label for="lObs">Anotações internas</label><textarea id="lObs" placeholder="Ex.: indicação do Carlos, plano mensal…"></textarea></div>
         </fieldset>
@@ -1415,7 +1459,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
   $('#galImg').addEventListener('touchend',e=>{ if(tx==null) return; const dx=e.changedTouches[0].clientX-tx; if(Math.abs(dx)>40) galMostra(gal.i+(dx<0?1:-1)); tx=null; });
   $('#vitrineGrid').addEventListener('click',e=>{ const b=e.target.closest('[data-res]'); if(!b) return;
     resCarro=items.find(x=>x.id===b.dataset.res); if(!resCarro) return;
-    const i=resCarro, t=cfg.taxa||{valor:1900};
+    const i=resCarro, t0=cfg.taxa||{valor:1900}, t={...t0,valor:i.comissao||t0.valor,promo:t0.promo&&(i.comissao||t0.valor)===t0.valor};
     $('#resCar').innerHTML=`${(i.fotos||[]).length?`<img src="/api/fotos/${i.fotos[0]}?t=1" alt="">`:''}<div><b>${esc(i.marca)} ${esc(i.modelo)} ${esc(i.ano)}</b>${[i.versao,brl(i.preco),i.cidade].filter(Boolean).map(esc).join(' · ')}</div>`;
     const restante=i.precoLoja??Math.max(0,i.preco-t.valor);
     $('#resFee').innerHTML=`Sinal para reservar (comissão do Pátio)<strong>${brl(t.valor)}</strong>${t.promo?`<s>${brl(t.cheia)}</s> Promoção de lançamento até ${dataBR(t.promoAte)}.`:''}
@@ -1520,6 +1564,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
     showTab();
     if(vis.repasses) carregarMeus(); if(vis.reservas) carregarReservas(); if(admin&&(vis.lojistas||vis.repasses)) carregarLojistas();
     if(vis.acessos) carregarAcessos(); if(vis.config) carregarConfig();
+    $('#bkBox').hidden=!(me&&me.master); if(me&&me.master) carregarCopias();
   }
   function showTab(){
     $('#painel').hidden=tab!=='repasses'; $('#lojistasView').hidden=tab!=='lojistas'; $('#reservasView').hidden=tab!=='reservas'; $('#acessosView').hidden=tab!=='acessos'; $('#configView').hidden=tab!=='config';
@@ -1624,14 +1669,34 @@ footer .assin b{color:var(--yellow);font-weight:700}
   function maskMoney(el){el.addEventListener('input',()=>{const n=toInt(el.value);el.value=n===null?'':brl(n);calcFipe();});}
   maskMoney($('#preco')); maskMoney($('#fipe'));
   $('#km').addEventListener('input',e=>{const n=toInt(e.target.value);e.target.value=n===null?'':n.toLocaleString('pt-BR');});
-  const comissao=()=>(cfg.taxa&&cfg.taxa.valor)||0;
+  // mesma regra do servidor: faixa pela FIPE, comissão da faixa ou a padrão, margem mínima
+  function faixaDe(fipe){ const fs=((cfg.margens&&cfg.margens.faixas)||[]).slice().sort((a,b)=>(a.ate??Infinity)-(b.ate??Infinity)); let de=0;
+    for(const f of fs){ if(f.ate==null||fipe<=f.ate) return {...f,de}; de=f.ate; } return null; }
+  const comissao=fipe=>{ const f=fipe?faixaDe(fipe):null; return f&&+f.comissao>0?+f.comissao:((cfg.taxa&&cfg.taxa.valor)||0); };
+  function margemOk(loja,fipe){
+    const M=cfg.margens||{}; if(!M.ativo) return {ok:true,livre:true};
+    if(!fipe) return {ok:false,erro:'Informe o valor da FIPE: sem ele não dá para conferir a margem mínima.'};
+    const f=faixaDe(fipe); if(!f) return {ok:true};
+    const c=comissao(fipe), anunciado=M.base==='loja'?loja:loja+c, pct=(1-anunciado/fipe)*100;
+    const faixa=f.ate==null?`acima de ${brl(f.de)}`:f.de?`de ${brl(f.de)} a ${brl(f.ate)}`:`até ${brl(f.ate)}`;
+    const max=Math.floor(fipe*(1-f.min/100))-(M.base==='loja'?0:c);
+    return {ok:pct+1e-9>=f.min,pct,min:f.min,faixa,max};
+  }
+  let margemAtual={ok:true};
   function calcFipe(){
-    const loja=toInt($('#preco').value), vit=loja?loja+comissao():null, pv=$('#precoVitrine');
+    const loja=toInt($('#preco').value), fipe=toInt($('#fipe').value), c=comissao(fipe), vit=loja?loja+c:null, pv=$('#precoVitrine');
     pv.hidden=!loja;
-    if(loja) pv.innerHTML=`Na vitrine o carro aparece por <b>${brl(vit)}</b>: os ${brl(loja)} da loja + ${brl(comissao())} de comissão do Pátio, que o comprador paga como sinal. Você recebe ${brl(loja)}.`;
-    const p=pctOff(vit,toInt($('#fipe').value)),el=$('#fipeCalc');
-    if(p===null){el.textContent='';return;}
-    el.innerHTML=p>=0?`Na vitrine: <strong>${fmtPct(p)} abaixo</strong> da tabela FIPE`:`Na vitrine: <strong class="above">${fmtPct(p)} acima</strong> da tabela FIPE`;}
+    if(loja) pv.innerHTML=`Na vitrine o carro aparece por <b>${brl(vit)}</b>: os ${brl(loja)} da loja + ${brl(c)} de comissão do Pátio, que o comprador paga como sinal. Você recebe ${brl(loja)}.`;
+    const el=$('#fipeCalc'), mg=$('#margemBox');
+    margemAtual=loja?margemOk(loja,fipe):{ok:true};
+    const p=pctOff(vit,fipe);
+    el.innerHTML=p===null?'':(p>=0?`Na vitrine: <strong>${fmtPct(p)} abaixo</strong> da tabela FIPE`:`Na vitrine: <strong class="above">${fmtPct(p)} acima</strong> da tabela FIPE`);
+    if(!loja||margemAtual.livre){ mg.hidden=true; return; }
+    mg.hidden=false; mg.className='margem '+(margemAtual.ok?'ok':'ruim');
+    mg.innerHTML=margemAtual.erro?`<b>Falta a FIPE.</b> ${esc(margemAtual.erro)}`
+      :margemAtual.ok?`<b>✓ Dentro da margem.</b> ${fmtPct(margemAtual.pct)} abaixo da FIPE. O mínimo para FIPE ${margemAtual.faixa} é ${margemAtual.min}%.`
+      :`<b>Fora da margem mínima.</b> Para FIPE ${margemAtual.faixa}, o carro precisa estar pelo menos <b>${margemAtual.min}%</b> abaixo da FIPE (está ${fmtPct(Math.max(0,margemAtual.pct))}). Valor máximo para a loja: <b>${brl(Math.max(0,margemAtual.max))}</b>.`;
+  }
   function lerForm(){const r={placa:normPlaca($('#placaFull').value),marca:$('#marca').value.trim(),modelo:$('#modelo').value.trim(),versao:$('#versao').value.trim(),ano:$('#ano').value.trim(),km:toInt($('#km').value),cambio:$('#cambio').value,combustivel:$('#comb').value,cor:$('#cor').value.trim(),preco:toInt($('#preco').value),fipe:toInt($('#fipe').value),obs:$('#obs').value.trim(),chaveCopia:$('#chaveCopia').value,manual:$('#manual').value,cautelar:$('#cautelar').value,leilao:$('#leilao').value,sinistro:$('#sinistro').value,fotos:fotos.filter(f=>f.status==='ok').map(f=>f.id)};
     if(me&&me.role==='admin') r.lojistaId=$('#lojaSel').value; return r;}
   function preencher(r){$('#placaFull').value=r.placa||'';$('#marca').value=r.marca||'';$('#modelo').value=r.modelo||'';$('#versao').value=r.versao||'';$('#ano').value=r.ano||'';$('#km').value=r.km!=null?r.km.toLocaleString('pt-BR'):'';$('#cambio').value=r.cambio||'Manual';$('#comb').value=r.combustivel||'Flex';$('#cor').value=r.cor||'';$('#preco').value=r.preco!=null?brl(r.preco):'';$('#fipe').value=r.fipe!=null?brl(r.fipe):'';$('#obs').value=r.obs||'';$('#chaveCopia').value=r.chaveCopia||'';$('#manual').value=r.manual||'';$('#cautelar').value=r.cautelar||'';$('#leilao').value=r.leilao||'';$('#sinistro').value=r.sinistro||'';syncModelos();fotos=(r.fotos||[]).map(id=>({id,url:'/api/fotos/'+id+'?t=1',status:'ok'}));renderFotos();if(r.lojistaId)$('#lojaSel').value=r.lojistaId;calcFipe();}
@@ -1645,6 +1710,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
     if(!r.placa)falta.push('placa'); if(!r.marca)falta.push('marca'); if(!r.modelo)falta.push('modelo'); if(!r.ano)falta.push('ano'); if(!r.preco)falta.push('preço');
     if(falta.length){msg('Preencha: '+falta.join(', ')+'.','err');return;}
     if(!placaOk(r.placa)){msg('Confira a placa: use o padrão ABC1D23 ou ABC1234.','err');return;}
+    calcFipe(); if(!margemAtual.ok){msg(margemAtual.erro||`O carro está fora da margem mínima: para FIPE ${margemAtual.faixa} precisa estar pelo menos ${margemAtual.min}% abaixo. Ajuste o valor ou confira a FIPE.`,'err');$('#margemBox').scrollIntoView({behavior:'smooth',block:'center'});return;}
     const btn=$('#btnSalvar'); btn.disabled=true;
     try{
       if(editId){await api('/api/repasses/'+editId,{method:'PUT',body:JSON.stringify(r)});msg('Repasse atualizado.','ok');}
@@ -1668,6 +1734,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
         <h3>${(i.fotos||[]).length?`<img class="rthumb" src="/api/fotos/${i.fotos[0]}?t=1" alt="" loading="lazy">`:''}${esc(i.marca)} ${esc(i.modelo)} <span class="pill ${st}">${STATUS[st]}</span></h3>
         <div class="pr">${brl(i.preco)}<small>para a loja · vitrine ${brl(pv)}</small><small>${i.fipe?'FIPE '+brl(i.fipe):'sem FIPE'}${off}</small></div>
         <div class="specs"><span><b>${esc(i.placa)}</b></span>${i.versao?`<span>${esc(i.versao)}</span>`:''}<span>${esc(i.ano)}</span>${i.km!=null?`<span>${i.km.toLocaleString('pt-BR')} km</span>`:''}<span>${esc(i.cambio)}</span>${i.cor?`<span>${esc(i.cor)}</span>`:''}</div>
+        ${i.margem&&!i.margem.ok?`<div class="chips" style="grid-column:1/-1"><span class="chip bad">Fora da margem mínima: edite o valor</span></div>`:''}
         ${itensChips(i)?`<div style="grid-column:1/-1">${itensChips(i)}</div>`:''}
         ${i.obs?`<p class="obs">${esc(i.obs)}</p>`:''}
         <div class="meta"><div>${admin?`<strong>${esc(i.loja)}</strong> · ${esc(i.cidade)}`:`Cadastrado em ${new Date(i.criadoEm).toLocaleDateString('pt-BR')}`}</div>
@@ -1746,6 +1813,32 @@ footer .assin b{color:var(--yellow);font-weight:700}
   });
   function alertMsg(t){ const b=$('#rRows'); const d=document.createElement('div'); d.className='msg err'; d.textContent=t; b.prepend(d); setTimeout(()=>d.remove(),5000); }
 
+  $$('[data-ir]').forEach(b=>b.addEventListener('click',()=>{ tab=b.dataset.ir; showTab(); scrollTo(0,0); }));
+  /* ---------- cópias de segurança (master) ---------- */
+  async function baixarArquivo(url,nome){
+    const r=await fetch(url,{headers:{authorization:'Bearer '+token}}); if(!r.ok){ let j={}; try{j=await r.json();}catch(_){} throw new Error(j.erro||'Não foi possível baixar.'); }
+    const blob=await r.blob(), a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download=(/filename="([^"]+)"/.exec(r.headers.get('content-disposition')||'')||[])[1]||nome; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
+  }
+  async function carregarCopias(){
+    let l=[]; try{ l=await api('/api/admin/backups'); }catch(_){}
+    $('#bkLista').innerHTML=l.length?`<b>Cópias guardadas no site</b>`+l.slice(0,10).map(c=>`<div class="bk-item"><span>${c.id.startsWith('antes-')?'Antes de restaurar':'Automática'} · ${new Date(c.em).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}<small>${c.contagem.repasses} carros · ${c.contagem.lojistas} lojistas · ${c.contagem.reservas} reservas</small></span><button type="button" class="btn-ghost" data-bk="${esc(c.id)}">Baixar</button></div>`).join('')
+      :'<span class="hint" style="margin:0">A primeira cópia automática aparece aqui amanhã de madrugada.</span>';
+  }
+  $('#bkBaixar').addEventListener('click',async e=>{ const b=e.currentTarget; b.disabled=true; try{ await baixarArquivo('/api/admin/backup','patio-repasses-backup.json'); }catch(err){ $('#bkMsg').className='msg err'; $('#bkMsg').textContent=err.message; } finally{ b.disabled=false; } });
+  $('#bkLista').addEventListener('click',async e=>{ const b=e.target.closest('[data-bk]'); if(!b) return; try{ await baixarArquivo('/api/admin/backups/'+encodeURIComponent(b.dataset.bk),'patio-repasses-'+b.dataset.bk+'.json'); }catch(err){ alertMsg(err.message); } });
+  let bkCopia=null;
+  $('#bkArq').addEventListener('change',async e=>{ const f=e.target.files[0], m=$('#bkMsg'); bkCopia=null; $('#bkConf').hidden=true; if(!f) return;
+    try{ const c=JSON.parse(await f.text()); if(c.app!=='patio-repasses') throw new Error();
+      bkCopia=c; m.className='msg'; m.textContent=`Cópia de ${new Date(c.em).toLocaleString('pt-BR')}: ${c.contagem.repasses} carros, ${c.contagem.lojistas} lojistas, ${c.contagem.reservas} reservas. Confirme para restaurar.`; $('#bkConf').hidden=false; }
+    catch(_){ m.className='msg err'; m.textContent='Esse arquivo não é uma cópia do Pátio Repasses.'; } });
+  $('#bkNao').addEventListener('click',()=>{ bkCopia=null; $('#bkConf').hidden=true; $('#bkArq').value=''; $('#bkMsg').textContent=''; });
+  $('#bkOk').addEventListener('click',async e=>{ const m=$('#bkMsg'), b=e.currentTarget; if(!bkCopia) return; b.disabled=true;
+    try{ const r=await api('/api/admin/backup/restaurar',{method:'POST',body:JSON.stringify({copia:bkCopia})});
+      m.className='msg ok'; m.textContent=`Restaurado: ${r.restaurados.repasses} carros, ${r.restaurados.lojistas} lojistas, ${r.restaurados.reservas} reservas.`; $('#bkConf').hidden=true; bkCopia=null; $('#bkArq').value='';
+      carregarCopias(); carregarMeus(); carregarReservas(); carregarLojistas(); carregarVitrine(); }
+    catch(err){ m.className='msg err'; m.textContent=err.message; } finally{ b.disabled=false; } });
+
   /* ---------- acessos da equipe (master) ---------- */
   const PERM_NOME={reservas:'Reservas',repasses:'Repasses',lojistas:'Lojistas',config:'Configurações',acessos:'Acessos'};
   let equipe=[], uEditId=null, uConfirm=null;
@@ -1761,6 +1854,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
   const uPerms=()=>[...$$('#uForm .perms input:checked')].map(i=>i.value);
   function uLimpar(){ $('#uForm').reset(); uEditId=null; $('#uFormTitle').textContent='Novo acesso da equipe'; $('#uSalvar').textContent='Criar acesso'; $('#uCancelar').hidden=true; }
   $('#uCancelar').addEventListener('click',()=>{uLimpar();uMsg('');});
+  $('#uForm .perms').addEventListener('change',e=>{ if(e.target.value==='repasses'&&e.target.checked) uMsg('Atenção: com Repasses marcado, a pessoa vê e edita os carros de todas as lojas. Para uma loja, cadastre na aba Lojistas.','err'); });
   function uCred(u,senha,nova){
     const texto=`Olá, ${u.nome.split(' ')[0]}! ${nova?'Sua nova senha':'Seu acesso à equipe'} do Pátio Repasses.\n\nSite: ${location.origin}\nUsuário: ${u.usuario}\nSenha: ${senha}\n\nClique em "Anunciar" no topo do site para entrar. Depois você pode trocar a senha.`;
     const box=$('#uCred'); box.hidden=false;
@@ -1815,6 +1909,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
     $('#cvUrl').value=c.verifWhatsUrl||''; $('#cvMsg').value=c.verifMensagem||''; $('#cvExigeTel').checked=c.exigirTelefoneReserva!==false;
     $('#cfbId').value=c.fbAppId||''; $('#cfbSec').value=''; $('#cfbSec').placeholder=c.tem_fbAppSecret?'Salva ('+c.fbAppSecret+'). Digite só para trocar':'Não cadastrada';
     $('#cfbRet').value=c.fbRetorno||''; $('#cvExigeFb').checked=!!c.exigirFacebookReserva;
+    $('#cmAtivo').checked=c.margensAtivo!==false; $('#cmBase').value=c.margemBase||'vitrine'; renderFaixas(c.margens||[]);
   }
   const PF_URL='https://api.placafipe.com.br/getplacafipe/{placa}/{token}';
   function provUI(){ const v=$('#cProv').value;
@@ -1837,6 +1932,8 @@ footer .assin b{color:var(--yellow);font-weight:700}
     if($('#cApiTok').value.trim()) d.placaApiToken=$('#cApiTok').value.trim();
     Object.assign(d,{verifWhatsUrl:$('#cvUrl').value.trim(),verifMensagem:$('#cvMsg').value,exigirTelefoneReserva:$('#cvExigeTel').checked,fbAppId:$('#cfbId').value.trim(),exigirFacebookReserva:$('#cvExigeFb').checked});
     if($('#cvDevice').value.trim()) d.verifDeviceToken=$('#cvDevice').value.trim();
+    const fx=lerFaixas(); if(fx.erro){ m.className='msg err'; m.textContent=fx.erro; return; }
+    Object.assign(d,{margensAtivo:$('#cmAtivo').checked,margemBase:$('#cmBase').value,margens:fx.lista});
     if($('#cvBearer').value.trim()) d.verifBearer=$('#cvBearer').value.trim();
     if($('#cfbSec').value.trim()) d.fbAppSecret=$('#cfbSec').value.trim();
     if(d.verifMensagem&&!d.verifMensagem.includes('{codigo}')){ m.className='msg err'; m.textContent='A mensagem do código precisa ter {codigo}.'; return; }
@@ -1865,6 +1962,22 @@ footer .assin b{color:var(--yellow);font-weight:700}
     finally{ b.disabled=false; b.textContent='Testar'; }
   });
 
+  function renderFaixas(lista){
+    const fs=lista.slice().sort((a,b)=>(a.ate??Infinity)-(b.ate??Infinity));
+    $('#cmRows').innerHTML=fs.map(f=>`<tr><td>${f.ate==null?'<input value="Acima" disabled aria-label="Faixa acima da anterior">':`<input inputmode="numeric" data-k="ate" value="${brl(f.ate)}" aria-label="FIPE até">`}</td>
+      <td><input inputmode="decimal" data-k="min" value="${String(f.min).replace('.',',')}" aria-label="Mínimo abaixo da FIPE em %"></td>
+      <td><input inputmode="numeric" data-k="comissao" value="${f.comissao?brl(f.comissao):''}" placeholder="Padrão" aria-label="Comissão da faixa"></td>
+      <td>${f.ate==null?'':'<button type="button" class="btn-ghost" data-rm aria-label="Remover faixa">✕</button>'}</td></tr>`).join('');
+  }
+  function lerFaixas(){
+    const lista=[...$$('#cmRows tr')].map(tr=>{ const a=tr.querySelector('[data-k=ate]'); return {
+      ate:a?toInt(a.value):null, min:parseFloat(String(tr.querySelector('[data-k=min]').value).replace(',','.')), comissao:toInt(tr.querySelector('[data-k=comissao]').value)||0 }; });
+    if(lista.some(f=>(f.ate!==null&&!(f.ate>0))||!(f.min>=0&&f.min<100))) return {erro:'Confira a tabela de margens: cada faixa precisa de um valor e de um percentual entre 0 e 99.'};
+    return {lista};
+  }
+  $('#cmRows').addEventListener('click',e=>{ if(e.target.closest('[data-rm]')){ e.target.closest('tr').remove(); } });
+  $('#cmRows').addEventListener('input',e=>{ const k=e.target.dataset.k; if(k==='ate'||k==='comissao'){ const n=toInt(e.target.value); e.target.value=n===null?'':brl(n); } });
+  $('#cmAdd').addEventListener('click',()=>{ const fx=lerFaixas(); const l=(fx.lista||[]); const maior=Math.max(0,...l.filter(f=>f.ate).map(f=>f.ate)); l.push({ate:maior+10000,min:18}); renderFaixas(l); });
   $('#cfbCopy').addEventListener('click',async ev=>{ const b=ev.currentTarget; try{ await navigator.clipboard.writeText($('#cfbRet').value); b.textContent='Copiado'; }catch(_){ $('#cfbRet').select(); b.textContent='Copie (Ctrl+C)'; } setTimeout(()=>b.textContent='Copiar',1600); });
   $('#cvTesteBtn').addEventListener('click',async()=>{ const box=$('#cvTesteRes'), b=$('#cvTesteBtn'); b.disabled=true; box.innerHTML='';
     try{ const r=await api('/api/admin/verif-teste',{method:'POST',body:JSON.stringify({whatsapp:$('#cvTesteFone').value})});
@@ -1882,8 +1995,14 @@ footer .assin b{color:var(--yellow);font-weight:700}
     renderLojistas();
   }
   function lMsg(t,c){const m=$('#lMsg');m.textContent=t;m.className='msg '+(c||'');}
-  function lLer(){return{nome:$('#lNome').value.trim(),responsavel:$('#lResp').value.trim(),whatsapp:$('#lFone').value.trim(),cidade:$('#lCidade').value.trim(),cnpj:$('#lCnpj').value.trim(),usuario:$('#lUser').value.trim(),obs:$('#lObs').value.trim()};}
-  function lLimpar(){$('#lForm').reset();lEditId=null;$('#lFormTitle').textContent='Cadastrar lojista';$('#lSalvar').textContent='Cadastrar lojista';$('#lCancelar').hidden=true;$('#lUser').placeholder='Criado pelo nome';}
+  const MOD_NOME={lojista:'Lojista',repassador_pj:'Repassador PJ',repassador_pf:'Repassador PF'};
+  function modUI(){ const v=$('#lMod').value, pf=v==='repassador_pf';
+    $('#lNomeLbl').textContent=pf?'Nome do repassador *':v==='repassador_pj'?'Nome da empresa *':'Nome da loja *';
+    $('#lNome').placeholder=pf?'Ex.: João da Silva':'Ex.: Auto Center Sul';
+    $('#lCnpjLbl').textContent=pf?'CPF':'CNPJ'; $('#lCnpj').placeholder=pf?'000.000.000-00':'00.000.000/0001-00'; }
+  $('#lMod').addEventListener('change',modUI);
+  function lLer(){return{modalidade:$('#lMod').value,nome:$('#lNome').value.trim(),responsavel:$('#lResp').value.trim(),whatsapp:$('#lFone').value.trim(),cidade:$('#lCidade').value.trim(),cnpj:$('#lCnpj').value.trim(),usuario:$('#lUser').value.trim(),obs:$('#lObs').value.trim()};}
+  function lLimpar(){$('#lForm').reset();setTimeout(modUI);lEditId=null;$('#lFormTitle').textContent='Cadastrar lojista';$('#lSalvar').textContent='Cadastrar lojista';$('#lCancelar').hidden=true;$('#lUser').placeholder='Criado pelo nome';}
   $('#lCancelar').addEventListener('click',()=>{lLimpar();lMsg('');});
   function mostrarCred(l,senha,nova){
     const site=location.origin;
@@ -1918,10 +2037,10 @@ footer .assin b{color:var(--yellow);font-weight:700}
     if(!lojistas.length){box.innerHTML=`<div class="empty"><h3>Nenhum lojista cadastrado</h3><p>Cadastre a primeira loja no formulário. O sistema gera o usuário e a senha para você enviar.</p></div>`;return;}
     if(!list.length){box.innerHTML=`<div class="empty"><h3>Nada encontrado</h3><p>Nenhum lojista combina com a busca ou o filtro.</p></div>`;return;}
     box.innerHTML=list.map(l=>`<article class="row ${l.ativo?'':'inativo'}">
-        <h3>${esc(l.nome)} <span class="pill ${l.ativo?'ativo':'inativo'}">${l.ativo?'Ativo':'Desativado'}</span></h3>
+        <h3>${esc(l.nome)} <span class="pill ${l.ativo?'ativo':'inativo'}">${l.ativo?'Ativo':'Desativado'}</span><span class="pill equipe">${MOD_NOME[l.modalidade]||'Lojista'}</span></h3>
         <div class="pr">${l.carros}<small>${l.carros===1?'carro anunciado':'carros anunciados'}</small></div>
         <div class="chips" style="grid-column:1/-1">${l.telefoneVerificado?'<span class="chip wa">✓ WhatsApp verificado</span>':'<span class="chip">WhatsApp não verificado</span>'}${l.facebook?`<span class="chip fb">✓ Facebook: ${esc(l.facebook.nome)}</span>`:'<span class="chip">Facebook não conectado</span>'}</div>
-        <div class="specs"><span>Usuário: <b>${esc(l.usuario)}</b></span>${l.responsavel?`<span>${esc(l.responsavel)}</span>`:''}<span>${esc(l.cidade)}</span><span>${esc(l.whatsapp)}</span>${l.cnpj?`<span>CNPJ ${esc(l.cnpj)}</span>`:''}</div>
+        <div class="specs"><span>Usuário: <b>${esc(l.usuario)}</b></span>${l.responsavel?`<span>${esc(l.responsavel)}</span>`:''}<span>${esc(l.cidade)}</span><span>${esc(l.whatsapp)}</span>${l.cnpj?`<span>${l.modalidade==='repassador_pf'?'CPF':'CNPJ'} ${esc(l.cnpj)}</span>`:''}</div>
         ${l.obs?`<p class="obs">${esc(l.obs)}</p>`:''}
         <div class="meta"><div>Desde ${new Date(l.criadoEm).toLocaleDateString('pt-BR')}</div>
           <div class="actions">
@@ -1934,7 +2053,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
   $('#lRows').addEventListener('click',async e=>{
     const t=e.target;
     if(t.dataset.led){const l=lojistas.find(x=>x.id===t.dataset.led);if(!l)return;lEditId=l.id;
-      $('#lNome').value=l.nome||'';$('#lResp').value=l.responsavel||'';$('#lFone').value=l.whatsapp||'';$('#lCidade').value=l.cidade||'';$('#lCnpj').value=l.cnpj||'';$('#lUser').value=l.usuario||'';$('#lObs').value=l.obs||'';
+      $('#lMod').value=l.modalidade||'lojista';modUI();$('#lNome').value=l.nome||'';$('#lResp').value=l.responsavel||'';$('#lFone').value=l.whatsapp||'';$('#lCidade').value=l.cidade||'';$('#lCnpj').value=l.cnpj||'';$('#lUser').value=l.usuario||'';$('#lObs').value=l.obs||'';
       $('#lFormTitle').textContent='Editar lojista';$('#lSalvar').textContent='Salvar alterações';$('#lCancelar').hidden=false;lMsg('');$('#lForm').scrollIntoView({behavior:'smooth'});}
     if(t.dataset.lsenha){lConfirm=t.dataset.lsenha;renderLojistas();}
     if(t.hasAttribute('data-lno')){lConfirm=null;renderLojistas();}

@@ -69,7 +69,8 @@ export default async (req, context) => {
 
 export const config = { path: ["/api/lojistas", "/api/lojistas/:id", "/api/lojistas/:id/senha"] };
 
-const CAMPOS = ["nome", "responsavel", "whatsapp", "cidade", "cnpj", "obs"];
+const CAMPOS = ["nome", "responsavel", "whatsapp", "cidade", "cnpj", "obs", "modalidade"];
+const MODALIDADES = ["lojista", "repassador_pj", "repassador_pf"];
 function limpar(b, parcial = false) {
   const o = {};
   for (const c of CAMPOS) {
@@ -77,6 +78,8 @@ function limpar(b, parcial = false) {
     o[c] = String(b[c] ?? "").trim().slice(0, c === "obs" ? 500 : 120);
   }
   if (!parcial) o.usuario = String(b.usuario || "");
+  if ("modalidade" in o && !MODALIDADES.includes(o.modalidade)) o.modalidade = parcial ? undefined : "lojista";
+  if (o.modalidade === undefined) delete o.modalidade;
   return o;
 }
 function validar(l) {

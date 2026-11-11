@@ -4,7 +4,7 @@
 //   PUT  /api/reservas/:id    admin: { status: "pago" | "aguardando" | "cancelado", obs? }
 //        pago      -> carro vira "reservado"
 //        cancelado -> se o carro estava reservado por essa reserva, volta a "disponível"
-import { store, todos, json, corpo, sessao, taxaAgora, pode, getConfig, registrar, lerTokenAssinado } from "../lib/core.mjs";
+import { store, todos, json, corpo, sessao, taxaAgora, pode, getConfig, registrar, lerTokenAssinado, comissaoPara } from "../lib/core.mjs";
 import { normFone, whatsConfigurado, fbConfigurado } from "../lib/verifica.mjs";
 
 export default async (req, context) => {
@@ -26,7 +26,7 @@ export default async (req, context) => {
     const abertas = (await todos(st)).filter(r => r.repasseId === carro.id && r.status === "aguardando");
     const repetida = abertas.find(r => r.whatsapp.replace(/\D/g, "") === whatsapp.replace(/\D/g, ""));
     const cfg = await getConfig();
-    const t = await taxaAgora(cfg);
+    const t0 = await taxaAgora(cfg);
     // verificação do comprador
     const tel = lerTokenAssinado(b.telToken || "");
     const telOk = tel?.role === "tel" && tel.tel === normFone(whatsapp);
@@ -34,6 +34,8 @@ export default async (req, context) => {
     const fb = lerTokenAssinado(b.fbToken || "");
     const fbOk = fb?.role === "fb" ? { id: fb.id, nome: fb.nome } : null;
     if (cfg.exigirFacebookReserva && fbConfigurado(cfg) && !fbOk) return json({ erro: "Confirme sua conta do Facebook antes de reservar.", precisa: "facebook" }, 400);
+    const vC = comissaoPara(cfg, t0, carro.fipe);
+    const t = { ...t0, valor: vC, promo: t0.promo && vC === t0.valor };
     const reserva = repetida || {
       id: crypto.randomUUID(), codigo: codigo(), repasseId: carro.id, lojistaId: carro.lojistaId,
       carro: `${carro.marca} ${carro.modelo} ${carro.ano}`, placa: carro.placa, preco: carro.preco, precoVitrine: (carro.preco || 0) + t.valor,

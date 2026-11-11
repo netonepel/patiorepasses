@@ -19,6 +19,7 @@ const CONFIG_CAMPOS = {
   placaProvedor: "texto", placaApiUrl: "texto", placaApiHeader: "texto", placaApiToken: "segredo", placaCacheDias: "numero",
   verifWhatsUrl: "texto", verifBearer: "segredo", verifDeviceToken: "segredo", verifMensagem: "longo",
   exigirTelefoneReserva: "bool", exigirFacebookReserva: "bool", fbAppId: "texto", fbAppSecret: "segredo",
+  margensAtivo: "bool", margemBase: "texto", margens: "margens",
 };
 
 export default async (req, context) => {
@@ -47,6 +48,13 @@ export default async (req, context) => {
         else if (tipo === "numero") { v = Math.max(0, Math.round(Number(v))); if (!Number.isFinite(v)) return json({ erro: `Valor inválido em ${k}.` }, 400); }
         else if (tipo === "data") { v = String(v || ""); if (v && !/^\d{4}-\d{2}-\d{2}$/.test(v)) return json({ erro: "Data da promoção inválida." }, 400); }
         else if (tipo === "bool") v = !!v;
+        else if (tipo === "margens") {
+          if (!Array.isArray(v) || !v.length || v.length > 20) return json({ erro: "Tabela de margens inválida." }, 400);
+          v = v.map(f => ({ ate: f.ate === null || f.ate === "" ? null : Math.round(Number(f.ate)), min: Number(f.min), ...(Number(f.comissao) > 0 ? { comissao: Math.round(Number(f.comissao)) } : {}) }));
+          if (v.some(f => (f.ate !== null && !(f.ate > 0)) || !(f.min >= 0 && f.min < 100))) return json({ erro: "Confira a tabela de margens: valores e percentuais precisam ser números (percentual de 0 a 99)." }, 400);
+          v.sort((a, b) => (a.ate ?? Infinity) - (b.ate ?? Infinity));
+          if (v.filter(f => f.ate === null).length > 1) return json({ erro: "Só pode existir uma faixa \"acima de\"." }, 400);
+        }
         else v = String(v ?? "").trim().slice(0, tipo === "longo" ? 1000 : 300);
         m[k] = v;
       }
@@ -60,8 +68,9 @@ export default async (req, context) => {
         avisoTitulo: "título do aviso", avisoTexto: "texto do aviso", placaProvedor: "serviço de placa", placaApiUrl: "endereço da API de placa", placaApiHeader: "cabeçalho da API",
         placaApiToken: "chave da API de placa", placaCacheDias: "dias de cache da placa",
         verifWhatsUrl: "endereço de envio do WhatsApp", verifBearer: "Bearer Token do envio", verifDeviceToken: "DeviceToken do WhatsApp", verifMensagem: "mensagem do código",
+        margensAtivo: "regra de margem ligada/desligada", margemBase: "base da margem", margens: "tabela de margens",
         exigirTelefoneReserva: "exigir WhatsApp na reserva", exigirFacebookReserva: "exigir Facebook na reserva", fbAppId: "App ID do Facebook", fbAppSecret: "chave secreta do Facebook" };
-      const mudou = Object.keys(m).filter(k => NOMES[k] && m[k] !== atual[k]);
+      const mudou = Object.keys(m).filter(k => NOMES[k] && JSON.stringify(m[k]) !== JSON.stringify(atual[k]));
       await salvarConfig(m);
       if (mudou.length) await registrar(s, "Alterou configurações", mudou.map(k => NOMES[k]).join(", "));
       return json({ ok: true });

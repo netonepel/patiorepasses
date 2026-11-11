@@ -5,7 +5,7 @@
 //   PUT    /api/repasses/:id       edita  (dono ou admin)
 //   DELETE /api/repasses/:id       apaga  (dono ou admin)
 import crypto from "node:crypto";
-import { store, todos, json, corpo, sessao, pode, taxaAgora } from "../lib/core.mjs";
+import { store, todos, json, corpo, sessao, pode, taxaAgora, getConfig, comissaoPara, checaMargem } from "../lib/core.mjs";
 import { apagarFotos, fotosPermitidas } from "./fotos.mjs";
 
 const CAMPOS = ["placa","marca","modelo","versao","ano","km","cambio","combustivel","cor","preco","fipe","obs","status","chaveCopia","manual","cautelar","leilao","sinistro"];
@@ -21,9 +21,10 @@ export default async (req, context) => {
   const url = new URL(req.url);
 
   if (req.method === "GET" && url.searchParams.get("meus") !== "1") {
-    const [rs, lojas, t] = await Promise.all([todos(st), mapaLojas(), taxaAgora()]);
+    const cfg = await getConfig();
+    const [rs, lojas, t] = await Promise.all([todos(st), mapaLojas(), taxaAgora(cfg)]);
     return json(rs.filter(r => r.status !== "vendido" && lojas[r.lojistaId]?.ativo)
-      .sort(porData).map(r => publico(juntar(r, lojas), t.valor)));
+      .sort(porData).map(r => publico(juntar(r, lojas), comissaoPara(cfg, t, r.fipe))));
   }
 
   const s = await sessao(req);
@@ -32,9 +33,11 @@ export default async (req, context) => {
   const dono = r => s.role === "admin" || r.lojistaId === s.lojista.id;
 
   if (req.method === "GET") {
-    const [rs, lojas, t] = await Promise.all([todos(st), mapaLojas(), taxaAgora()]);
+    const cfg = await getConfig();
+    const [rs, lojas, t] = await Promise.all([todos(st), mapaLojas(), taxaAgora(cfg)]);
     // preco = o que a loja recebe; precoVitrine = preco + comissão do Pátio (o que o comprador vê)
-    return json(rs.filter(dono).sort(porData).map(r => ({ ...juntar(r, lojas), comissao: t.valor, precoVitrine: (r.preco || 0) + t.valor })));
+    return json(rs.filter(dono).sort(porData).map(r => { const c = comissaoPara(cfg, t, r.fipe);
+      return { ...juntar(r, lojas), comissao: c, precoVitrine: (r.preco || 0) + c, margem: checaMargem(cfg, r.preco || 0, r.fipe, c) }; }));
   }
 
   if (req.method === "POST") {
@@ -46,6 +49,7 @@ export default async (req, context) => {
       if (!l) return json({ erro: "Escolha a loja dona do carro." }, 400);
     }
     const erro = validar(r); if (erro) return json({ erro }, 400);
+    const em = await erroMargem(r); if (em) return json({ erro: em, margem: true }, 400);
     r.fotos = await fotosPermitidas(r.fotos || [], s);
     if ((await todos(st)).some(o => o.placa === r.placa && o.status !== "vendido"))
       return json({ erro: "Essa placa já está anunciada no portal." }, 409);
@@ -64,6 +68,9 @@ export default async (req, context) => {
     if (s.role === "admin" && b.lojistaId) novo.lojistaId = String(b.lojistaId);
     if ("fotos" in b) novo.fotos = await fotosPermitidas(novo.fotos, s, atual.fotos || []);
     const erro = validar(novo); if (erro) return json({ erro }, 400);
+    if (("preco" in b && novo.preco !== atual.preco) || ("fipe" in b && novo.fipe !== atual.fipe)) {
+      const em = await erroMargem(novo); if (em) return json({ erro: em, margem: true }, 400);
+    }
     await st.setJSON(id, novo);
     if ("fotos" in b) await apagarFotos((atual.fotos || []).filter(f => !novo.fotos.includes(f)));
     return json(novo);
@@ -73,6 +80,12 @@ export default async (req, context) => {
 };
 
 export const config = { path: ["/api/repasses", "/api/repasses/:id"] };
+
+async function erroMargem(r) {
+  const cfg = await getConfig(), t = await taxaAgora(cfg);
+  const m = checaMargem(cfg, r.preco || 0, r.fipe, comissaoPara(cfg, t, r.fipe));
+  return m.ok ? "" : m.erro;
+}
 
 async function mapaLojas() {
   const m = {}; for (const l of await todos(store("lojistas"))) m[l.id] = l; return m;

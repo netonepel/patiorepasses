@@ -138,6 +138,13 @@ const PADRAO = () => ({
   exigirFacebookReserva: false,
   fbAppId: process.env.FB_APP_ID || "",
   fbAppSecret: process.env.FB_APP_SECRET || "",
+  // margem mínima abaixo da FIPE por faixa (faixa decidida pelo valor da FIPE do carro)
+  margensAtivo: true,
+  margemBase: "vitrine", // "vitrine" = preço que o comprador vê (com comissão) | "loja" = valor que a loja recebe
+  margens: [
+    { ate: 15000, min: 30 }, { ate: 25000, min: 30 }, { ate: 40000, min: 18 }, { ate: 60000, min: 17 },
+    { ate: 80000, min: 18 }, { ate: 100000, min: 18 }, { ate: 125000, min: 18 }, { ate: null, min: 18 },
+  ],
 });
 export async function getConfig() {
   const salvo = await store("config").get("geral", { type: "json" }).catch(() => null);
@@ -181,4 +188,35 @@ export async function taxaAgora(cfg) {
   const promoAte = cfg.promoAte || "";
   const promo = !!promoAte && hojeBR() <= promoAte;
   return { valor: promo ? promocional : cheia, promo, promoAte, cheia, promocional };
+}
+
+/* ---------- margem mínima e comissão por faixa ---------- */
+const brl = n => Number(n || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+/** Faixa do carro pelo valor da FIPE. As faixas vêm ordenadas por "ate"; ate=null é "acima de". */
+export function faixaDe(cfg, fipe) {
+  const fs = (cfg.margens || []).slice().sort((a, b) => (a.ate ?? Infinity) - (b.ate ?? Infinity));
+  let de = 0;
+  for (const f of fs) { if (f.ate == null || fipe <= f.ate) return { ...f, de }; de = f.ate; }
+  return null;
+}
+/** Comissão do Pátio para esse carro: a da faixa, se tiver; senão a padrão (com promoção). */
+export function comissaoPara(cfg, t, fipe) {
+  const f = fipe ? faixaDe(cfg, fipe) : null;
+  return f && Number(f.comissao) > 0 ? Number(f.comissao) : t.valor;
+}
+/** Confere se o carro está pelo menos X% abaixo da FIPE. preco = valor da loja. */
+export function checaMargem(cfg, preco, fipe, comissao) {
+  if (!cfg.margensAtivo) return { ok: true };
+  if (!fipe) return { ok: false, erro: "Informe o valor da tabela FIPE. Sem a FIPE não dá para conferir a margem mínima." };
+  const f = faixaDe(cfg, fipe);
+  if (!f) return { ok: true };
+  const anunciado = cfg.margemBase === "loja" ? preco : preco + comissao;
+  const pct = (1 - anunciado / fipe) * 100;
+  const faixaTxt = f.ate == null ? `acima de ${brl(f.de)}` : f.de ? `de ${brl(f.de)} a ${brl(f.ate)}` : `até ${brl(f.ate)}`;
+  if (pct + 1e-9 < Number(f.min)) {
+    const maximo = Math.floor(fipe * (1 - Number(f.min) / 100)) - (cfg.margemBase === "loja" ? 0 : comissao);
+    return { ok: false, pct, min: f.min, faixa: faixaTxt, maximo,
+      erro: `Carros com FIPE ${faixaTxt} precisam estar pelo menos ${f.min}% abaixo da FIPE. Este está ${pct.toFixed(1).replace(".", ",")}% abaixo. O valor máximo para a loja é ${brl(Math.max(0, maximo))}.` };
+  }
+  return { ok: true, pct, min: f.min, faixa: faixaTxt };
 }
