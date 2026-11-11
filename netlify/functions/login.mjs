@@ -15,6 +15,7 @@ export default async (req) => {
       contatoWhatsapp: c.contatoWhatsapp, grupoWhatsapp: c.grupoWhatsapp, pixChave: c.pixChave, pixNome: c.pixNome,
       taxa: await taxaAgora(c),
       aviso: { ativo: c.avisoAtivo !== false, titulo: c.avisoTitulo, texto: c.avisoTexto, versao: c.avisoVersao || 1 },
+      fotoIa: { ativo: !!(c.fotoIaAtivo && (c.plateRecToken || c.visionKey)) },
       margens: { ativo: c.margensAtivo !== false, base: c.margemBase || "vitrine", faixas: c.margens || [] },
       verif: { telefone: whatsConfigurado(c), telefoneObrigatorio: whatsConfigurado(c) && c.exigirTelefoneReserva !== false,
         facebook: fbConfigurado(c), facebookObrigatorio: fbConfigurado(c) && !!c.exigirFacebookReserva },

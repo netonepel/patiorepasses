@@ -611,6 +611,24 @@ footer .assin b{color:var(--yellow);font-weight:700}
 .bk-item{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--bg)}
 .bk-item small{display:block;color:var(--muted);font-size:12px}
 .bk-rest summary{cursor:pointer;font-weight:600;font-size:14px}
+
+/* ===== borrão de placa / marca ===== */
+.ft .nblur,.ft .nrev{position:absolute;top:4px;right:4px;font-size:10.5px;font-weight:800;padding:2px 6px;border-radius:3px}
+.ft .nblur{background:rgba(0,0,0,.75);color:var(--yellow)}
+.ft .nrev{top:24px;background:#fff3c4;color:#5c4400}
+.blur-box{width:min(760px,100%)}
+.blur-ajuda{margin:0;color:var(--muted);font-size:13.5px}
+.blur-stage{position:relative;touch-action:none;user-select:none;-webkit-user-select:none;border-radius:8px;overflow:hidden;background:#111;cursor:crosshair}
+.blur-stage canvas{display:block;width:100%;height:auto}
+.blur-boxes{position:absolute;inset:0}
+.bbox{position:absolute;border:2px dashed rgba(255,255,255,.9);background:rgba(0,0,0,.15);border-radius:3px;padding:0;box-shadow:0 0 0 1px rgba(0,0,0,.5)}
+.bbox.on{border:3px solid var(--yellow);background:transparent}
+.bbox.novo{border:3px solid var(--yellow);background:rgba(255,204,0,.2);pointer-events:none}
+.blur-lista{display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto}
+.bitem{display:flex;align-items:center;gap:10px;font-size:13.5px;padding:6px 8px;border:1px solid var(--line);border-radius:6px}
+.bitem input{width:18px;height:18px;accent-color:#111;flex:none}
+.bitem span{flex:1;overflow-wrap:anywhere}
+.bitem .btn-ghost{padding:4px 9px}
 </style>
 </head>
 <body>
@@ -889,6 +907,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
           </label>
           <div class="fotos" id="fotosBox"></div>
           <span class="hint" id="fotoMsg" style="margin:0"></span>
+          <span class="hint" id="fotoIaDica" style="margin:0"></span>
         </div>
       </fieldset>
       <fieldset>
@@ -1061,6 +1080,13 @@ footer .assin b{color:var(--yellow);font-weight:700}
         </div>
       </section>
       <section class="form">
+        <h2>IA nas fotos (borrar placa e marca da loja)</h2>
+        <span class="hint" style="margin:0">Ao enviar a foto, a IA acha a placa (Plate Recognizer) e os textos e logos (Google Vision) e borra antes de salvar. Pode usar só uma das duas. O lojista sempre pode conferir e borrar outra parte à mão.</span>
+        <label class="check"><input type="checkbox" id="ciAtivo"> <span>Ligar a IA nas fotos</span></label>
+        <div class="f"><label for="ciPlate">Token do Plate Recognizer</label><input id="ciPlate" type="password" autocomplete="off" placeholder="Não cadastrado"><span class="hint" style="margin:0">app.platerecognizer.com → Snapshot Cloud → API Token.</span></div>
+        <div class="f"><label for="ciVision">Chave do Google Cloud Vision</label><input id="ciVision" type="password" autocomplete="off" placeholder="Não cadastrada"><span class="hint" style="margin:0">console.cloud.google.com → ative a Cloud Vision API → Credenciais → Chave de API.</span></div>
+      </section>
+      <section class="form">
         <h2>Login com Facebook</h2>
         <span class="hint" style="margin:0">Crie um app em developers.facebook.com com o produto <b>Login do Facebook</b> e cole aqui o App ID e a chave secreta.</span>
         <div class="f"><label for="cfbId">App ID</label><input id="cfbId" inputmode="numeric"></div>
@@ -1166,6 +1192,17 @@ footer .assin b{color:var(--yellow);font-weight:700}
   </div>
 </div>
 
+<div class="modal" id="blurModal" hidden role="dialog" aria-modal="true" aria-labelledby="blurTitle">
+  <div class="modal-box blur-box">
+    <button type="button" class="modal-x" data-close aria-label="Fechar">✕</button>
+    <span class="eyebrow-s">Esconder placa e marca da loja</span>
+    <h2 id="blurTitle">Confira o que vai ser borrado</h2>
+    <p class="blur-ajuda">Amarelo = borrado. Toque numa área para borrar ou não. Arraste na foto para borrar outra parte.</p>
+    <div class="blur-stage" id="blurStage"><canvas id="blurCanvas"></canvas><div class="blur-boxes" id="blurBoxes"></div></div>
+    <div class="blur-lista" id="blurLista"></div>
+    <div class="btns"><button type="button" class="btn btn-y" id="blurOk">Aplicar e enviar</button><button type="button" class="btn-ghost" id="blurLimpar">Tirar todos</button><button type="button" class="btn-ghost" data-close>Cancelar</button></div>
+  </div>
+</div>
 <div class="modal gal" id="galModal" hidden role="dialog" aria-modal="true" aria-label="Fotos do carro">
   <button type="button" class="modal-x" data-close aria-label="Fechar">✕</button>
   <div class="gal-main">
@@ -1628,31 +1665,74 @@ footer .assin b{color:var(--yellow);font-weight:700}
       URL.revokeObjectURL(url); ok(c.toDataURL('image/jpeg',q)); };
     img.onerror=()=>{ URL.revokeObjectURL(url); falha(new Error('Não deu para abrir essa imagem.')); };
     img.src=url; }); }
+  // carrega a foto (arquivo ou endereço) num canvas de até 1600px, sem borrão: é a base para (re)editar
+  function abrirBase(src){ return new Promise((ok,falha)=>{
+    const img=new Image(), url=src instanceof Blob?URL.createObjectURL(src):src;
+    img.onload=()=>{ const k=Math.min(1,1600/Math.max(img.naturalWidth,img.naturalHeight));
+      const c=document.createElement('canvas'); c.width=Math.round(img.naturalWidth*k); c.height=Math.round(img.naturalHeight*k);
+      const g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height); g.drawImage(img,0,0,c.width,c.height);
+      if(src instanceof Blob) URL.revokeObjectURL(url); ok(c); };
+    img.onerror=()=>{ if(src instanceof Blob) URL.revokeObjectURL(url); falha(new Error('Não deu para abrir essa imagem.')); };
+    img.src=url; }); }
+  // pixeliza as áreas marcadas (blocos grandes: não dá para ler nem "desborrar")
+  function borrar(base,caixas){
+    const c=document.createElement('canvas'); c.width=base.width; c.height=base.height;
+    const g=c.getContext('2d'); g.drawImage(base,0,0);
+    for(const b of caixas.filter(b=>b.marcar)){
+      const x=Math.floor(b.x*c.width), y=Math.floor(b.y*c.height), w=Math.max(2,Math.ceil(b.w*c.width)), h=Math.max(2,Math.ceil(b.h*c.height));
+      const bloco=Math.max(8,Math.round(Math.min(w,h)/3)), sw=Math.max(1,Math.round(w/bloco)), sh=Math.max(1,Math.round(h/bloco));
+      const t=document.createElement('canvas'); t.width=sw; t.height=sh; const tg=t.getContext('2d');
+      tg.drawImage(base,x,y,w,h,0,0,sw,sh);
+      g.imageSmoothingEnabled=false; g.drawImage(t,0,0,sw,sh,x,y,w,h); g.imageSmoothingEnabled=true;
+    }
+    return c;
+  }
+  const miniatura=(c,lado)=>{ const k=Math.min(1,lado/Math.max(c.width,c.height)), t=document.createElement('canvas');
+    t.width=Math.round(c.width*k); t.height=Math.round(c.height*k); t.getContext('2d').drawImage(c,0,0,t.width,t.height); return t.toDataURL('image/jpeg',.78); };
+  const iaLigada=()=>!!(cfg.fotoIa&&cfg.fotoIa.ativo);
+  async function analisar(base){
+    if(!iaLigada()) return {caixas:[]};
+    try{ return await api('/api/fotos/analisar',{method:'POST',body:JSON.stringify({full:base.toDataURL('image/jpeg',.85),w:base.width,h:base.height,lojistaId:(me&&me.role==='admin')?$('#lojaSel').value:undefined})}); }
+    catch(err){ return {caixas:[],avisos:[err.message]}; }
+  }
+  async function enviarFoto(f){
+    const final=borrar(f.base,f.caixas||[]);
+    const r=await api('/api/fotos',{method:'POST',body:JSON.stringify({full:final.toDataURL('image/jpeg',.82),thumb:miniatura(final,560)})});
+    f.id=r.id; f.status='ok'; f.url='/api/fotos/'+r.id+'?t=1';
+  }
   function renderFotos(){
     const box=$('#fotosBox');
     box.innerHTML=fotos.map((f,k)=>`<div class="ft ${f.status}" data-k="${k}">
       <img src="${f.url}" alt="Foto ${k+1}">${k===0&&f.status==='ok'?'<span class="capa">Capa</span>':''}
-      <div class="fbtns">${k>0?`<button type="button" data-fm="${k}" aria-label="Mover para a esquerda" title="Mover para a esquerda">‹</button>`:''}${k<fotos.length-1?`<button type="button" data-fd="${k}" aria-label="Mover para a direita" title="Mover para a direita">›</button>`:''}<button type="button" data-fx="${k}" aria-label="Remover foto" title="Remover">✕</button></div></div>`).join('');
+      ${f.status==='ok'&&(f.caixas||[]).some(b=>b.marcar)?`<span class="nblur" title="Áreas borradas">◐ ${(f.caixas||[]).filter(b=>b.marcar).length}</span>`:''}
+      ${f.status==='ok'&&f.revisar?'<span class="nrev">Confira</span>':''}
+      <div class="fbtns">${f.status==='ok'?`<button type="button" data-fb="${k}" aria-label="Borrar placa ou marca" title="Borrar placa ou marca">◐</button>`:''}${k>0?`<button type="button" data-fm="${k}" aria-label="Mover para a esquerda" title="Mover para a esquerda">‹</button>`:''}${k<fotos.length-1?`<button type="button" data-fd="${k}" aria-label="Mover para a direita" title="Mover para a direita">›</button>`:''}<button type="button" data-fx="${k}" aria-label="Remover foto" title="Remover">✕</button></div></div>`).join('');
     const env=fotos.some(f=>f.status==='enviando');
     $('#btnSalvar').disabled=env;
     const okN=fotos.filter(f=>f.status==='ok').length;
     $('#fotoMsg').textContent=env?'Enviando fotos… espere terminar para salvar.':okN?`${okN} de ${MAXF} fotos. Use ‹ › para mudar a ordem; a primeira é a capa.`:'';
     $('#fotoDrop').hidden=fotos.length>=MAXF;
+    $('#fotoIaDica').innerHTML=!fotos.length?'':iaLigada()?'A IA borra a placa e o nome da loja sozinha. Toque em <b>◐</b> numa foto para conferir ou borrar outra parte.':'Toque em <b>◐</b> numa foto para borrar a placa ou o nome da loja.';
   }
   async function addFotos(files){
     const lista=[...files].filter(f=>/^image\//.test(f.type)).slice(0,MAXF-fotos.length);
     if(!lista.length){ if(files.length) $('#fotoMsg').textContent=fotos.length>=MAXF?'Limite de 10 fotos.':'Escolha arquivos de imagem.'; return; }
     const novos=lista.map(f=>({file:f,url:URL.createObjectURL(f),status:'enviando',chave:Math.random().toString(36).slice(2)}));
     fotos.push(...novos); renderFotos();
+    const avisos=new Set();
     for(const f of novos){
+      const blobUrl=f.url;
       try{
-        const [full,thumb]=await Promise.all([reduz(f.file,1600,.82),reduz(f.file,560,.78)]);
-        const r=await api('/api/fotos',{method:'POST',body:JSON.stringify({full,thumb})});
-        f.id=r.id; f.status='ok'; f.url='/api/fotos/'+r.id+'?t=1';
+        f.base=await abrirBase(f.file);
+        const a=await analisar(f.base); f.caixas=a.caixas||[]; (a.avisos||[]).forEach(x=>avisos.add(x));
+        // textos que a IA achou mas não borrou: vale o lojista dar uma olhada
+        f.revisar=f.caixas.some(b=>!b.marcar)||(iaLigada()&&!f.caixas.some(b=>b.tipo==='placa'));
+        await enviarFoto(f);
       }catch(err){ f.status='erro'; $('#fotoMsg').textContent='Uma foto não foi enviada: '+err.message; }
-      delete f.file; renderFotos();
+      URL.revokeObjectURL(blobUrl); delete f.file; renderFotos();
     }
     fotos=fotos.filter(f=>f.status!=='erro'); renderFotos();
+    if(avisos.size) $('#fotoMsg').textContent='As fotos foram enviadas, mas a IA não respondeu ('+[...avisos][0]+'). Confira com ◐ se a placa aparece.';
   }
   $('#fotoInput').addEventListener('change',e=>{ addFotos(e.target.files); e.target.value=''; });
   const drop=$('#fotoDrop');
@@ -1660,10 +1740,58 @@ footer .assin b{color:var(--yellow);font-weight:700}
   ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over');}));
   drop.addEventListener('drop',e=>addFotos(e.dataTransfer.files));
   $('#fotosBox').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return;
+    if(b.dataset.fb){ editarBlur(fotos[+b.dataset.fb]); return; }
     if(b.dataset.fx){ fotos.splice(+b.dataset.fx,1); }
     if(b.dataset.fm){ const k=+b.dataset.fm; [fotos[k-1],fotos[k]]=[fotos[k],fotos[k-1]]; }
     if(b.dataset.fd){ const k=+b.dataset.fd; [fotos[k+1],fotos[k]]=[fotos[k],fotos[k+1]]; }
     renderFotos(); });
+
+  /* ---------- editor de borrão ---------- */
+  let ed=null; // {f, base, caixas}
+  const TIPO={placa:'Placa',logo:'Logo',texto:'Texto',manual:'Área marcada por você'};
+  async function editarBlur(f){
+    const m=$('#fotoMsg');
+    try{
+      if(!f.base){ m.textContent='Abrindo a foto…'; f.base=await abrirBase('/api/fotos/'+f.id); f.caixas=f.caixas||[]; f.jaSalva=true; m.textContent=''; }
+    }catch(err){ m.textContent=err.message; return; }
+    ed={f,base:f.base,caixas:(f.caixas||[]).map(b=>({...b}))};
+    // foto que já estava salva: o borrão antigo já está nela, então só dá para acrescentar
+    $('#blurLimpar').hidden=!!f.jaSalva;
+    const c=$('#blurCanvas'); c.width=ed.base.width; c.height=ed.base.height;
+    desenharEd(); abrir('#blurModal');
+  }
+  function desenharEd(){
+    $('#blurCanvas').getContext('2d').drawImage(borrar(ed.base,ed.caixas),0,0);
+    $('#blurBoxes').innerHTML=ed.caixas.map((b,k)=>`<button type="button" class="bbox ${b.marcar?'on':''}" data-bk="${k}" style="left:${b.x*100}%;top:${b.y*100}%;width:${b.w*100}%;height:${b.h*100}%" aria-pressed="${b.marcar}" aria-label="${esc(TIPO[b.tipo]||'Área')}${b.texto?': '+esc(b.texto):''}"></button>`).join('');
+    $('#blurLista').innerHTML=ed.caixas.length?ed.caixas.map((b,k)=>`<label class="bitem"><input type="checkbox" data-bc="${k}" ${b.marcar?'checked':''}> <span><b>${esc(TIPO[b.tipo]||'Área')}</b>${b.texto&&b.tipo!=='manual'?' “'+esc(b.texto.slice(0,40))+'”':''}${b.motivo&&b.motivo!==b.tipo&&b.marcar?' · '+esc(b.motivo):''}</span>${b.tipo==='manual'?`<button type="button" class="btn-ghost" data-bx="${k}" aria-label="Remover área">✕</button>`:''}</label>`).join('')
+      :'<p class="blur-ajuda">Nada marcado ainda. Arraste o dedo ou o mouse sobre a placa ou o nome da loja.</p>';
+  }
+  $('#blurBoxes').addEventListener('click',e=>{ const b=e.target.closest('[data-bk]'); if(!b||arrastou) return; const x=ed.caixas[+b.dataset.bk]; x.marcar=!x.marcar; desenharEd(); });
+  $('#blurLista').addEventListener('change',e=>{ const k=e.target.dataset.bc; if(k!=null){ ed.caixas[+k].marcar=e.target.checked; desenharEd(); } });
+  $('#blurLista').addEventListener('click',e=>{ const b=e.target.closest('[data-bx]'); if(b){ e.preventDefault(); ed.caixas.splice(+b.dataset.bx,1); desenharEd(); } });
+  $('#blurLimpar').addEventListener('click',()=>{ ed.caixas.forEach(b=>b.marcar=false); desenharEd(); });
+  // desenhar uma área nova arrastando
+  let arr=null, arrastou=false;
+  const stage=$('#blurStage');
+  const pos=e=>{ const r=stage.getBoundingClientRect(); return {x:Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)),y:Math.min(1,Math.max(0,(e.clientY-r.top)/r.height))}; };
+  stage.addEventListener('pointerdown',e=>{ if(!ed||e.target.closest('.bbox')) return; arrastou=false; arr={p:pos(e),el:null}; stage.setPointerCapture(e.pointerId); });
+  stage.addEventListener('pointermove',e=>{ if(!arr) return; const p=pos(e), a=arr.p;
+    if(!arr.el){ if(Math.abs(p.x-a.x)<.015&&Math.abs(p.y-a.y)<.015) return; arr.el=document.createElement('div'); arr.el.className='bbox novo'; $('#blurBoxes').append(arr.el); arrastou=true; }
+    Object.assign(arr.el.style,{left:Math.min(a.x,p.x)*100+'%',top:Math.min(a.y,p.y)*100+'%',width:Math.abs(p.x-a.x)*100+'%',height:Math.abs(p.y-a.y)*100+'%'}); e.preventDefault(); });
+  const solta=e=>{ if(!arr) return; const p=pos(e), a=arr.p, tinha=!!arr.el; arr=null;
+    if(tinha){ ed.caixas.push({x:Math.min(a.x,p.x),y:Math.min(a.y,p.y),w:Math.abs(p.x-a.x),h:Math.abs(p.y-a.y),tipo:'manual',marcar:true}); desenharEd(); }
+    setTimeout(()=>{arrastou=false;},0); };
+  stage.addEventListener('pointerup',solta); stage.addEventListener('pointercancel',()=>{ arr=null; desenharEd(); });
+  $('#blurOk').addEventListener('click',async()=>{
+    const f=ed.f, b=$('#blurOk'); b.disabled=true; b.textContent='Enviando…';
+    const antes={caixas:f.caixas,id:f.id,url:f.url};
+    try{
+      f.caixas=ed.caixas; await enviarFoto(f); f.revisar=false;
+      if(f.jaSalva){ f.base=borrar(f.base,f.caixas); f.caixas=[]; } // a foto salva passa a ter o novo borrão "gravado"
+      fechar($('#blurModal')); renderFotos();
+    }catch(err){ Object.assign(f,antes); $('#fotoMsg').textContent='Não deu para salvar o borrão: '+err.message; }
+    finally{ b.disabled=false; b.textContent='Aplicar e enviar'; }
+  });
 
   /* ---------- formulário de repasse ---------- */
   function maskMoney(el){el.addEventListener('input',()=>{const n=toInt(el.value);el.value=n===null?'':brl(n);calcFipe();});}
@@ -1909,6 +2037,9 @@ footer .assin b{color:var(--yellow);font-weight:700}
     $('#cvUrl').value=c.verifWhatsUrl||''; $('#cvMsg').value=c.verifMensagem||''; $('#cvExigeTel').checked=c.exigirTelefoneReserva!==false;
     $('#cfbId').value=c.fbAppId||''; $('#cfbSec').value=''; $('#cfbSec').placeholder=c.tem_fbAppSecret?'Salva ('+c.fbAppSecret+'). Digite só para trocar':'Não cadastrada';
     $('#cfbRet').value=c.fbRetorno||''; $('#cvExigeFb').checked=!!c.exigirFacebookReserva;
+    $('#ciAtivo').checked=c.fotoIaAtivo!==false;
+    $('#ciPlate').value=''; $('#ciPlate').placeholder=c.tem_plateRecToken?'Salvo ('+c.plateRecToken+'). Digite só para trocar':'Não cadastrado';
+    $('#ciVision').value=''; $('#ciVision').placeholder=c.tem_visionKey?'Salva ('+c.visionKey+'). Digite só para trocar':'Não cadastrada';
     $('#cmAtivo').checked=c.margensAtivo!==false; $('#cmBase').value=c.margemBase||'vitrine'; renderFaixas(c.margens||[]);
   }
   const PF_URL='https://api.placafipe.com.br/getplacafipe/{placa}/{token}';
@@ -1936,6 +2067,9 @@ footer .assin b{color:var(--yellow);font-weight:700}
     Object.assign(d,{margensAtivo:$('#cmAtivo').checked,margemBase:$('#cmBase').value,margens:fx.lista});
     if($('#cvBearer').value.trim()) d.verifBearer=$('#cvBearer').value.trim();
     if($('#cfbSec').value.trim()) d.fbAppSecret=$('#cfbSec').value.trim();
+    d.fotoIaAtivo=$('#ciAtivo').checked;
+    if($('#ciPlate').value.trim()) d.plateRecToken=$('#ciPlate').value.trim();
+    if($('#ciVision').value.trim()) d.visionKey=$('#ciVision').value.trim();
     if(d.verifMensagem&&!d.verifMensagem.includes('{codigo}')){ m.className='msg err'; m.textContent='A mensagem do código precisa ter {codigo}.'; return; }
     if(!d.taxaCheia){ m.className='msg err'; m.textContent='Coloque o valor normal do sinal.'; return; }
     b.disabled=true;

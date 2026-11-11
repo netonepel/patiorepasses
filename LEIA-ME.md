@@ -120,6 +120,25 @@ Me mande esse trecho que eu ajusto a leitura para o formato exato da sua API.
 - Na vitrine, clicar na foto abre a galeria (setas, teclado ou arrastar com o dedo).
 - Uma loja não consegue usar nem apagar fotos de outra. Excluir o anúncio apaga as fotos dele.
 
+### IA para borrar placa e marca da loja
+
+Quando o lojista adiciona uma foto, antes de salvar o site manda a imagem para duas IAs:
+
+- **Plate Recognizer**: acha a placa, que é borrada sempre.
+- **Google Cloud Vision**: lê os textos e logos da foto. São borrados sozinhos o **nome da loja** (palavras do nome cadastrado, ignorando palavras comuns como "auto", "center", "veículos"), **telefones**, **@instagram, site, "whats"**, **logos** e textos com cara de placa. Os outros textos (ex.: "FLEX") só aparecem como sugestão.
+
+A foto já sai borrada para o servidor. O borrão é em blocos grandes, então não dá para "desborrar". A foto original não é guardada.
+
+O lojista vê **◐ 2** (quantas áreas foram borradas) e o selo **Confira** quando a IA não achou placa ou achou textos que não borrou. Tocando em **◐** abre o editor: amarelo = borrado, toca para ligar/desligar, e **arrasta o dedo** na foto para borrar outra parte (ex.: um adesivo que a IA não pegou). Também funciona sem IA nenhuma, só no manual.
+
+**Como ligar** (Painel → Configurações → *IA nas fotos*). Dá para usar só uma das duas:
+
+1. **Plate Recognizer**: crie conta em platerecognizer.com → *Snapshot Cloud* (tem teste grátis) → copie o **API Token** e cole em *Token do Plate Recognizer*.
+2. **Google Vision**: em console.cloud.google.com crie um projeto → ative a **Cloud Vision API** (precisa de cartão no faturamento; as primeiras ~1.000 fotos por mês de cada recurso são grátis) → *APIs e serviços → Credenciais → Criar credenciais → Chave de API*. Em *Restringir chave*, deixe só a Cloud Vision API. Cole em *Chave do Google Cloud Vision*.
+3. Marque **Ligar a IA nas fotos** e salve.
+
+Cada foto gasta 1 consulta de cada serviço. Há limite de 150 análises por hora por conta para ninguém gastar seu saldo. Se uma IA falhar (saldo, token errado), a foto é enviada mesmo assim e aparece um aviso pedindo para conferir com ◐.
+
 ## Leilão e sinistro
 
 No cadastro do carro, em **Itens e documentação**: Leilão (sem passagem / tem passagem) e Sinistro (sem sinistro / pequena monta / média monta).

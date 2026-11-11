@@ -139,6 +139,10 @@ const PADRAO = () => ({
   fbAppId: process.env.FB_APP_ID || "",
   fbAppSecret: process.env.FB_APP_SECRET || "",
   // margem mínima abaixo da FIPE por faixa (faixa decidida pelo valor da FIPE do carro)
+  // IA nas fotos
+  fotoIaAtivo: true,
+  plateRecToken: process.env.PLATE_RECOGNIZER_TOKEN || "",
+  visionKey: process.env.GOOGLE_VISION_KEY || "",
   margensAtivo: true,
   margemBase: "vitrine", // "vitrine" = preço que o comprador vê (com comissão) | "loja" = valor que a loja recebe
   margens: [

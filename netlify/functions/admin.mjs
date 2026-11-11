@@ -20,6 +20,7 @@ const CONFIG_CAMPOS = {
   verifWhatsUrl: "texto", verifBearer: "segredo", verifDeviceToken: "segredo", verifMensagem: "longo",
   exigirTelefoneReserva: "bool", exigirFacebookReserva: "bool", fbAppId: "texto", fbAppSecret: "segredo",
   margensAtivo: "bool", margemBase: "texto", margens: "margens",
+  fotoIaAtivo: "bool", plateRecToken: "segredo", visionKey: "segredo",
 };
 
 export default async (req, context) => {
@@ -59,7 +60,7 @@ export default async (req, context) => {
         m[k] = v;
       }
       if (b.limparToken === true) m.placaApiToken = "";
-      for (const k of ["verifBearer", "verifDeviceToken", "fbAppSecret"]) if (b["limpar_" + k] === true) m[k] = "";
+      for (const k of ["verifBearer", "verifDeviceToken", "fbAppSecret", "plateRecToken", "visionKey"]) if (b["limpar_" + k] === true) m[k] = "";
       const atual = await getConfig();
       if (("avisoTitulo" in m && m.avisoTitulo !== atual.avisoTitulo) || ("avisoTexto" in m && m.avisoTexto !== atual.avisoTexto) || (m.avisoAtivo && !atual.avisoAtivo))
         m.avisoVersao = (atual.avisoVersao || 1) + 1; // aviso mudou: aparece de novo para quem já tinha visto
@@ -68,6 +69,7 @@ export default async (req, context) => {
         avisoTitulo: "título do aviso", avisoTexto: "texto do aviso", placaProvedor: "serviço de placa", placaApiUrl: "endereço da API de placa", placaApiHeader: "cabeçalho da API",
         placaApiToken: "chave da API de placa", placaCacheDias: "dias de cache da placa",
         verifWhatsUrl: "endereço de envio do WhatsApp", verifBearer: "Bearer Token do envio", verifDeviceToken: "DeviceToken do WhatsApp", verifMensagem: "mensagem do código",
+        fotoIaAtivo: "IA das fotos ligada/desligada", plateRecToken: "token do Plate Recognizer", visionKey: "chave do Google Vision",
         margensAtivo: "regra de margem ligada/desligada", margemBase: "base da margem", margens: "tabela de margens",
         exigirTelefoneReserva: "exigir WhatsApp na reserva", exigirFacebookReserva: "exigir Facebook na reserva", fbAppId: "App ID do Facebook", fbAppSecret: "chave secreta do Facebook" };
       const mudou = Object.keys(m).filter(k => NOMES[k] && JSON.stringify(m[k]) !== JSON.stringify(atual[k]));
