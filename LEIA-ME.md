@@ -12,6 +12,8 @@ netlify/functions/admin.mjs       painel master: equipe, configurações e hist�
 netlify/functions/reservas.mjs    reservas com sinal (comissão do Pátio)
 netlify/functions/fotos.mjs       fotos dos anúncios (guardadas no Netlify Blobs)
 netlify/lib/placa-api.mjs         chamada à API de placa (APIBrasil, Placa Fipe ou outra)
+netlify/functions/backup.mjs      baixar e restaurar cópias de segurança
+netlify/functions/backup-diario.mjs  cópia automática todo dia às 3h (Brasília)
 netlify/lib/core.mjs              senhas, sessões e banco
 netlify.toml / package.json       configuração
 ```
@@ -147,6 +149,25 @@ Na vitrine viram selos (verde, amarelo ou vermelho) e o comprador pode marcar o 
 ## Privacidade da loja na vitrine
 A vitrine mostra "Loja parceira" e a cidade, sem o nome da loja, e a placa aparece só com a primeira e a última letra (ex.: A•••••3).
 O nome da loja e a placa completa aparecem só para a equipe do Pátio e para a própria loja.
+
+## Margem mínima abaixo da FIPE (regra)
+
+Em **Configurações → Margem mínima abaixo da FIPE** fica a tabela de faixas. A faixa é escolhida pelo **valor da FIPE** do carro.
+Se o carro não estiver pelo menos X% abaixo da FIPE, o cadastro **não salva** e o lojista vê o valor máximo permitido.
+- **Conferir a margem sobre:** preço da vitrine (valor da loja + comissão, padrão) ou valor que a loja recebe.
+- **Comissão da faixa (opcional):** se preencher, essa faixa usa essa comissão em vez da padrão (vale para a vitrine e para o sinal).
+- Sem FIPE o carro não salva enquanto a regra estiver ligada.
+- Carros já cadastrados fora da margem continuam no ar, aparecem com o aviso "Fora da margem mínima" no painel e precisam ser ajustados quando forem editados.
+
+## Banco de dados e cópias de segurança
+
+- Os dados (lojistas, carros, fotos, reservas, equipe, configurações) ficam no **Netlify Blobs**, separados do código.
+  Atualizar o site pelo GitHub **não apaga nada**.
+- **Nunca apague o projeto no Netlify** nem crie outro projeto para o mesmo site: o banco fica preso ao projeto.
+- **Cópia automática:** todo dia às 3h o site guarda uma cópia (mantém as últimas 14). Fica em **Acessos → Cópias de segurança** (só o master vê).
+- **Baixar cópia agora:** gera um arquivo .json com tudo (menos as fotos, que ficam no Netlify). Guarde no computador ou no Google Drive, por exemplo uma vez por semana.
+- **Restaurar:** escolha o arquivo e confirme. O site junta a cópia ao que existe e não apaga nada; antes, guarda uma cópia do estado atual para poder voltar.
+- O arquivo tem dados dos lojistas e as chaves das configurações: guarde em lugar seguro.
 
 ## Segurança
 
