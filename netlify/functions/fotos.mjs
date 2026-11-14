@@ -16,7 +16,9 @@ export default async (req, context) => {
     const mini = new URL(req.url).searchParams.get("t") === "1";
     const r = await st.getWithMetadata(id + (mini ? "_t" : ""), { type: "arrayBuffer" });
     if (!r || !r.data) return new Response("Foto não encontrada", { status: 404 });
-    return new Response(r.data, { headers: { "content-type": r.metadata?.tipo || "image/jpeg", "cache-control": "public, max-age=31536000, immutable" } });
+    return new Response(r.data, { headers: { "content-type": r.metadata?.tipo || "image/jpeg", "cache-control": "public, max-age=31536000, immutable",
+      // a foto nunca muda (foto nova = endereço novo): o Netlify guarda na CDN e não roda a função de novo
+      "netlify-cdn-cache-control": "public, durable, max-age=31536000, immutable" } });
   }
 
   // IA: acha placas, logos e textos da loja para borrar antes do envio

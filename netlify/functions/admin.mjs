@@ -14,6 +14,7 @@ import { normalizar } from "./placa.mjs";
 
 const CONFIG_CAMPOS = {
   contatoWhatsapp: "texto", grupoWhatsapp: "texto", pixChave: "texto", pixNome: "texto",
+  instagramUrl: "rede", facebookUrl: "rede", tiktokUrl: "rede",
   taxaCheia: "numero", taxaPromo: "numero", promoAte: "data",
   avisoAtivo: "bool", avisoTitulo: "texto", avisoTexto: "longo",
   placaProvedor: "texto", placaApiUrl: "texto", placaApiHeader: "texto", placaApiToken: "segredo", placaCacheDias: "numero",
@@ -49,6 +50,11 @@ export default async (req, context) => {
         else if (tipo === "numero") { v = Math.max(0, Math.round(Number(v))); if (!Number.isFinite(v)) return json({ erro: `Valor inválido em ${k}.` }, 400); }
         else if (tipo === "data") { v = String(v || ""); if (v && !/^\d{4}-\d{2}-\d{2}$/.test(v)) return json({ erro: "Data da promoção inválida." }, 400); }
         else if (tipo === "bool") v = !!v;
+        else if (tipo === "rede") {
+          v = String(v || "").trim(); if (v && !/^https?:\/\//i.test(v)) v = "https://" + v;
+          if (v && !/^https:\/\/(www\.)?(instagram\.com|facebook\.com|fb\.com|tiktok\.com)\/[^\s"<>]+$/i.test(v)) return json({ erro: "Confira o link da rede social (Instagram, Facebook ou TikTok)." }, 400);
+          v = v.slice(0, 300);
+        }
         else if (tipo === "margens") {
           if (!Array.isArray(v) || !v.length || v.length > 20) return json({ erro: "Tabela de margens inválida." }, 400);
           v = v.map(f => ({ ate: f.ate === null || f.ate === "" ? null : Math.round(Number(f.ate)), min: Number(f.min), ...(Number(f.comissao) > 0 ? { comissao: Math.round(Number(f.comissao)) } : {}) }));
@@ -64,7 +70,7 @@ export default async (req, context) => {
       const atual = await getConfig();
       if (("avisoTitulo" in m && m.avisoTitulo !== atual.avisoTitulo) || ("avisoTexto" in m && m.avisoTexto !== atual.avisoTexto) || (m.avisoAtivo && !atual.avisoAtivo))
         m.avisoVersao = (atual.avisoVersao || 1) + 1; // aviso mudou: aparece de novo para quem já tinha visto
-      const NOMES = { contatoWhatsapp: "WhatsApp do Pátio", grupoWhatsapp: "link do grupo", pixChave: "chave Pix", pixNome: "favorecido do Pix",
+      const NOMES = { instagramUrl: "Instagram", facebookUrl: "página do Facebook", tiktokUrl: "TikTok", contatoWhatsapp: "WhatsApp do Pátio", grupoWhatsapp: "link do grupo", pixChave: "chave Pix", pixNome: "favorecido do Pix",
         taxaCheia: "valor do sinal", taxaPromo: "valor da promoção", promoAte: "fim da promoção", avisoAtivo: "aviso ligado/desligado",
         avisoTitulo: "título do aviso", avisoTexto: "texto do aviso", placaProvedor: "serviço de placa", placaApiUrl: "endereço da API de placa", placaApiHeader: "cabeçalho da API",
         placaApiToken: "chave da API de placa", placaCacheDias: "dias de cache da placa",

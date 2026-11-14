@@ -7,6 +7,7 @@
 import crypto from "node:crypto";
 import { store, todos, json, corpo, sessao, pode, taxaAgora, getConfig, comissaoPara, checaMargem } from "../lib/core.mjs";
 import { apagarFotos, fotosPermitidas } from "./fotos.mjs";
+import { linkCarro } from "../lib/seo.mjs";
 
 const CAMPOS = ["placa","marca","modelo","versao","ano","km","cambio","combustivel","cor","preco","fipe","obs","status","chaveCopia","manual","cautelar","leilao","sinistro"];
 const STATUS = ["disponivel","reservado","vendido"];
@@ -20,12 +21,7 @@ export default async (req, context) => {
   const id = context.params?.id;
   const url = new URL(req.url);
 
-  if (req.method === "GET" && url.searchParams.get("meus") !== "1") {
-    const cfg = await getConfig();
-    const [rs, lojas, t] = await Promise.all([todos(st), mapaLojas(), taxaAgora(cfg)]);
-    return json(rs.filter(r => r.status !== "vendido" && lojas[r.lojistaId]?.ativo)
-      .sort(porData).map(r => publico(juntar(r, lojas), comissaoPara(cfg, t, r.fipe))));
-  }
+  if (req.method === "GET" && url.searchParams.get("meus") !== "1") return json(await vitrinePublica());
 
   const s = await sessao(req);
   if (!s) return json({ erro: "Sessão expirada. Entre de novo." }, 401);
@@ -81,6 +77,14 @@ export default async (req, context) => {
 
 export const config = { path: ["/api/repasses", "/api/repasses/:id"] };
 
+/** Carros da vitrine, do jeito que o público pode ver (usado também nas páginas do Google). */
+export async function vitrinePublica({ comVendidos = false } = {}) {
+  const cfg = await getConfig();
+  const [rs, lojas, t] = await Promise.all([todos(store("repasses")), mapaLojas(), taxaAgora(cfg)]);
+  return rs.filter(r => (comVendidos || r.status !== "vendido") && lojas[r.lojistaId]?.ativo)
+    .sort(porData).map(r => publico(juntar(r, lojas), comissaoPara(cfg, t, r.fipe)));
+}
+
 async function erroMargem(r) {
   const cfg = await getConfig(), t = await taxaAgora(cfg);
   const m = checaMargem(cfg, r.preco || 0, r.fipe, comissaoPara(cfg, t, r.fipe));
@@ -128,6 +132,6 @@ function validar(r) {
 function publico(r, comissao) {
   const { placa, lojistaId, whatsapp, reservaId, preco, loja, ...resto } = r;
   const lojaRef = crypto.createHash("sha256").update(String(lojistaId)).digest("hex").slice(0, 10); // só para contar lojas, sem identificar
-  return { ...resto, preco: (preco || 0) + comissao, precoLoja: preco, comissao, lojaRef,
+  return { ...resto, preco: (preco || 0) + comissao, precoLoja: preco, comissao, lojaRef, link: linkCarro(r),
     placaMasc: placa ? placa[0] + "•••••" + placa.slice(-1) : "" };
 }

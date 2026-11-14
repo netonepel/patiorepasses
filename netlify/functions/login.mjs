@@ -3,6 +3,7 @@
 // PUT  /api/me/senha     { atual, nova }     (cada um troca a própria senha, inclusive o master)
 // GET  /api/config       configuração pública (contato, Pix, comissão, aviso)
 import { whatsConfigurado, fbConfigurado } from "../lib/verifica.mjs";
+import { redesDe } from "../lib/seo.mjs";
 import { store, todos, json, corpo, confereSenha, iguais, hashSenha, criarToken, sessao, lojistaPublico,
   taxaAgora, getConfig, salvarConfig, registrar, PERMS } from "../lib/core.mjs";
 
@@ -12,6 +13,7 @@ export default async (req) => {
   if (path === "/api/config") {
     const c = await getConfig();
     return json({
+      redes: redesDe(c),
       contatoWhatsapp: c.contatoWhatsapp, grupoWhatsapp: c.grupoWhatsapp, pixChave: c.pixChave, pixNome: c.pixNome,
       taxa: await taxaAgora(c),
       aviso: { ativo: c.avisoAtivo !== false, titulo: c.avisoTitulo, texto: c.avisoTexto, versao: c.avisoVersao || 1 },

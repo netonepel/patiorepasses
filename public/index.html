@@ -3,14 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Pátio Repasses | O maior portal de repasses do sul do Brasil</title>
-<meta name="description" content="Carros de repasse anunciados por lojas do Paraná, Santa Catarina e Rio Grande do Sul, com o valor da FIPE ao lado do preço.">
+<title>Pátio Repasses | Repasse de carros abaixo da FIPE no PR, SC e RS</title>
+<meta name="description" content="O maior portal de repasse de carros do Sul do Brasil. Carros abaixo da tabela FIPE anunciados por lojas do Paraná, Santa Catarina e Rio Grande do Sul. Reserve com sinal pelo site.">
 <meta name="theme-color" content="#111111">
-<meta property="og:title" content="Pátio Repasses">
-<meta property="og:description" content="O maior portal de repasses do sul do Brasil.">
+<link rel="canonical" href="https://patiorepasses.com/">
+<script type="application/ld+json" id="ldSite">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://patiorepasses.com/#org","name":"Pátio Repasses","url":"https://patiorepasses.com/","logo":"https://patiorepasses.com/logo.png","areaServed":["Paraná","Santa Catarina","Rio Grande do Sul"]},{"@type":"WebSite","name":"Pátio Repasses","url":"https://patiorepasses.com/","inLanguage":"pt-BR","publisher":{"@id":"https://patiorepasses.com/#org"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"O que é um carro de repasse?","acceptedAnswer":{"@type":"Answer","text":"É um carro que a loja vende abaixo do preço de mercado para girar o estoque, normalmente para outros lojistas ou para quem compra à vista. Por isso o preço fica abaixo da tabela FIPE."}},{"@type":"Question","name":"Carro de repasse tem garantia?","acceptedAnswer":{"@type":"Answer","text":"Não. O repasse é vendido no estado em que está, e é por isso que o preço fica bem abaixo da FIPE. Antes de fechar, veja o carro pessoalmente e confira o laudo cautelar e a documentação."}},{"@type":"Question","name":"Como funciona a reserva com sinal?","acceptedAnswer":{"@type":"Answer","text":"Você paga o sinal por Pix ao Pátio Repasses e o carro fica reservado para você. Depois passamos seu contato para a loja e o restante é acertado direto com ela. O sinal já está incluído no preço anunciado."}},{"@type":"Question","name":"Quanto custa anunciar?","acceptedAnswer":{"@type":"Answer","text":"Para a loja é grátis. A comissão do Pátio é paga pelo comprador, como sinal, e já aparece somada ao preço da vitrine."}}]}]}</script>
+<!--og-url-->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Pátio Repasses">
+<meta property="og:title" content="Pátio Repasses | Repasses de carros do PR, SC e RS">
+<meta property="og:description" content="Carros de repasse abaixo da FIPE, anunciados por lojas do Paraná, Santa Catarina e Rio Grande do Sul. Reserve com sinal pelo site.">
 <meta property="og:image" content="/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="apple-touch-icon" href="/logo.png">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -403,7 +410,7 @@ form.login{max-width:420px;margin:28px 0 56px}
 .row h3 .rthumb{width:58px;height:44px;object-fit:cover;border-radius:5px;flex:none}
 .res-car{display:flex;gap:12px;align-items:center}
 .res-car img{width:84px;height:63px;object-fit:cover;border-radius:6px;flex:none}
-.gal{background:rgba(8,8,8,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.gal{background:rgba(8,8,8,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
 .gal .modal-x{position:fixed;top:max(14px,env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));background:rgba(255,255,255,.12);color:#fff;z-index:2}
 .gal-main{position:relative;width:min(1100px,100%);display:flex;align-items:center;justify-content:center}
 .gal-main img{max-width:100%;max-height:70vh;border-radius:8px;display:block;user-select:none}
@@ -412,6 +419,7 @@ form.login{max-width:420px;margin:28px 0 56px}
 #galPrev{left:6px} #galNext{right:6px}
 .gal-info{color:#eee;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;justify-content:center;text-align:center}
 .gal-info span{color:#aaa;font-size:13px}
+.gal-info .btn-res{margin-left:6px}
 .gal-strip{display:flex;gap:6px;overflow-x:auto;max-width:min(1100px,100%);padding-bottom:4px}
 .gal-strip button{flex:none;width:72px;height:54px;border-radius:5px;overflow:hidden;border:2px solid transparent;padding:0;background:#222;opacity:.6}
 .gal-strip button[aria-current="true"]{border-color:var(--yellow);opacity:1}
@@ -629,6 +637,47 @@ footer .assin b{color:var(--yellow);font-weight:700}
 .bitem input{width:18px;height:18px;accent-color:#111;flex:none}
 .bitem span{flex:1;overflow-wrap:anywhere}
 .bitem .btn-ghost{padding:4px 9px}
+
+/* ===== ajustes de UX / acessibilidade ===== */
+/* foco visível em fundo claro e escuro */
+:focus-visible{outline:3px solid #111;outline-offset:2px;box-shadow:0 0 0 6px var(--yellow)}
+/* contraste do "Sem foto" */
+.photo .nofoto{color:#4f4f4a}
+/* specs do card sem "·" sobrando no começo da linha */
+.card .specs{gap:3px 14px}
+.card .specs span{white-space:nowrap}
+.card .specs span+span::before{content:none}
+/* alvos de toque de 44px */
+.btn-res{min-height:44px;padding:10px 16px;font-size:14px}
+.brands button{min-height:44px}
+.check.limpo{min-height:44px}
+footer ul{gap:0}
+footer ul a{display:inline-block;padding:7px 0}
+/* celular: carros aparecem mais cedo */
+@media (max-width:560px){
+  .hero .perks{display:none}
+  .hero-copy{padding-bottom:0}
+  .hero .lead{margin-top:14px;font-size:15.5px}
+  .search{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px;margin-top:18px}
+  .search .f label{font-size:13.5px}
+  .search input,.search select{height:46px;padding:10px 10px;font-size:16px}
+  .search .btn{grid-column:1/-1;height:50px}
+  .brands{flex-wrap:nowrap;overflow-x:auto;margin:16px -16px 0;padding:0 16px 4px;scrollbar-width:none;gap:8px}
+  .brands::-webkit-scrollbar{display:none}
+  .brands span{flex:none;font-size:13.5px}
+  .brands button{flex:none;padding:6px 16px}
+}
+
+/* ===== perguntas frequentes ===== */
+.faqs{background:var(--bg)}
+.faqs .wrap{padding-block:48px 40px;max-width:860px}
+.faqs h2{margin:0 0 18px;font-size:clamp(22px,2.8vw,30px);font-weight:800;font-style:italic;letter-spacing:-.01em}
+.faqs details{background:var(--white);border:1px solid var(--line);border-radius:10px;margin-bottom:8px}
+.faqs summary{font-weight:700;cursor:pointer;padding:14px 16px;min-height:44px;list-style-position:inside}
+.faqs details p{margin:0;padding:0 16px 14px;color:#3d3d39}
+.faq-uf{margin:16px 0 0;font-size:14.5px}
+.card h3 a{color:inherit;text-decoration:none}
+.card h3 a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -636,7 +685,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
 
 <nav class="nav" aria-label="Principal">
   <div class="wrap">
-    <a class="logo" href="#inicio"><img src="/logo.png" alt="" width="44" height="44"><span>Pátio <b>Repasses</b></span></a>
+    <a class="logo" href="#inicio"><img src="/logo-sm.png" alt="" width="44" height="44"><span>Pátio <b>Repasses</b></span></a>
     <div class="links">
       <a href="#inicio" class="hide-sm">Comprar repasse</a>
       <a href="#lojistas" class="hide-sm">Para lojistas</a>
@@ -646,7 +695,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
 </nav>
 
 <!-- INÍCIO -->
-<div id="viewHome">
+<main id="viewHome">
   <header class="hero" id="inicio">
     <div class="hero-art"><img src="/banner-topo.jpg" alt="Carro preto à frente da logo do Pátio Repasses, com o mapa do Paraná, Santa Catarina e Rio Grande do Sul" width="1030" height="576"></div>
     <div class="wrap">
@@ -663,7 +712,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
         <div class="f"><label for="sMarca">Marca</label><select id="sMarca"><option value="">Todas</option></select></div>
         <div class="f"><label for="sModelo">Modelo</label><input id="sModelo" placeholder="Ex.: Onix, HB20"></div>
         <div class="f"><label for="sMax">Preço até</label>
-          <select id="sMax"><option value="">Qualquer valor</option><option value="30000">R$ 30.000</option><option value="50000">R$ 50.000</option><option value="70000">R$ 70.000</option><option value="100000">R$ 100.000</option><option value="150000">R$ 150.000</option></select></div>
+          <select id="sMax"><option value="">Qualquer</option><option value="30000">R$ 30.000</option><option value="50000">R$ 50.000</option><option value="70000">R$ 70.000</option><option value="100000">R$ 100.000</option><option value="150000">R$ 150.000</option></select></div>
         <div class="f"><label for="sUf">Estado</label><select id="sUf"><option value="">PR, SC e RS</option><option>PR</option><option>SC</option><option>RS</option></select></div>
         <button class="btn btn-y" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>Buscar</button>
       </form>
@@ -681,10 +730,10 @@ footer .assin b{color:var(--yellow);font-weight:700}
     <span id="kFipeWrap">Média de <b id="kFipe">0%</b> abaixo da FIPE</span>
   </div></div>
 
-  <main class="list" id="vitrine">
+  <section class="list" id="vitrine" aria-labelledby="vitrineTit">
     <div class="wrap">
       <div class="list-head">
-        <h2>Repasses recentes<span class="res" id="resCount"></span></h2>
+        <h2 id="vitrineTit">Repasses recentes<span class="res" id="resCount"></span></h2>
         <div class="tools">
           <label class="check limpo"><input type="checkbox" id="fLimpo"> <span>Sem leilão e sem sinistro</span></label>
           <label for="ordem" class="hint" style="margin:0">Ordenar</label>
@@ -695,7 +744,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
       <p class="note" id="loadNote">Carregando repasses…</p>
       <div class="grid" id="vitrineGrid"></div>
     </div>
-  </main>
+  </section>
 
   <div class="pista" aria-hidden="true"></div>
   <section class="como" id="como-comprar">
@@ -713,6 +762,17 @@ footer .assin b{color:var(--yellow);font-weight:700}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11l3 3 7-7"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>
           <b>Feche com a loja</b><p>Passamos o seu contato para a loja anunciante e vocês acertam o restante do negócio direto.</p></li>
       </ol>
+    </div>
+  </section>
+
+  <section class="faqs" id="perguntas" aria-labelledby="faqTit">
+    <div class="wrap">
+      <h2 id="faqTit">Perguntas frequentes sobre repasse de carros</h2>
+      <details><summary>O que é um carro de repasse?</summary><p>É um carro que a loja vende abaixo do preço de mercado para girar o estoque, normalmente para outros lojistas ou para quem compra à vista. Por isso o preço fica abaixo da tabela FIPE.</p></details>
+      <details><summary>Carro de repasse tem garantia?</summary><p>Não. O repasse é vendido no estado em que está, e é por isso que o preço fica bem abaixo da FIPE. Antes de fechar, veja o carro pessoalmente e confira o laudo cautelar e a documentação.</p></details>
+      <details><summary>Como funciona a reserva com sinal?</summary><p>Você paga o sinal por Pix ao Pátio Repasses e o carro fica reservado para você. Depois passamos seu contato para a loja e o restante é acertado direto com ela. O sinal já está incluído no preço anunciado.</p></details>
+      <details><summary>Quanto custa anunciar?</summary><p>Para a loja é grátis. A comissão do Pátio é paga pelo comprador, como sinal, e já aparece somada ao preço da vitrine.</p></details>
+      <p class="faq-uf">Veja os repasses por estado: <a href="/repasses/pr">Paraná</a> · <a href="/repasses/sc">Santa Catarina</a> · <a href="/repasses/rs">Rio Grande do Sul</a></p>
     </div>
   </section>
 
@@ -790,7 +850,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
     <!-- fechamento: pertencimento + vaidade + inveja -->
     <div class="lj-final">
       <div class="wrap lj-final-in reveal">
-        <div class="selo-big" aria-hidden="true"><img src="/logo.png" alt="" width="88" height="88"><span>Loja parceira</span></div>
+        <div class="selo-big" aria-hidden="true"><img src="/logo-sm.png" alt="" width="88" height="88"><span>Loja parceira</span></div>
         <div>
           <h3>Coloque o selo <em>Loja parceira</em> na sua loja</h3>
           <p>Cada carro seu aparece na vitrine com o selo de parceiro do Pátio Repasses. Entre agora e esteja entre as primeiras lojas do portal no Sul.</p>
@@ -802,10 +862,10 @@ footer .assin b{color:var(--yellow);font-weight:700}
       </div>
     </div>
   </section>
-</div>
+</main>
 
 <!-- PAINEL -->
-<div id="viewPanel" hidden>
+<main id="viewPanel" hidden>
   <header class="panel-top">
     <div class="wrap">
       <div class="crumb"><a href="#inicio">Início</a> / Área do lojista</div>
@@ -1019,6 +1079,9 @@ footer .assin b{color:var(--yellow);font-weight:700}
         <h2>Contato e grupo</h2>
         <div class="f"><label for="cContato">WhatsApp do Pátio</label><input id="cContato" inputmode="tel" placeholder="(48) 99999-0000"><span class="hint" style="margin:0">Recebe comprovantes do sinal e pedidos de novos parceiros.</span></div>
         <div class="f"><label for="cGrupo">Link do grupo de WhatsApp</label><input id="cGrupo" placeholder="https://chat.whatsapp.com/..."></div>
+        <div class="f"><label for="cInsta">Instagram</label><input id="cInsta" inputmode="url" placeholder="https://instagram.com/patiorepasses"></div>
+        <div class="f"><label for="cFace">Página do Facebook</label><input id="cFace" inputmode="url" placeholder="https://facebook.com/patiorepasses"></div>
+        <div class="f"><label for="cTiktok">TikTok</label><input id="cTiktok" inputmode="url" placeholder="https://tiktok.com/@patiorepasses"><span class="hint" style="margin:0">Aparecem no rodapé e ajudam o Google a ligar o site às suas redes. Deixe vazio o que ainda não tiver.</span></div>
       </section>
       <section class="form">
         <h2>Pix para os sinais</h2>
@@ -1139,7 +1202,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
       <div class="rows" id="lRows"></div>
     </section>
   </div>
-</div>
+</main>
 
 <div class="modal" id="resModal" hidden role="dialog" aria-modal="true" aria-labelledby="resTitle">
   <div class="modal-box">
@@ -1181,7 +1244,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
 <div class="modal" id="avisoModal" hidden role="dialog" aria-modal="true" aria-labelledby="avisoTitle">
   <div class="modal-box aviso">
     <button type="button" class="modal-x" data-close aria-label="Fechar">✕</button>
-    <img src="/logo.png" alt="" width="96" height="96">
+    <img src="/logo-sm.png" alt="" width="96" height="96">
     <span class="eyebrow-s">Fase de testes</span>
     <h2 id="avisoTitle">Bem-vindo ao Pátio Repasses</h2>
     <div id="avisoTexto"></div>
@@ -1210,15 +1273,16 @@ footer .assin b{color:var(--yellow);font-weight:700}
     <img id="galImg" alt="">
     <button type="button" class="gal-nav" id="galNext" aria-label="Próxima foto">›</button>
   </div>
-  <div class="gal-info"><b id="galTit"></b><span id="galCont"></span></div>
+  <div class="gal-info"><b id="galTit"></b><span id="galCont"></span><button type="button" class="btn-res" id="galRes">Reservar com sinal</button></div>
   <div class="gal-strip" id="galStrip"></div>
 </div>
 
 <footer>
   <div class="wrap">
-    <div><div class="flogo"><img src="/logo.png" alt="" width="52" height="52"><h4>Pátio Repasses</h4></div><p>Portal de repasses de veículos do Paraná, Santa Catarina e Rio Grande do Sul. O cliente reserva com sinal pelo Pátio e fecha o negócio com a loja anunciante.</p></div>
+    <div><div class="flogo"><img src="/logo-sm.png" alt="" width="52" height="52"><h4>Pátio Repasses</h4></div><p>Portal de repasses de veículos do Paraná, Santa Catarina e Rio Grande do Sul. O cliente reserva com sinal pelo Pátio e fecha o negócio com a loja anunciante.</p></div>
     <div><h4>Portal</h4><ul><li><a href="#inicio">Comprar repasse</a></li><li><a href="#anunciar">Área do lojista</a></li><li><a href="#lojistas">Para lojistas</a></li><li><a href="/privacidade.html">Política de privacidade</a></li></ul></div>
-    <div><h4>Estados</h4><ul><li>Paraná</li><li>Santa Catarina</li><li>Rio Grande do Sul</li></ul></div>
+    <div><h4>Estados</h4><ul><li><a href="/repasses/pr">Paraná</a></li><li><a href="/repasses/sc">Santa Catarina</a></li><li><a href="/repasses/rs">Rio Grande do Sul</a></li></ul></div>
+    <div id="fRedes" hidden><h4>Siga o Pátio</h4><ul id="fRedesL"></ul></div>
     <div class="legal"><span>Os preços e informações dos veículos são de responsabilidade de cada loja anunciante. O sinal pago ao Pátio Repasses é a comissão pela intermediação.</span><span class="assin">Site desenvolvido por <b>Neto Marketing Automotivo</b></span></div>
   </div>
 </footer>
@@ -1346,7 +1410,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
           ?`<button type="button" class="photo tem" data-gal="${i.id}" aria-label="Ver ${i.fotos.length} fotos do ${esc(i.marca)} ${esc(i.modelo)}">${badge}<img class="cover" src="/api/fotos/${i.fotos[0]}?t=1" alt="${esc(i.marca)} ${esc(i.modelo)} ${esc(i.ano)}" loading="lazy"><span class="nfotos">${i.fotos.length} ${i.fotos.length===1?'foto':'fotos'}</span></button>`
           :`<div class="photo">${badge}${CAR}<span class="nofoto">Sem foto</span></div>`}
         <div class="body">
-          <h3>${esc(i.marca)} ${esc(i.modelo)}${i.versao?`<small>${esc(i.versao)}</small>`:''}</h3>
+          <h3>${i.link?`<a href="${esc(i.link)}">${esc(i.marca)} ${esc(i.modelo)}</a>`:`${esc(i.marca)} ${esc(i.modelo)}`}${i.versao?`<small>${esc(i.versao)}</small>`:''}</h3>
           <div class="specs">${specs}</div>
           <div class="price">${brl(i.preco)}</div>
           ${i.fipe?`<div class="fipe">FIPE ${brl(i.fipe)}${p>0?` · <b>${fmtPct(p)} abaixo</b>`:''}</div>`:''}
@@ -1361,6 +1425,9 @@ footer .assin b{color:var(--yellow);font-weight:700}
     try{ items=await api('/api/repasses'); loaded=true; note.hidden=true; }
     catch(e){ loaded=true; note.hidden=false; note.textContent='Não foi possível carregar os repasses agora. Tente recarregar a página.'; }
     syncMarcaSelect(); kpis(); renderVitrine();
+    const m=location.hash.match(/^#reservar=([\w-]+)$/);
+    if(m){ history.replaceState(null,'',location.pathname+'#vitrine'); const b=$(`#vitrineGrid [data-res="${m[1]}"]`);
+      if(b){ b.closest('.card').scrollIntoView({block:'center'}); b.click(); } }
   }
   /* ---------- calculadora do carro parado ---------- */
   const numBR=v=>{ const n=parseFloat(String(v).replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')); return isFinite(n)?n:0; };
@@ -1382,12 +1449,15 @@ footer .assin b{color:var(--yellow);font-weight:700}
     const gl=waLink(cfg.grupoWhatsapp); if(gl){ $('#btnGrupoLoj').href=gl; $('#btnGrupoLoj').hidden=false; }
     const g=waLink(cfg.grupoWhatsapp)||(cfg.contatoWhatsapp?wa(cfg.contatoWhatsapp,'Olá! Quero entrar no grupo do Pátio Repasses.'):'');
     if(g){ $('#avisoGrupo').href=g; $('#avisoGrupo').hidden=false; }
+    const redes=cfg.redes||[];
+    if(redes.length){ $('#fRedesL').innerHTML=redes.map(r=>`<li><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.nome)}</a></li>`).join(''); $('#fRedes').hidden=false;
+      try{ const ld=JSON.parse($('#ldSite').textContent); ld['@graph'][0].sameAs=redes.map(r=>r.url); $('#ldSite').textContent=JSON.stringify(ld); }catch(_){} }
     const av=cfg.aviso||{};
     if(av.ativo!==false){
       $('#avisoTitle').textContent=av.titulo||'Bem-vindo ao Pátio Repasses';
       $('#avisoTexto').innerHTML=String(av.texto||'').split(/\n+/).filter(Boolean).map(t=>`<p>${esc(t)}</p>`).join('');
       const k='pr_aviso_v'+(av.versao||1);
-      if(location.hash.slice(1)!=='anunciar' && !LS.get(k)){ setTimeout(()=>abrir('#avisoModal'),500); LS.set(k,'1'); }
+      if(location.hash.slice(1)!=='anunciar' && !/^#reservar=/.test(location.hash) && !LS.get(k)){ setTimeout(()=>abrir('#avisoModal'),500); LS.set(k,'1'); }
     }
   }).catch(()=>{});
   function abrir(id){ $(id).hidden=false; document.body.style.overflow='hidden'; }
@@ -1483,10 +1553,12 @@ footer .assin b{color:var(--yellow);font-weight:700}
     $('#galPrev').hidden=$('#galNext').hidden=f.length<2; }
   $('#vitrineGrid').addEventListener('click',e=>{ const g=e.target.closest('[data-gal]'); if(!g) return;
     const c=items.find(x=>x.id===g.dataset.gal); if(!c) return;
+    $('#galRes').dataset.id=c.id; $('#galRes').hidden=c.status==='reservado';
     gal={fotos:c.fotos||[],i:0}; $('#galTit').textContent=`${c.marca} ${c.modelo} ${c.ano} · ${brl(c.preco)}`;
     $('#galImg').alt=`${c.marca} ${c.modelo}`;
     $('#galStrip').innerHTML=gal.fotos.map((id,k)=>`<button type="button" data-gi="${k}" aria-label="Foto ${k+1}"><img src="/api/fotos/${id}?t=1" alt="" loading="lazy"></button>`).join('');
     abrir('#galModal'); galMostra(0); });
+  $('#galRes').addEventListener('click',e=>{ const id=e.currentTarget.dataset.id; fechar($('#galModal')); const b=$(`#vitrineGrid [data-res="${id}"]`); if(b) b.click(); });
   $('#galPrev').addEventListener('click',()=>galMostra(gal.i-1));
   $('#galNext').addEventListener('click',()=>galMostra(gal.i+1));
   $('#galStrip').addEventListener('click',e=>{ const b=e.target.closest('[data-gi]'); if(b) galMostra(+b.dataset.gi); });
@@ -1502,7 +1574,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
     $('#resFee').innerHTML=`Sinal para reservar (comissão do Pátio)<strong>${brl(t.valor)}</strong>${t.promo?`<s>${brl(t.cheia)}</s> Promoção de lançamento até ${dataBR(t.promoAte)}.`:''}
       <div class="conta"><span>Valor do carro</span><b>${brl(i.preco)}</b><span>Sinal pago agora ao Pátio</span><b>− ${brl(t.valor)}</b><span>Restante pago direto à loja</span><b>${brl(restante)}</b></div>`;
     $('#resStep1').hidden=false; $('#resStep2').hidden=true; $('#rMsg').textContent=''; $('#rAceite').checked=false; rVerifUI();
-    abrir('#resModal'); setTimeout(()=>$('#rNome').focus(),50);
+    abrir('#resModal'); if(matchMedia('(hover:hover) and (pointer:fine)').matches) setTimeout(()=>$('#rNome').focus(),50);
   });
   $('#resForm').addEventListener('submit',async e=>{
     e.preventDefault(); const m=$('#rMsg'), b=$('#rEnviar');
@@ -2027,6 +2099,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
   /* ---------- configurações ---------- */
   async function carregarConfig(){
     let c; try{ c=await api('/api/admin/config'); }catch(_){ return; }
+    $('#cInsta').value=c.instagramUrl||''; $('#cFace').value=c.facebookUrl||''; $('#cTiktok').value=c.tiktokUrl||'';
     $('#cContato').value=c.contatoWhatsapp||''; $('#cGrupo').value=c.grupoWhatsapp||''; $('#cPix').value=c.pixChave||''; $('#cPixNome').value=c.pixNome||'';
     $('#cTaxa').value=c.taxaCheia??''; $('#cPromo').value=c.taxaPromo??''; $('#cPromoAte').value=c.promoAte||'';
     $('#cAvisoAtivo').checked=c.avisoAtivo!==false; $('#cAvisoTit').value=c.avisoTitulo||''; $('#cAvisoTxt').value=c.avisoTexto||'';
@@ -2056,7 +2129,7 @@ footer .assin b{color:var(--yellow);font-weight:700}
   ['#cTaxa','#cPromo','#cPromoAte'].forEach(id=>$(id).addEventListener('input',taxaHoje));
   $('#cfgForm').addEventListener('submit',async e=>{
     e.preventDefault(); const m=$('#cMsg'), b=$('#cSalvar');
-    const d={contatoWhatsapp:$('#cContato').value,grupoWhatsapp:$('#cGrupo').value,pixChave:$('#cPix').value,pixNome:$('#cPixNome').value,
+    const d={instagramUrl:$('#cInsta').value.trim(),facebookUrl:$('#cFace').value.trim(),tiktokUrl:$('#cTiktok').value.trim(),contatoWhatsapp:$('#cContato').value,grupoWhatsapp:$('#cGrupo').value,pixChave:$('#cPix').value,pixNome:$('#cPixNome').value,
       taxaCheia:toInt($('#cTaxa').value)||0,taxaPromo:toInt($('#cPromo').value)||0,promoAte:$('#cPromoAte').value,
       avisoAtivo:$('#cAvisoAtivo').checked,avisoTitulo:$('#cAvisoTit').value,avisoTexto:$('#cAvisoTxt').value,
       placaProvedor:$('#cProv').value,placaApiUrl:$('#cApiUrl').value,placaApiHeader:$('#cApiHead').value,placaCacheDias:toInt($('#cCache').value)||30};

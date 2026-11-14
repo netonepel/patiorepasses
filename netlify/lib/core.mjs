@@ -115,6 +115,7 @@ export async function usuarioEmUso(usuario, exceto) {
 /* ---------- configurações do portal (salvas no banco; variáveis do Netlify valem como padrão) ---------- */
 const PADRAO = () => ({
   contatoWhatsapp: process.env.CONTATO_WHATSAPP || "",
+  instagramUrl: "", facebookUrl: "", tiktokUrl: "",
   grupoWhatsapp: process.env.GRUPO_WHATSAPP || "",
   pixChave: process.env.PIX_CHAVE || "",
   pixNome: process.env.PIX_NOME || "",

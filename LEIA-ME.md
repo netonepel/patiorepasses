@@ -156,10 +156,10 @@ Na vitrine viram selos (verde, amarelo ou vermelho) e o comprador pode marcar o 
 ### Facebook (login oficial da Meta)
 1. Entre em **developers.facebook.com** → Meus apps → **Criar app** → caso de uso "Autenticar e solicitar dados de usuários com o Login do Facebook".
 2. Em **Configurações do app → Básico**: copie o **ID do app** e a **Chave secreta**. Preencha:
-   - Domínios do app: `patiorepasses.netlify.app`
-   - URL da Política de Privacidade: `https://patiorepasses.netlify.app/privacidade.html`
-   - URL de instruções de exclusão de dados: `https://patiorepasses.netlify.app/privacidade.html#exclusao`
-3. Em **Login do Facebook → Configurações**, em "URIs de redirecionamento do OAuth válidos", cole o endereço que aparece no site em Configurações → Login com Facebook (ex.: `https://patiorepasses.netlify.app/api/facebook/retorno`).
+   - Domínios do app: `patiorepasses.com`
+   - URL da Política de Privacidade: `https://patiorepasses.com/privacidade.html`
+   - URL de instruções de exclusão de dados: `https://patiorepasses.com/privacidade.html#exclusao`
+3. Em **Login do Facebook → Configurações**, em "URIs de redirecionamento do OAuth válidos", cole o endereço que aparece no site em Configurações → Login com Facebook (ex.: `https://patiorepasses.com/api/facebook/retorno`).
 4. Coloque o app no modo **Ao vivo**. Só usamos o perfil público (nome), que não precisa de análise da Meta.
 5. No site, cole App ID e Chave secreta em **Configurações → Login com Facebook** e salve.
 - Para o comprador, o Facebook é opcional (marque "Exigir Facebook para reservar" se quiser obrigatório).
@@ -177,6 +177,15 @@ Se o carro não estiver pelo menos X% abaixo da FIPE, o cadastro **não salva** 
 - **Comissão da faixa (opcional):** se preencher, essa faixa usa essa comissão em vez da padrão (vale para a vitrine e para o sinal).
 - Sem FIPE o carro não salva enquanto a regra estiver ligada.
 - Carros já cadastrados fora da margem continuam no ar, aparecem com o aviso "Fora da margem mínima" no painel e precisam ser ajustados quando forem editados.
+
+## Google e redes sociais
+
+- **Página de cada carro**: `patiorepasses.com/carro/volkswagen-gol-1-0-2019-2020-tubarao-sc-xxxxxxxx`. Tem título, descrição e foto prontos para o Google e para o WhatsApp, botão **Reservar com sinal**, **Compartilhar no WhatsApp** e outros carros do mesmo estado. No celular, o preço e o botão de reservar ficam fixos embaixo. Nos cards da vitrine, o nome do carro é o link para essa página.
+- **Páginas por estado**: `/repasses/pr`, `/repasses/sc` e `/repasses/rs`, com os carros do estado e perguntas frequentes.
+- **Carro vendido** some da página e do Google sozinho (a página diz "já foi vendido" e mostra os outros).
+- **sitemap.xml** é gerado na hora com todos os carros disponíveis. Envie uma vez no Google Search Console (*Sitemaps* → `sitemap.xml`); depois ele se atualiza sozinho.
+- **Redes sociais**: em Configurações, cole os links do Instagram, da página do Facebook e do TikTok. Eles aparecem no rodapé e informam ao Google que essas redes são do Pátio.
+- As páginas ficam guardadas na CDN do Netlify por 5 minutos, então gastam pouco crédito. Uma mudança de preço ou status pode levar até 5 minutos para aparecer nelas.
 
 ## Banco de dados e cópias de segurança
 
